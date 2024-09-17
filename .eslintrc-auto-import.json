@@ -388,6 +388,11 @@
     "showInfoNotification": true,
     "showQuestionNotification": true,
     "showSuccessNotification": true,
-    "showWarningNotification": true
+    "showWarningNotification": true,
+    "onWatcherCleanup": true,
+    "useClipboardItems": true,
+    "useId": true,
+    "useModel": true,
+    "useTemplateRef": true
   }
 }
