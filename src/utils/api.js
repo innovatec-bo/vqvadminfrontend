@@ -1,28 +1,27 @@
+import { router } from '@/plugins/1.router'
 import { ofetch } from 'ofetch'
+import { URL_ADMIN } from './constants'
 
 export const $api = ofetch.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  baseURL: URL_ADMIN,
   async onRequest({ options }) {
     const accessToken = useCookie('accessToken').value
     if (accessToken) {
       options.headers = {
         ...options.headers,
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       }
     }
   },
-})
-
-export const $microservicioIa = ofetch.create({
-  baseURL: import.meta.env.IA_API_BASE_URL || '/api',
-  async onRequest({ options }) {
-    const accessToken = useCookie('accessToken').value
-    if (accessToken) {
-      options.headers = {
-        ...options.headers,
-        Authorization: `Bearer ${accessToken}`,
+  async onResponseError(error) {
+    if (error.response && error.response.status === 401) {
+      if (useCookie('accessToken')) {
+        useCookie('accessToken').value = null
       }
+      await router.push('/auth/login')
     }
+    
+    return Promise.reject(error)
   },
 })
-

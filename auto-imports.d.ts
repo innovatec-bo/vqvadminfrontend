@@ -13,8 +13,34 @@ declare global {
   const $ia: typeof import('./src/utils/api.js')['$ia']
   const $microservicio: typeof import('./src/utils/api.js')['$microservicio']
   const $microservicioIa: typeof import('./src/utils/api.js')['$microservicioIa']
+  const ASSET_URL: typeof import('./src/utils/constants.js')['ASSET_URL']
+  const BANKCREDIT: typeof import('./src/utils/constants.js')['BANKCREDIT']
+  const CASH: typeof import('./src/utils/constants.js')['CASH']
   const COOKIE_MAX_AGE_1_YEAR: typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_YEAR']
+  const CUSTOMER: typeof import('./src/utils/constants.js')['CUSTOMER']
+  const DEPARTAMENT: typeof import('./src/utils/constants.js')['DEPARTAMENT']
+  const DIRECTCREDIT: typeof import('./src/utils/constants.js')['DIRECTCREDIT']
   const EffectScope: typeof import('vue')['EffectScope']
+  const HOUSE: typeof import('./src/utils/constants.js')['HOUSE']
+  const LAND: typeof import('./src/utils/constants.js')['LAND']
+  const MAPSTOKEN: typeof import('./src/utils/constants.js')['MAPSTOKEN']
+  const MODEL_CUSTOMER_TYPE: typeof import('./src/utils/constants.js')['MODEL_CUSTOMER_TYPE']
+  const MODEL_DEPARTAMENT_TYPE: typeof import('./src/utils/constants.js')['MODEL_DEPARTAMENT_TYPE']
+  const MODEL_HOUSE_TYPE: typeof import('./src/utils/constants.js')['MODEL_HOUSE_TYPE']
+  const MODEL_LAND_TYPE: typeof import('./src/utils/constants.js')['MODEL_LAND_TYPE']
+  const MODEL_OWNER_TYPE: typeof import('./src/utils/constants.js')['MODEL_OWNER_TYPE']
+  const MODEL_PROPERTY: typeof import('./src/utils/constants.js')['MODEL_PROPERTY']
+  const MODEL_PROPERTY_TYPE: typeof import('./src/utils/constants.js')['MODEL_PROPERTY_TYPE']
+  const MODEL_PROPER_TYPE: typeof import('./src/utils/constants.js')['MODEL_PROPER_TYPE']
+  const MODEL_USER_TYPE: typeof import('./src/utils/constants.js')['MODEL_USER_TYPE']
+  const OFFICE: typeof import('./src/utils/constants.js')['OFFICE']
+  const OWNER: typeof import('./src/utils/constants.js')['OWNER']
+  const PROPER: typeof import('./src/utils/constants.js')['PROPER']
+  const URL_ADMIN: typeof import('./src/utils/constants.js')['URL_ADMIN']
+  const URL_BACKEND: typeof import('./src/utils/constants.js')['URL_BACKEND']
+  const URL_CUSTOMER: typeof import('./src/utils/constants.js')['URL_CUSTOMER']
+  const URL_OWNER: typeof import('./src/utils/constants.js')['URL_OWNER']
+  const URL_PROPER: typeof import('./src/utils/constants.js')['URL_PROPER']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const alphaDashValidator: typeof import('./src/@core/utils/validators.js')['alphaDashValidator']
   const alphaValidator: typeof import('./src/@core/utils/validators.js')['alphaValidator']
@@ -137,6 +163,11 @@ declare global {
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
+  const showErrorNotification: typeof import('./src/utils/notifications.js')['showErrorNotification']
+  const showInfoNotification: typeof import('./src/utils/notifications.js')['showInfoNotification']
+  const showQuestionNotification: typeof import('./src/utils/notifications.js')['showQuestionNotification']
+  const showSuccessNotification: typeof import('./src/utils/notifications.js')['showSuccessNotification']
+  const showWarningNotification: typeof import('./src/utils/notifications.js')['showWarningNotification']
   const storeToRefs: typeof import('pinia')['storeToRefs']
   const syncRef: typeof import('@vueuse/core')['syncRef']
   const syncRefs: typeof import('@vueuse/core')['syncRefs']
@@ -363,9 +394,24 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface ComponentCustomProperties {
     readonly $api: UnwrapRef<typeof import('./src/utils/api.js')['$api']>
-    readonly $microservicioIa: UnwrapRef<typeof import('./src/utils/api.js')['$microservicioIa']>
+    readonly BANKCREDIT: UnwrapRef<typeof import('./src/utils/constants.js')['BANKCREDIT']>
+    readonly CASH: UnwrapRef<typeof import('./src/utils/constants.js')['CASH']>
     readonly COOKIE_MAX_AGE_1_YEAR: UnwrapRef<typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_YEAR']>
+    readonly DEPARTAMENT: UnwrapRef<typeof import('./src/utils/constants.js')['DEPARTAMENT']>
+    readonly DIRECTCREDIT: UnwrapRef<typeof import('./src/utils/constants.js')['DIRECTCREDIT']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly HOUSE: UnwrapRef<typeof import('./src/utils/constants.js')['HOUSE']>
+    readonly LAND: UnwrapRef<typeof import('./src/utils/constants.js')['LAND']>
+    readonly MAPSTOKEN: UnwrapRef<typeof import('./src/utils/constants.js')['MAPSTOKEN']>
+    readonly MODEL_DEPARTAMENT_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_DEPARTAMENT_TYPE']>
+    readonly MODEL_HOUSE_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_HOUSE_TYPE']>
+    readonly MODEL_LAND_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_LAND_TYPE']>
+    readonly MODEL_PROPERTY: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_PROPERTY']>
+    readonly MODEL_PROPERTY_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_PROPERTY_TYPE']>
+    readonly MODEL_USER_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_USER_TYPE']>
+    readonly OFFICE: UnwrapRef<typeof import('./src/utils/constants.js')['OFFICE']>
+    readonly URL_ADMIN: UnwrapRef<typeof import('./src/utils/constants.js')['URL_ADMIN']>
+    readonly URL_BACKEND: UnwrapRef<typeof import('./src/utils/constants.js')['URL_BACKEND']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly alphaDashValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaDashValidator']>
     readonly alphaValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaValidator']>
@@ -488,6 +534,11 @@ declare module 'vue' {
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
+    readonly showErrorNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showErrorNotification']>
+    readonly showInfoNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showInfoNotification']>
+    readonly showQuestionNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showQuestionNotification']>
+    readonly showSuccessNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showSuccessNotification']>
+    readonly showWarningNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showWarningNotification']>
     readonly storeToRefs: UnwrapRef<typeof import('pinia')['storeToRefs']>
     readonly syncRef: UnwrapRef<typeof import('@vueuse/core')['syncRef']>
     readonly syncRefs: UnwrapRef<typeof import('@vueuse/core')['syncRefs']>
@@ -708,9 +759,24 @@ declare module 'vue' {
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     readonly $api: UnwrapRef<typeof import('./src/utils/api.js')['$api']>
-    readonly $microservicioIa: UnwrapRef<typeof import('./src/utils/api.js')['$microservicioIa']>
+    readonly BANKCREDIT: UnwrapRef<typeof import('./src/utils/constants.js')['BANKCREDIT']>
+    readonly CASH: UnwrapRef<typeof import('./src/utils/constants.js')['CASH']>
     readonly COOKIE_MAX_AGE_1_YEAR: UnwrapRef<typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_YEAR']>
+    readonly DEPARTAMENT: UnwrapRef<typeof import('./src/utils/constants.js')['DEPARTAMENT']>
+    readonly DIRECTCREDIT: UnwrapRef<typeof import('./src/utils/constants.js')['DIRECTCREDIT']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly HOUSE: UnwrapRef<typeof import('./src/utils/constants.js')['HOUSE']>
+    readonly LAND: UnwrapRef<typeof import('./src/utils/constants.js')['LAND']>
+    readonly MAPSTOKEN: UnwrapRef<typeof import('./src/utils/constants.js')['MAPSTOKEN']>
+    readonly MODEL_DEPARTAMENT_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_DEPARTAMENT_TYPE']>
+    readonly MODEL_HOUSE_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_HOUSE_TYPE']>
+    readonly MODEL_LAND_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_LAND_TYPE']>
+    readonly MODEL_PROPERTY: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_PROPERTY']>
+    readonly MODEL_PROPERTY_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_PROPERTY_TYPE']>
+    readonly MODEL_USER_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_USER_TYPE']>
+    readonly OFFICE: UnwrapRef<typeof import('./src/utils/constants.js')['OFFICE']>
+    readonly URL_ADMIN: UnwrapRef<typeof import('./src/utils/constants.js')['URL_ADMIN']>
+    readonly URL_BACKEND: UnwrapRef<typeof import('./src/utils/constants.js')['URL_BACKEND']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly alphaDashValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaDashValidator']>
     readonly alphaValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaValidator']>
@@ -833,6 +899,11 @@ declare module '@vue/runtime-core' {
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
+    readonly showErrorNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showErrorNotification']>
+    readonly showInfoNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showInfoNotification']>
+    readonly showQuestionNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showQuestionNotification']>
+    readonly showSuccessNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showSuccessNotification']>
+    readonly showWarningNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showWarningNotification']>
     readonly storeToRefs: UnwrapRef<typeof import('pinia')['storeToRefs']>
     readonly syncRef: UnwrapRef<typeof import('@vueuse/core')['syncRef']>
     readonly syncRefs: UnwrapRef<typeof import('@vueuse/core')['syncRefs']>
