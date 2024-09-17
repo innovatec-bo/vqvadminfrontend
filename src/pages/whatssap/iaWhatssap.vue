@@ -9,7 +9,7 @@ definePage({ meta: { layoutWrapperClasses: 'layout-content-height-fixed' } })
 // Estado de conexión del socket
 const isConnected = ref(false)
 
-const isAuthenticated= ref(true)
+const isAuthenticated= ref(false)
 
 // Código QR recibido desde el servidor
 const qrCode = ref('')
