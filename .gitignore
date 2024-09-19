@@ -38,6 +38,12 @@ src/plugins/iconify/icons.css
 # Ignore MSW script
 public/mockServiceWorker.js
 
+
 # Env files
 .env*
 !.env.example
+
+
+
+.eslintrc-auto-import.json
+auto-imports.d.ts
