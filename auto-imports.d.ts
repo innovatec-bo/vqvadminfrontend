@@ -11,6 +11,7 @@ declare global {
   const $api: typeof import('./src/utils/api.js')['$api']
   const $apiIa: typeof import('./src/utils/api.js')['$apiIa']
   const $ia: typeof import('./src/utils/api.js')['$ia']
+  const $microservice: typeof import('./src/utils/api.js')['$microservice']
   const $microservicio: typeof import('./src/utils/api.js')['$microservicio']
   const $microservicioIa: typeof import('./src/utils/api.js')['$microservicioIa']
   const ASSET_URL: typeof import('./src/utils/constants.js')['ASSET_URL']
@@ -39,6 +40,8 @@ declare global {
   const URL_ADMIN: typeof import('./src/utils/constants.js')['URL_ADMIN']
   const URL_BACKEND: typeof import('./src/utils/constants.js')['URL_BACKEND']
   const URL_CUSTOMER: typeof import('./src/utils/constants.js')['URL_CUSTOMER']
+  const URL_MI: typeof import('./src/utils/constants.js')['URL_MI']
+  const URL_MICROSERVICIO: typeof import('./src/utils/constants.js')['URL_MICROSERVICIO']
   const URL_OWNER: typeof import('./src/utils/constants.js')['URL_OWNER']
   const URL_PROPER: typeof import('./src/utils/constants.js')['URL_PROPER']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
@@ -400,6 +403,7 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface ComponentCustomProperties {
     readonly $api: UnwrapRef<typeof import('./src/utils/api.js')['$api']>
+    readonly $microservice: UnwrapRef<typeof import('./src/utils/api.js')['$microservice']>
     readonly BANKCREDIT: UnwrapRef<typeof import('./src/utils/constants.js')['BANKCREDIT']>
     readonly CASH: UnwrapRef<typeof import('./src/utils/constants.js')['CASH']>
     readonly COOKIE_MAX_AGE_1_YEAR: UnwrapRef<typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_YEAR']>
@@ -418,6 +422,7 @@ declare module 'vue' {
     readonly OFFICE: UnwrapRef<typeof import('./src/utils/constants.js')['OFFICE']>
     readonly URL_ADMIN: UnwrapRef<typeof import('./src/utils/constants.js')['URL_ADMIN']>
     readonly URL_BACKEND: UnwrapRef<typeof import('./src/utils/constants.js')['URL_BACKEND']>
+    readonly URL_MICROSERVICIO: UnwrapRef<typeof import('./src/utils/constants.js')['URL_MICROSERVICIO']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly alphaDashValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaDashValidator']>
     readonly alphaValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaValidator']>

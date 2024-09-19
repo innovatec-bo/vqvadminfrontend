@@ -393,6 +393,9 @@
     "useClipboardItems": true,
     "useId": true,
     "useModel": true,
-    "useTemplateRef": true
+    "useTemplateRef": true,
+    "$microservice": true,
+    "URL_MI": true,
+    "URL_MICROSERVICIO": true
   }
 }

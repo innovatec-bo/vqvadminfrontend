@@ -4,6 +4,7 @@ export const useChatStore = defineStore('chat', {
     chatsContacts: [],
     profileUser: undefined,
     activeChat: null,
+    isAuthenticated: false,
   }),
   actions: {
     async fetchChats(clientId) {
@@ -74,6 +75,9 @@ export const useChatStore = defineStore('chat', {
       })
 
       contact.chat.lastMessage = msg
+    },
+    async verifyAuthentication(clientId){
+
     },
   },
 })

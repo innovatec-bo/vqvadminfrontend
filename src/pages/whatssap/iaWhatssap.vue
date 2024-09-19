@@ -1,15 +1,18 @@
 <script setup>
 import ChatComponent from '@/components/whatssap/chatComponent.vue'
+import { useWhatssap } from '@/composables/Whatssap/useWhatssap'
 import { connectSocket, getSocket } from '@/services/socketService'
 import QrView from '@/views/whatssap/QrView.vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 definePage({ meta: { layoutWrapperClasses: 'layout-content-height-fixed' } })
 
+const { isAuthenticated, errorMessage, checkAuthStatus } = useWhatssap()
+
 // Estado de conexión del socket
 const isConnected = ref(false)
 
-const isAuthenticated= ref(false)
+
 
 // Código QR recibido desde el servidor
 const qrCode = ref('')
@@ -19,6 +22,7 @@ const messages = ref([])
 
 // Conectar al WebSocket al montar el componente
 onMounted(() => {
+
   const socket = connectSocket()
 
   // Manejar la conexión
@@ -42,6 +46,7 @@ onMounted(() => {
     isAuthenticated.value = true
     console.log('Autenticado con WhatsApp')
   })
+  checkAuthStatus('DiegoA')
 })
 
 // Desconectar el WebSocket al desmontar el componente
