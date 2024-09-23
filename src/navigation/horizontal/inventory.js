@@ -4,13 +4,11 @@ export default [
     title: 'Proyectos',
     icon: { icon: 'tabler-toggle-left' },
     to: 'forms-form-layouts',
-    subject: 'ADMINISTRADOR',
   },
   {
     title: 'Propiedades',
     icon: { icon: 'tabler-layout-navbar' },
     to: 'forms-form-layouts',
-    subject: 'ADMINISTRADOR',
   },
 ]
     

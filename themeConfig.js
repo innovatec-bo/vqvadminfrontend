@@ -12,7 +12,7 @@ export const { themeConfig, layoutConfig } = defineThemeConfig({
     title: 'CANZZA - Vertical Homes',
     logo: h('img', { src: logo, alt: 'Logo de Canzza', style: {
       width: 'auto', 
-      height: '100px',  
+      height: 'auto',  
     } }),
     contentWidth: ContentWidth.Boxed,
     contentLayoutNav: AppContentLayoutNav.Vertical,
