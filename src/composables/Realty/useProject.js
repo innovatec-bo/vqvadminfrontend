@@ -3,7 +3,7 @@ import { computed } from "vue"
 import { useRouter } from 'vue-router'
 
 export function useProject() {
-  const loading = ref(false)
+  const loadingProject = ref(false)
   const error = ref(null)
   const router = useRouter()
   const project = ref(null)
@@ -33,56 +33,62 @@ export function useProject() {
   }
 
   const addProyect= async data => {
-    loading.value = true
+    loadingProject.value = true
     error.value = null
     try{
       const response =await registerProject(data)
 
       console.log('Respuesta del servidor:', response)
       showSuccessNotification('CREACION EXITOSA', 'EL PROYECTO FUE REGISTRADO EXITOSAMENTE')
-
+      router.push('/realty/project/list-projects')
     } catch (err) {
       console.log(err)
       if(err.response && err.response.status== 422){
         showWarningNotification('ERROR', 'FALTAN DATOS POR RELLENAR')
       }
     } finally {
-      loading.value = false
+      loadingProject.value = false
     }
   }
 
-  const editProyect= async (data, projectId) => {
-    loading.value = true
+  const editProyect= async ( projectId, data) => {
+    loadingProject.value = true
     error.value = null
     try{
+      console.log('entro aqui')
+      console.log(data, projectId)
+
       const response =await updateProject(projectId, data)
 
       console.log('Respuesta del servidor:', response)
       showSuccessNotification('ACTUALIZACION EXITOSA', 'EL PROYECTO FUE ACTUALIZADO EXITOSAMENTE')
-
+      router.push('/realty/project/list-projects')
     } catch (err) {
       console.log(err)
       if(err.response && err.response.status== 422){
         showWarningNotification('ERROR', 'FALTAN DATOS POR RELLENAR')
       }
     } finally {
-      loading.value = false
+      loadingProject.value = false
     }
   }
 
   const getProjectId = async projectId => {
+    loadingProject.value = true
     try{
       const response = await getProject(projectId)
 
       project.value= response.data
     } catch(err){
       console.log(err)
+    }finally{
+      loadingProject.value = false
     }
   }
 
   
   return {
-    loading,
+    loadingProject,
     error,
     addProyect,
     editProyect,

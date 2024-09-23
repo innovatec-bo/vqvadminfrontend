@@ -3,18 +3,31 @@ import { useProject } from '@/composables/Realty/useProject'
 import { ref } from 'vue'
 
 const { addProyect } = useProject()
-const title = ref()
+const title = ref('')
 const description = ref('')
 const numPisos = ref('')
 
-const registerProyect = async () => {
+const errors = ref({
+  title: '',
+  description: '',
+})
 
-  addProyect({
-    title: title.value,
-    description: description.value,
-    // eslint-disable-next-line camelcase
-    num_pisos: numPisos.value, 
-  })
+const validateForm = () => {
+  errors.value.title = title.value ? '' : 'El título es obligatorio.'
+  errors.value.description = description.value ? '' : 'La descripción es obligatoria.'
+  
+  return !errors.value.title && !errors.value.description
+}
+
+const registerProyect = async () => {
+  if (validateForm()) {
+    addProyect({
+      title: title.value,
+      description: description.value,
+      // eslint-disable-next-line camelcase
+      num_pisos: numPisos.value, 
+    })
+  }
 }
 </script>
 
@@ -26,7 +39,6 @@ const registerProyect = async () => {
           Registrar tu Proyecto
         </h4>
       </div>
-      <!-- todo que el boton cancelar valla a tras -->
       <div class="d-flex gap-4 align-center flex-wrap">
         <VBtn
           variant="tonal"
@@ -42,7 +54,6 @@ const registerProyect = async () => {
 
     <VRow>
       <VCol md="8">
-        <!-- 👉 Project Information -->
         <VCard title="Informacion del Proyecto">
           <VCardText>
             <VRow>
@@ -51,15 +62,17 @@ const registerProyect = async () => {
                   v-model="title"
                   label="Titulo del Proyecto"
                   placeholder="......"
-                  :rules="[requiredValidator]"
+                  :error="!!errors.title"
+                  :error-messages="errors.title"
                 />
               </VCol>
               <VCol>
                 <AppTextarea
                   v-model="description"
-                  label="Descripcion (Opcional)"
+                  label="Descripcion"
                   rows="3"
-                  :rules="[requiredValidator]"
+                  :error="!!errors.description"
+                  :error-messages="errors.description"
                 />
               </VCol>
               <VCol cols="6">
@@ -70,12 +83,11 @@ const registerProyect = async () => {
                   type="number"
                   min="0"
                 />
-              </VCol>            
+              </VCol>
             </VRow>
           </VCardText>
         </VCard>
-      </vcol>
+      </VCol>
     </VRow>
   </div>
 </template>
-
