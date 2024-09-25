@@ -1,40 +1,21 @@
 <script setup>
-import {
-  useDropZone,
-  useFileDialog,
-  useObjectUrl,
-} from '@vueuse/core'
-import { ref } from 'vue'
-
-const dropZoneRef = ref()
-const fileData = ref([])
-const { open, onChange } = useFileDialog({ accept: 'image/*' })
-function onDrop(DroppedFiles) {
-  DroppedFiles?.forEach(file => {
-    if (file.type.slice(0, 6) !== 'image/') {
-      alert('Only image files are allowed')
-      
-      return
-    }
-    fileData.value.push({
-      file,
-      url: useObjectUrl(file).value ?? '',
-    })
-  })
-}
-onChange(selectedFiles => {
-  if (!selectedFiles)
-    return
-  for (const file of selectedFiles) {
-    fileData.value.push({
-      file,
-      url: useObjectUrl(file).value ?? '',
-    })
-  }
-})
-useDropZone(dropZoneRef, onDrop)
+import { useActivity } from '@/composables/Activity/useActivity'
+import { useCustomer } from '@/composables/Customer/useCustomer'
+import { onMounted } from 'vue'
 
 const content = ref('')
+const { getallTypeActivities, typeActivities } = useActivity()
+const { addCustomer, loading, error, customer } = useCustomer()
+
+const allTypeActivity = async () => {
+  await getallTypeActivities()
+}
+
+const registerCustomer = async () => {
+
+}
+
+onMounted(allTypeActivity)
 </script>
 
 <template>
@@ -44,7 +25,7 @@ const content = ref('')
         <h4 class="text-h4 font-weight-medium">
           Registrar Cliente
         </h4>
-        <span>Orders placed across your store</span>
+        <span>Agrega un Nuevo Cliente Potencial</span>
       </div>
 
       <div class="d-flex gap-4 align-center flex-wrap">
@@ -86,10 +67,18 @@ const content = ref('')
                 cols="12"
                 md="6"
               >
-                <AppTextField
-                  label="Celular (Obligatorio)"
-                  placeholder="77049267"
-                />
+                <VRow class="mx-1">
+                  <AppSelect
+                    class="px-1"
+                    label="Cod Pais"
+                    :items="['+591']"
+                  />
+                  <AppTextField
+                    type="number"
+                    label="Celular"
+                    placeholder="76543210"
+                  />
+                </VRow>
               </VCol>
               <VCol
                 cols="12"
@@ -131,40 +120,19 @@ const content = ref('')
           <VCardText>
             <div class="d-flex flex-column gap-y-4">
               <AppSelect
-                placeholder="Select Vendor"
-                label="Vendor"
-                :items="['Men\'s Clothing', 'Women\'s Clothing', 'Kid\'s Clothing']"
+                placeholder="Seleccione un Estado (Obligatorio)"
+                label="Estado del Cliente"
+                :items="typeActivities.map(activity => activity.name)"
               />
-              <div>
-                <VLabel class="d-flex">
-                  <div class="d-flex text-sm justify-space-between w-100">
-                    <div class="text-high-emphasis">
-                      Category
-                    </div>
-                    <div class="text-primary cursor-pointer">
-                      Add new category
-                    </div>
-                  </div>
-                </VLabel>
-
-                <AppSelect
-                  placeholder="Select Category"
-                  :items="['Household', 'Office', 'Electronics', 'Management', 'Automotive']"
-                />
-              </div>
               <AppSelect
-                placeholder="Select Collection"
-                label="Collection"
+                placeholder="Metodo de Contacto (Opcional)"
+                label="Metodo de Contacto (Opcional)"
                 :items="['Men\'s Clothing', 'Women\'s Clothing', 'Kid\'s Clothing']"
               />
               <AppSelect
-                placeholder="Select Status"
-                label="Status"
+                placeholder="Como nos Conocio (Opcional)"
+                label="Como nos Conocio (Opcional)"
                 :items="['Published', 'Inactive', 'Scheduled']"
-              />
-              <AppTextField
-                label="Tags"
-                placeholder="Fashion, Trending, Summer"
               />
             </div>
           </VCardText>

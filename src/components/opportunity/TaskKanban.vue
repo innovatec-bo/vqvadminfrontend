@@ -1,4 +1,5 @@
 <script setup>
+import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 
 const props = defineProps({
@@ -13,6 +14,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:isDialogVisible'])
+
+const { getallTypeActivities, activities } = useActivity()
 
 
 const dialogVisibleUpdate = val => {
@@ -29,6 +32,11 @@ const tabItems = [
   'Lista de Actividades',
 ]
 
+
+const allTypeActivity = async () => {
+  await getallTypeActivities()
+}
+
 const fetchOpportunityData = async () => {
   if (props.opportunityKanban?.id) {
     await getOpportunitybyId(props.opportunityKanban.id)
@@ -43,6 +51,7 @@ watch(() => props.isDialogVisible, newValue => {
   if (newValue === true) {
     console.log('El diálogo se ha abierto, realizando la consulta.')
     fetchOpportunityData()
+    allTypeActivity()
   }
 })
 </script>
@@ -213,6 +222,7 @@ watch(() => props.isDialogVisible, newValue => {
                       <AppSelect
                         label="Seleccione una Actividad"
                         placeholder="Seleccione una Actividad"
+                        :items="activities"
                       />
                     </VCol>
                     <VCol
