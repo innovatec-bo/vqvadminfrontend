@@ -396,6 +396,8 @@
     "useTemplateRef": true,
     "$microservice": true,
     "URL_MI": true,
-    "URL_MICROSERVICIO": true
+    "URL_MICROSERVICIO": true,
+    "LEAD": true,
+    "LEAD_TYPE": true
   }
 }

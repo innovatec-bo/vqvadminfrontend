@@ -26,5 +26,10 @@ export const MODEL_HOUSE_TYPE = "App\\Models\\House"
 export const MODEL_LAND_TYPE = "App\\Models\\Land"
 export const MODEL_USER_TYPE = "App\\Models\\User"
 
+export const LEAD= 'LEAD'
+export const LEAD_TYPE = 'LEAD_TYPE'
+
+
+
 
 

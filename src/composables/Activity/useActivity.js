@@ -2,7 +2,7 @@ import { allTypeActivities, changeStatus, get, register } from "@/services/Activ
 import { computed } from "vue"
 import { useRouter } from 'vue-router'
 
-export function useProject() {
+export function useActivity() {
   const loadingActivity = ref(false)
   const error = ref(null)
   const activity = ref(null)
@@ -51,7 +51,9 @@ export function useProject() {
     try{
       const response = await allTypeActivities()
 
-      typeActivities.value = response.data.data
+      console.log(response.data)
+
+      typeActivities.value = response.data
     } catch(err){
       //todo: mejorar los mensajes de error
 
