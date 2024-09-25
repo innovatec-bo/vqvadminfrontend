@@ -35,11 +35,15 @@ export function useAuth() {
           action: "manage",
           subject: "all",
         },
-        {
-          action: "manage",
-          subject: "ADMIN",
-        },
       ]
+      const rolesFromBackend = response.data.roles
+
+      rolesFromBackend.forEach(role => {
+        userAbilityRules.push({
+          action: "manage",
+          subject: role,  
+        })
+      })
       useCookie('userAbilityRules').value = userAbilityRules
       ability.update(userAbilityRules)
       useCookie('userData').value = userOutData

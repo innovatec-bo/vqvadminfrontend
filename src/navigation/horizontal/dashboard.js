@@ -1,38 +1,20 @@
 export default [
   {
-    title: 'Dashboards',
+    title: 'Panel',
     icon: { icon: 'tabler-smart-home' },
-    children: [
-      {
-        title: 'Analytics',
-        to: 'dashboards-analytics',
-        icon: { icon: 'tabler-chart-pie-2' },
-      },
-      {
-        title: 'eCommerce',
-        to: 'dashboards-ecommerce',
-        icon: { icon: 'tabler-atom-2' },
-      },
-      {
-        title: 'CRM',
-        to: 'dashboards-crm',
-        icon: { icon: 'tabler-3d-cube-sphere' },
-      },
-      {
-        title: 'Ecommerce',
-        to: 'dashboards-ecommerce',
-        icon: { icon: 'tabler-shopping-cart' },
-      },
-      {
-        title: 'Academy',
-        to: 'dashboards-academy',
-        icon: { icon: 'tabler-book' },
-      },
-      {
-        title: 'Logistics',
-        to: 'dashboards-logistics',
-        icon: { icon: 'tabler-truck' },
-      },
-    ],
+    to: 'dashboards-analytics',
+    badgeContent: '3',
+    badgeClass: 'bg-global-primary',
+  },
+  {
+    title: 'Oportunidades',
+    icon: { icon: 'tabler-smart-home' },
+    to: 'dashboards-analytics',
+  },
+  { heading: 'Analisis' },
+  {
+    title: 'Analiticas',
+    icon: { icon: 'tabler-smart-home' },
+    to: 'dashboards-analytics',
   },
 ]

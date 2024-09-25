@@ -1,8 +1,9 @@
 import { allTypeActivities, changeStatus, get, register } from "@/services/Activity/activityService"
+import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
 import { computed } from "vue"
 import { useRouter } from 'vue-router'
 
-export function useProject() {
+export function useActivity() {
   const loadingActivity = ref(false)
   const error = ref(null)
   const activity = ref(null)
@@ -18,7 +19,7 @@ export function useProject() {
       const response =await register(data)
 
       activity.value= response.data
-      showSuccessNotification('CREACION EXITOSA', 'EL PROYECTO FUE REGISTRADO EXITOSAMENTE')
+      showSuccessNotification('CREACION EXITOSA', response.data.message)
     } catch (err) {
       //todo: mejorar los mensajes de error
       console.log(err)
@@ -51,7 +52,9 @@ export function useProject() {
     try{
       const response = await allTypeActivities()
 
-      typeActivities.value = response.data.data
+      console.log(response.data)
+
+      typeActivities.value = response.data
     } catch(err){
       //todo: mejorar los mensajes de error
 
@@ -66,6 +69,7 @@ export function useProject() {
       const response =await changeStatus(id, data)
 
       activity.value= response.data
+      showSuccessNotification('Confirmacion Exitosa', response.data.message)
     } catch (err) {
       console.log(err)
       error.value =  err.message

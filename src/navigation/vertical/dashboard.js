@@ -5,16 +5,12 @@ export default [
     to: 'dashboards-analytics',
     badgeContent: '3',
     badgeClass: 'bg-global-primary',
+    subject: 'ADMINISTRADOR',
+
   },
   {
     title: 'Oportunidades',
     icon: { icon: 'tabler-smart-home' },
-    to: 'dashboards-analytics',
-  },
-  { heading: 'Analisis' },
-  {
-    title: 'Analiticas',
-    icon: { icon: 'tabler-smart-home' },
-    to: 'dashboards-analytics',
+    to: 'opportunities-my-contacts',
   },
 ]

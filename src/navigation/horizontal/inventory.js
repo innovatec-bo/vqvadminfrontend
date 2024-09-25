@@ -3,14 +3,12 @@ export default [
   {
     title: 'Proyectos',
     icon: { icon: 'tabler-toggle-left' },
-    to: 'realty-project-list-projects',
-    subject: 'ADMINISTRADOR',
+    to: 'forms-form-layouts',
   },
   {
     title: 'Propiedades',
     icon: { icon: 'tabler-layout-navbar' },
-    to: 'realty-property-list',
-    subject: 'ADMINISTRADOR',
+    to: 'forms-form-layouts',
   },
 ]
     

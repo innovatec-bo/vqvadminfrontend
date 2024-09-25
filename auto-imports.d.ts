@@ -24,6 +24,8 @@ declare global {
   const EffectScope: typeof import('vue')['EffectScope']
   const HOUSE: typeof import('./src/utils/constants.js')['HOUSE']
   const LAND: typeof import('./src/utils/constants.js')['LAND']
+  const LEAD: typeof import('./src/utils/constants.js')['LEAD']
+  const LEAD_TYPE: typeof import('./src/utils/constants.js')['LEAD_TYPE']
   const MAPSTOKEN: typeof import('./src/utils/constants.js')['MAPSTOKEN']
   const MODEL_CUSTOMER_TYPE: typeof import('./src/utils/constants.js')['MODEL_CUSTOMER_TYPE']
   const MODEL_DEPARTAMENT_TYPE: typeof import('./src/utils/constants.js')['MODEL_DEPARTAMENT_TYPE']
@@ -412,6 +414,8 @@ declare module 'vue' {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
     readonly HOUSE: UnwrapRef<typeof import('./src/utils/constants.js')['HOUSE']>
     readonly LAND: UnwrapRef<typeof import('./src/utils/constants.js')['LAND']>
+    readonly LEAD: UnwrapRef<typeof import('./src/utils/constants.js')['LEAD']>
+    readonly LEAD_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['LEAD_TYPE']>
     readonly MAPSTOKEN: UnwrapRef<typeof import('./src/utils/constants.js')['MAPSTOKEN']>
     readonly MODEL_DEPARTAMENT_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_DEPARTAMENT_TYPE']>
     readonly MODEL_HOUSE_TYPE: UnwrapRef<typeof import('./src/utils/constants.js')['MODEL_HOUSE_TYPE']>
