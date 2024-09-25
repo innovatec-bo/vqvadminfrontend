@@ -56,7 +56,7 @@ watch(() => props.isDialogVisible, newValue => {
     <!-- Botón para cerrar el diálogo -->
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
 
-    <VCard class="pa-5 pa-sm-8">
+    <VCard class="pa-sm-8">
       <!-- Pestañas de navegación -->
       <VTabs v-model="navigationTab">
         <VTab
@@ -279,10 +279,7 @@ watch(() => props.isDialogVisible, newValue => {
                   { title: 'Acciones', value: 'actions', sortable: false }
                 ]"
                 :items="opportunity.activities || []"
-              >
-                item-value="id"
-                />
-              </vdatatable>
+              />
             </VCardItem>
           </VWindowItem>
         </VWindow>

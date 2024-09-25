@@ -17,6 +17,12 @@ export function useOpportunity (){
       name: '',
       description: '',
     },
+    property: {
+      id: '',
+      title: '',
+      code: '',
+      description: '',
+    },
   })
 
   const kanban = ref(null)
