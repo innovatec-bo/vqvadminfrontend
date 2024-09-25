@@ -1,6 +1,8 @@
 <script setup>
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
+import { StateActivity } from '@/enums/StateActivity'
+import { VDataTable } from 'vuetify/labs/VDataTable'
 
 const props = defineProps({
   isDialogVisible: {
@@ -15,11 +17,11 @@ const props = defineProps({
 
 const emit = defineEmits(['update:isDialogVisible'])
 
-const { getallTypeActivities, activities } = useActivity()
+const { getallTypeActivities, typeActivities, registerActivity, loadingActivity, changeStatusActivity } = useActivity()
 
 
-const dialogVisibleUpdate = val => {
-  emit('update:isDialogVisible', val)
+const dialogVisibleUpdate = () => {
+  emit('update:isDialogVisible', false)
 }
 
 const { getOpportunitybyId, opportunity } = useOpportunity()
@@ -32,6 +34,18 @@ const tabItems = [
   'Lista de Actividades',
 ]
 
+const newActivity = ref({
+  title: null,
+  description: null,
+  // eslint-disable-next-line camelcase
+  type_activity_id: null,
+  // eslint-disable-next-line camelcase
+  scheduled_at: null,
+  // eslint-disable-next-line camelcase
+  opportunity_id: null,
+  // eslint-disable-next-line camelcase
+  assigned_to: null,
+})
 
 const allTypeActivity = async () => {
   await getallTypeActivities()
@@ -43,8 +57,22 @@ const fetchOpportunityData = async () => {
   }
 }
 
+const addActivity= async () =>{
+  await registerActivity(newActivity.value)
+  dialogVisibleUpdate()
+}
+
 const saveData = async () => {
   console.log('Datos actualizados correctamente')
+}
+
+const confirmActivity = async activityId =>{
+  await changeStatusActivity(activityId, {
+    // eslint-disable-next-line camelcase
+    state_activity: StateActivity.COMPLETED.value,
+  })
+  dialogVisibleUpdate()
+
 }
 
 watch(() => props.isDialogVisible, newValue => {
@@ -52,14 +80,20 @@ watch(() => props.isDialogVisible, newValue => {
     console.log('El diálogo se ha abierto, realizando la consulta.')
     fetchOpportunityData()
     allTypeActivity()
+    // eslint-disable-next-line camelcase
+    newActivity.value.opportunity_id = props.opportunityKanban?.id ?? null
+    // eslint-disable-next-line camelcase
+    newActivity.value.assigned_to = props.opportunityKanban?.user_id ?? null
   }
 })
 </script>
 
 <template>
   <VDialog
-    :model-value="isDialogVisible"
-    :width="$vuetify.display.smAndDown ? 'auto' : 880"
+    max-width="850"
+    :model-value="props.isDialogVisible"
+    persistent
+    :close-on-esc="false"
     @update:model-value="dialogVisibleUpdate"
   >
     <!-- Botón para cerrar el diálogo -->
@@ -78,8 +112,8 @@ watch(() => props.isDialogVisible, newValue => {
 
       <!-- Contenidos de las pestañas -->
       <VWindow v-model="navigationTab">
-        <!-- Pestaña 1: Información -->
         <VWindow v-model="navigationTab">
+          <!-- Pestaña 1: Información -->
           <VWindowItem :value="tabItems[0]">
             <VCardItem>
               <VCardTitle class="text-h3 font-weight-medium mb-3">
@@ -219,10 +253,21 @@ watch(() => props.isDialogVisible, newValue => {
                 <VForm @submit.prevent="() => {}">
                   <VRow>
                     <VCol cols="12">
+                      <AppTextField
+                        v-model="newActivity.title"
+                        label="Titulo de la Actividad"
+                        placeholder="Escribe un Titulo"
+                      />
+                    </VCol>
+                    <VCol
+                      cols="12"
+                      md="6"
+                    >
                       <AppSelect
+                        v-model="newActivity.type_activity_id"
                         label="Seleccione una Actividad"
                         placeholder="Seleccione una Actividad"
-                        :items="activities"
+                        :items="typeActivities.map(activity => ({ title: activity.name, value: activity.id }))"
                       />
                     </VCol>
                     <VCol
@@ -230,22 +275,15 @@ watch(() => props.isDialogVisible, newValue => {
                       md="6"
                     >
                       <AppDateTimePicker
+                        v-model="newActivity.scheduled_at"
                         label="Fecha"
                         placeholder="Seleccione una Fecha"
-                      />
-                    </VCol>
-                    <VCol
-                      cols="12"
-                      md="6"
-                    >
-                      <AppDateTimePicker
-                        label="Hora"
-                        placeholder="Seleccione una Hora"
-                        :config="{ enableTime: true, noCalendar: true, dateFormat: 'H:i' }"
+                        :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
                       />
                     </VCol>
                     <VCol cols="12">
                       <AppTextarea
+                        v-model="newActivity.description"
                         label="Detalla tu Actividad"
                         placeholder="Describe la actividad"
                       />
@@ -257,6 +295,9 @@ watch(() => props.isDialogVisible, newValue => {
                       <VBtn
                         type="submit"
                         class="me-3"
+                        :disabled="loadingActivity"
+                        :loading="loadingActivity"
+                        @click="addActivity"
                       >
                         Agregar Actividad
                       </VBtn>
@@ -279,17 +320,31 @@ watch(() => props.isDialogVisible, newValue => {
               <VCardTitle class="text-h3 font-weight-medium mb-3">
                 Lista de Actividades
               </VCardTitle>
+
               <VDataTable
-                :headers="[ 
-                  { title: 'Actividad', value: 'type_activity.name' },
-                  { title: 'Fecha', value: 'date' },
-                  { title: 'Hora', value: 'time' },
+                :headers="[
+                  { title: 'Actividad', value: 'title' },
+                  { title: 'Fecha', value: 'scheduled_at' },
                   { title: 'Estado', value: 'state_activity' },
-                  { title: 'Descripción', value: 'description_activity' },
+                  { title: 'Descripción', value: 'description' },
                   { title: 'Acciones', value: 'actions', sortable: false }
                 ]"
-                :items="opportunity.activities || []"
-              />
+                :items="opportunity.activities"
+                item-value="id"
+                class="elevation-1"
+                :items-per-page="5"
+              >
+                <template #[`item.actions`]="{ item }">
+                  <VBtn
+                    title="Marcar Como Realizada"
+                    color="primary"
+                    :disabled="item.state_activity !== StateActivity.PENDING.value"
+                    @click="confirmActivity(item.id)"
+                  >
+                    <VIcon icon="tabler-checkbox" />
+                  </VBtn>
+                </template>
+              </VDataTable>
             </VCardItem>
           </VWindowItem>
         </VWindow>

@@ -7,12 +7,22 @@ const content = ref('')
 const { getallTypeActivities, typeActivities } = useActivity()
 const { addCustomer, loading, error, customer } = useCustomer()
 
+
+const customerForm = ref({
+  name: null,
+  countryCode: '+591',
+  phone: null,
+  email: null,
+  ci: null,
+  description: null,
+})
+
 const allTypeActivity = async () => {
   await getallTypeActivities()
 }
 
 const registerCustomer = async () => {
-
+  await addCustomer(customerForm.value)
 }
 
 onMounted(allTypeActivity)
@@ -31,17 +41,22 @@ onMounted(allTypeActivity)
       <div class="d-flex gap-4 align-center flex-wrap">
         <VBtn
           variant="tonal"
-          color="secondary"
-        >
-          Discard
-        </VBtn>
-        <VBtn
-          variant="tonal"
           color="primary"
         >
-          Save Draft
+          <RouterLink
+            class="text-primary ms-2 mb-1"
+            :to="{ name: 'customers-list-customers' }"
+          >
+            Cancelar
+          </RouterLink>
         </VBtn>
-        <VBtn>Publish Product</VBtn>
+        <VBtn
+          :disabled="loading"
+          :loading="loading"
+          @click="registerCustomer"
+        >
+          Registrar Cliente
+        </VBtn>
       </div>
     </div>
 
@@ -59,6 +74,8 @@ onMounted(allTypeActivity)
                 md="6"
               >
                 <AppTextField
+                  v-model="customerForm.name"
+                  :rules="[requiredValidator]"
                   label="Nombre (Obligatorio)"
                   placeholder="Diego Rojas"
                 />
@@ -67,17 +84,23 @@ onMounted(allTypeActivity)
                 cols="12"
                 md="6"
               >
-                <VRow class="mx-1">
-                  <AppSelect
-                    class="px-1"
-                    label="Cod Pais"
-                    :items="['+591']"
-                  />
-                  <AppTextField
-                    type="number"
-                    label="Celular"
-                    placeholder="76543210"
-                  />
+                <VRow>
+                  <VCol md="4">
+                    <AppSelect
+                      v-model="customerForm.countryCode"
+                      label="Cod Pais"
+                      :items="['+591']"
+                    />
+                  </VCol>
+                  <VCol md="8">
+                    <AppTextField
+                      v-model="customerForm.phone"
+                      type="number"
+                      :rules="[requiredValidator]"
+                      label="Celular"
+                      placeholder="76543210"
+                    />
+                  </VCol>
                 </VRow>
               </VCol>
               <VCol
@@ -85,6 +108,7 @@ onMounted(allTypeActivity)
                 md="6"
               >
                 <AppTextField
+                  v-model="customerForm.email"
                   label="Correo (Opcional)"
                   placeholder="alex@canzza.com"
                 />
@@ -94,6 +118,7 @@ onMounted(allTypeActivity)
                 md="6"
               >
                 <AppTextField
+                  v-model="customerForm.ci"
                   label="CI (Opcional)"
                   placeholder="0123-4567"
                 />
@@ -101,7 +126,7 @@ onMounted(allTypeActivity)
               <VCol>
                 <span class="mb-1">Descripcion (Opcional)</span>
                 <TiptapEditor
-                  v-model="content"
+                  v-model="customerForm.description"
                   placeholder="Descripcion del Cliente "
                   class="border rounded"
                 />

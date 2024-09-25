@@ -1,4 +1,5 @@
 import { allTypeActivities, changeStatus, get, register } from "@/services/Activity/activityService"
+import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
 import { computed } from "vue"
 import { useRouter } from 'vue-router'
 
@@ -18,7 +19,7 @@ export function useActivity() {
       const response =await register(data)
 
       activity.value= response.data
-      showSuccessNotification('CREACION EXITOSA', 'EL PROYECTO FUE REGISTRADO EXITOSAMENTE')
+      showSuccessNotification('CREACION EXITOSA', response.data.message)
     } catch (err) {
       //todo: mejorar los mensajes de error
       console.log(err)
@@ -68,6 +69,7 @@ export function useActivity() {
       const response =await changeStatus(id, data)
 
       activity.value= response.data
+      showSuccessNotification('Confirmacion Exitosa', response.data.message)
     } catch (err) {
       console.log(err)
       error.value =  err.message

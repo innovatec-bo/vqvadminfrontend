@@ -9,7 +9,7 @@ export default [
   {
     title: 'Clientes',
     icon: { icon: 'tabler-users-plus' },
-    to: 'customers-add-customer',
+    to: 'customers-list-customers',
     subject: 'ADMINISTRADOR',
   },
 ]
