@@ -1,5 +1,4 @@
-import { allTypeActivities, changeStatus, get, register } from "@/services/Activity/activityService"
-import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
+import { allTypeActivities, changeStatus, get, getByAsesorFecha, getByAsesorFechaFuture, getByAsesorFechaPast, getByAsesorRangoFecha, register, update } from "@/services/Activity/activityService"
 import { computed } from "vue"
 import { useRouter } from 'vue-router'
 
@@ -8,6 +7,8 @@ export function useActivity() {
   const error = ref(null)
   const activity = ref(null)
   const activities = ref([])
+  const activitiesPast = ref([])
+  const activitiesFuture = ref([])
   const typeActivities = ref([])
   const totalActivities = ref(0)
   const router = useRouter()
@@ -20,6 +21,27 @@ export function useActivity() {
 
       activity.value= response.data
       showSuccessNotification('CREACION EXITOSA', response.data.message)
+    } catch (err) {
+      //todo: mejorar los mensajes de error
+      console.log(err)
+      if(err.response && err.response.status== 422){
+        showWarningNotification('ERROR', 'FALTAN DATOS POR RELLENAR')
+      }
+      error.value =  err.message
+    } finally {
+      loadingActivity.value = false
+    }
+  }
+
+  const updateActivity= async (id, data) => {
+    loadingActivity.value = true
+    error.value = null
+    try{
+      const response =await update(id, data)
+
+      console.log(response)
+      activity.value= response.data
+      showSuccessNotification('ACTUALIZACION EXITOSA', '')
     } catch (err) {
       //todo: mejorar los mensajes de error
       console.log(err)
@@ -68,8 +90,9 @@ export function useActivity() {
     try{
       const response =await changeStatus(id, data)
 
+      console.log(response)
       activity.value= response.data
-      showSuccessNotification('Confirmacion Exitosa', response.data.message)
+      showSuccessNotification('ACTUALIZACION EXITOSA', 'Actividad Completada')
     } catch (err) {
       console.log(err)
       error.value =  err.message
@@ -84,7 +107,8 @@ export function useActivity() {
     try{
       const response = await getByOportunity(oportunityId, asesorId)
 
-      activities.value = response.data.data
+      activities.value = response.data
+      console.log(activities)
     } catch(err){
       //todo: mejorar los mensajes de error
 
@@ -94,21 +118,56 @@ export function useActivity() {
     }
   }
 
-  const getallActivitiesByAsesorFecha= async (asesorid, pagination)  => {
+  const getallActivitiesByAsesorFecha= async asesorid  => {
+    loadingActivity.value = true
+    error.value = null
+
+    const today = new Date().toISOString().split('T')[0]
+    try{
+      const pagination = { fecha: today }
+
+      const response = await getByAsesorFecha(asesorid, pagination)
+
+      activities.value = response.data
+    } catch(err){
+      //todo: mejorar los mensajes de error
+
+      error.value =  err.message
+    } finally {
+      loadingActivity.value = false
+    }
+  }
+
+  const getallActivitiesByFechaFuture= async asesorid  => {
     loadingActivity.value = true
     error.value = null
     try{
-      const response = await getByAsesorFecha(asesorid, pagination)
+      const response = await getByAsesorFechaFuture(asesorid)
 
-      activities.value = response.data.data
+      activitiesFuture.value = response.data
     } catch(err){
       //todo: mejorar los mensajes de error
-
       error.value =  err.message
     } finally {
       loadingActivity.value = false
     }
   }
+
+  const getallActivitiesByFechaPast= async asesorid  => {
+    loadingActivity.value = true
+    error.value = null
+    try{
+      const response = await getByAsesorFechaPast(asesorid)
+
+      activitiesPast.value = response.data
+    } catch(err){
+      //todo: mejorar los mensajes de error
+      error.value =  err.message
+    } finally {
+      loadingActivity.value = false
+    }
+  }
+
 
   const getallActivitiesByAsesorRangoFecha= async (asesorid, pagination)  => {
     loadingActivity.value = true
@@ -136,8 +195,13 @@ export function useActivity() {
     getallActivitiesByOportunity,
     getallActivitiesByAsesorFecha,
     getallActivitiesByAsesorRangoFecha,
+    getallActivitiesByFechaPast,
+    getallActivitiesByFechaFuture,
+    updateActivity,
     activity,
     activities: computed(()=>activities.value),
+    activitiesPast: computed(()=>activitiesPast.value),
+    activitiesFuture: computed(()=>activitiesFuture.value),
     typeActivities: computed(()=>typeActivities.value),
   }
 }

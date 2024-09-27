@@ -25,6 +25,13 @@ export const changeStatus = async (id, data)=> {
     body: data,
   })
 }
+
+export const update = async (id, data)=> {
+  return await $api(`/activity/${id}`, {
+    method: 'PATCH',
+    body: data,
+  })
+}
   
 export const getByOportunity = async (oportunityId, asesorId) => {
   return await $api(`/activity/oportunity/${oportunityId}/asesor/${asesorId}`, {
@@ -36,6 +43,18 @@ export const getByAsesorFecha= async (asesorid, pagination) =>{
   return await $api(`/activity/asesor/${asesorid}/fecha`, {
     method: 'GET',
     params: pagination,
+  })
+}
+
+export const getByAsesorFechaFuture= async asesorid =>{
+  return await $api(`/activity/asesor/${asesorid}/fecha-future`, {
+    method: 'GET',
+  })
+}
+
+export const getByAsesorFechaPast= async asesorid =>{
+  return await $api(`/activity/asesor/${asesorid}/fecha-past`, {
+    method: 'GET',
   })
 }
 
