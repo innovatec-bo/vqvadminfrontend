@@ -19,14 +19,13 @@ export const useChatStore = defineStore('chat', {
       console.log('Chats:', this.chatsContacts)
     },
 
-    async getChat(userId) {
-      // Ajusta la URL para que se ajuste a tu API
-      const res = await useApi(createUrl(`/whatssap/chats/DiegoA`))
+    async getChat(chat) {
+      console.log(chat)
 
-      // Encuentra el chat activo
-      const activeChat = res.value.find(chat => chat.contact.id === userId)
-
-      this.activeChat = activeChat
+      const { data } = await useApi(createUrl(`/whatssap/chat/DiegoA/${chat.user}@c.us`)) // Cambia la URL según sea necesario
+      const activeChat = data.value // Asegúrate de que este contenga todos los mensajes y detalles
+    
+      this.activeChat = activeChat || null
     },
 
     async sendMsg(message) {

@@ -10,3 +10,13 @@ export const disconnectClient= async clientId =>{
     method: 'DELETE',
   })
 }
+export const getChat = (clientId, chatId) => {
+  return $microservice(`/whatssap/chat/${clientId}/${chatId}`, {
+    method: 'GET',
+  })
+}
+export const getAllMessages = async (clientId, chatId) => {
+  return await $microservice(`/whatssap/messages/${clientId}/${chatId}`, {
+    method: 'GET',
+  })
+}

@@ -1,120 +1,108 @@
 <script setup>
+import { useWhatssap } from '@/composables/Whatssap/useWhatssap'
 import { useChatStore } from '@/views/apps/chat/useChatStore'
+import { computed, onMounted } from 'vue'
 
 const store = useChatStore()
+const { getAllMessagesForChat, messages } = useWhatssap()
 
-const contact = computed(() => ({
-  id: store.activeChat?.contact.id,
-  avatar: store.activeChat?.contact.avatar,
-}))
+// Contacto activo en el chat
+const contact = computed(() => store.activeChat?.contact ? {
+  id: store.activeChat.id.user,
+  avatar: store.activeChat.contact.avatar,
+} : { id: null, avatar: null })
 
+// Función para resolver los iconos de feedback de mensajes
 const resolveFeedbackIcon = feedback => {
-  if (feedback.isSeen)
+  if (feedback.isSeen) {
     return {
       icon: 'tabler-checks',
       color: 'success',
     }
-  else if (feedback.isDelivered)
+  } else if (feedback.isDelivered) {
     return {
       icon: 'tabler-checks',
       color: undefined,
     }
-  else
+  } else {
     return {
       icon: 'tabler-check',
       color: undefined,
     }
+  }
 }
 
-const msgGroups = computed(() => {
-  let messages = []
-  const _msgGroups = []
-  if (store.activeChat.chat) {
-    messages = store.activeChat.chat.messages
-    let msgSenderId = messages[0].senderId
-    let msgGroup = {
-      senderId: msgSenderId,
-      messages: [],
-    }
-    messages.forEach((msg, index) => {
-      if (msgSenderId === msg.senderId) {
-        msgGroup.messages.push({
-          message: msg.message,
-          time: msg.time,
-          feedback: msg.feedback,
-        })
-      } else {
-        msgSenderId = msg.senderId
-        _msgGroups.push(msgGroup)
-        msgGroup = {
-          senderId: msg.senderId,
-          messages: [{
-            message: msg.message,
-            time: msg.time,
-            feedback: msg.feedback,
-          }],
-        }
-      }
-      if (index === messages.length - 1)
-        _msgGroups.push(msgGroup)
-    })
-  }
-  
-  return _msgGroups
+// Consulta los mensajes cuando el componente se monta
+onMounted(async () => {
+  console.log(store.activeChat.chat.id.user)
+  await getAllMessagesForChat('DiegoA',  `${store.activeChat.chat.id.user}@c.us`)
 })
+
+// Función para formatear la fecha
+const formatDate = date => {
+  const options = { hour: 'numeric', minute: 'numeric' }
+  
+  return new Date(date).toLocaleTimeString([], options)
+}
 </script>
 
 <template>
   <div class="chat-log pa-5">
+    <!-- Renderizado de los grupos de mensajes -->
     <div
-      v-for="(msgGrp, index) in msgGroups"
+      v-for="(msgGrp, index) in messages"
       :key="msgGrp.senderId + String(index)"
       class="chat-group d-flex align-start"
       :class="[{
-        'flex-row-reverse': msgGrp.senderId !== contact.id,
-        'mb-4': msgGroups.length - 1 !== index,
+        'flex-row-reverse': msgGrp.senderId !== `${contact.id}@c.us`,
+        'mb-4': messages.length - 1 !== index,
       }]"
     >
+      <!-- Avatar del remitente -->
       <div
         class="chat-avatar"
-        :class="msgGrp.senderId !== contact.id ? 'ms-4' : 'me-4'"
+        :class="msgGrp.senderId !== `${contact.id}@c.us` ? 'ms-4' : 'me-4'"
       >
         <VAvatar size="32">
-          <VImg :src="msgGrp.senderId === contact.id ? contact.avatar : store.profileUser?.avatar" />
+          <VImg :src="msgGrp.senderId === `${contact.id}@c.us` ? contact.avatar : store.profileUser?.avatar" />
         </VAvatar>
       </div>
+
+      <!-- Cuerpo del mensaje -->
       <div
         class="chat-body d-inline-flex flex-column"
-        :class="msgGrp.senderId !== contact.id ? 'align-end' : 'align-start'"
+        :class="msgGrp.senderId !== `${contact.id}@c.us` ? 'align-end' : 'align-start'"
       >
+        <!-- Mensajes individuales -->
         <p
           v-for="(msgData, msgIndex) in msgGrp.messages"
           :key="msgData.time"
           class="chat-content py-2 px-4 elevation-1"
+          :class="[msgGrp.senderId === `${contact.id}@c.us` ? 'chat-left' : 'bg-primary text-white chat-right', msgGrp.messages.length - 1 !== msgIndex ? 'mb-3' : 'mb-1']"
           style="background-color: rgb(var(--v-theme-surface));"
-          :class="[
-            msgGrp.senderId === contact.id ? 'chat-left' : 'bg-primary text-white chat-right',
-            msgGrp.messages.length - 1 !== msgIndex ? 'mb-3' : 'mb-1',
-          ]"
         >
-          {{ msgData.message }}
+          {{ msgData.body }}
         </p>
-        <div :class="{ 'text-right': msgGrp.senderId !== contact.id }">
+        
+        <!-- Feedback y hora del último mensaje en el grupo -->
+        <div :class="{ 'text-right': msgGrp.senderId !== `${contact.id}@c.us` }">
           <VIcon
-            v-if="msgGrp.senderId !== contact.id"
+            v-if="msgGrp.senderId !== `${contact.id}@c.us`"
             size="18"
-            :color="resolveFeedbackIcon(msgGrp.messages[msgGrp.messages.length - 1].feedback).color"
+            :color="success"
           >
-            {{ resolveFeedbackIcon(msgGrp.messages[msgGrp.messages.length - 1].feedback).icon }}
+            success
           </VIcon>
-          <span class="text-sm ms-1 text-disabled">{{ formatDate(msgGrp.messages[msgGrp.messages.length - 1].time, { hour: 'numeric', minute: 'numeric' }) }}</span>
+          <span class="text-sm ms-1 text-disabled">
+            {{ formatDate(msgGrp.messages[msgGrp.messages.length - 1].time) }}
+          </span>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<style lang=scss>
+<style lang="scss">
 .chat-log {
   .chat-content {
     border-end-end-radius: 6px;

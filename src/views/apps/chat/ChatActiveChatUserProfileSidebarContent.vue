@@ -1,7 +1,7 @@
 <script setup>
+import { useChatStore } from '@/views/apps/chat/useChatStore'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 import { useChat } from './useChat'
-import { useChatStore } from '@/views/apps/chat/useChatStore'
 
 const emit = defineEmits(['close'])
 
@@ -32,29 +32,22 @@ const { resolveAvatarBadgeVariant } = useChat()
         offset-x="7"
         offset-y="4"
         bordered
-        :color="resolveAvatarBadgeVariant(store.activeChat.contact.status)"
+        :color="success"
         class="chat-user-profile-badge mb-5"
       >
         <VAvatar
           size="80"
-          :variant="!store.activeChat.contact.avatar ? 'tonal' : undefined"
-          :color="!store.activeChat.contact.avatar ? resolveAvatarBadgeVariant(store.activeChat.contact.status) : undefined"
+          :variant="tonal"
+          :color="success"
         >
-          <VImg
-            v-if="store.activeChat.contact.avatar"
-            :src="store.activeChat.contact.avatar"
-          />
-          <span
-            v-else
-            class="text-3xl"
-          >{{ avatarText(store.activeChat.contact.fullName) }}</span>
+          <span class="text-3xl">{{ avatarText(store.activeChat.name) }}</span>
         </VAvatar>
       </VBadge>
       <h5 class="text-h5">
-        {{ store.activeChat.contact.fullName }}
+        {{ store.activeChat.name }}
       </h5>
       <p class="text-capitalize text-medium-emphasis">
-        {{ store.activeChat.contact.role }}
+        Cliente
       </p>
     </div>
 
@@ -67,7 +60,7 @@ const { resolveAvatarBadgeVariant } = useChat()
       <div class="my-8">
         <span class="text-sm text-disabled">ABOUT</span>
         <p class="mt-2">
-          {{ store.activeChat.contact.about }}
+          about: 
         </p>
       </div>
 
