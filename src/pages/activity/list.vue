@@ -1,145 +1,287 @@
 <script setup>
+import poraIcon from '@/assets/icons/poraIcon.png'
+import { useActivity } from '@/composables/Activity/useActivity'
+import ActivityEdit from '@/views/activity/ActivityEdit.vue' 
+
 const currentActiveTab = ref('New')
+const filters = ref(['Todos', 'PORA']) // Opciones de filtro
+const selectedFilter = ref('Todos') // Filtro seleccionado
 
-/*
-nombre del proyecto
-codigo del departamento
-precio
-estado de la oportunidad
-nombre de la oportunidad
-actividad, fecha propgramada de la actividad. 
+const {
+  getallActivitiesByAsesorFecha,
+  getallActivitiesByFechaPast,
+  getallActivitiesByFechaFuture,
+  activities,
+  activitiesPast,
+  activitiesFuture } = useActivity()
 
-*/
+const activity = ref('')
+
+
+
+const fetchActivitiesToday = async () => {
+  await getallActivitiesByAsesorFecha(1)
+  console.log('Actividades de hoy:', activities)
+}
+
+const fetchActivitiesPast = async () => {
+  await getallActivitiesByFechaPast(1)
+  console.log('Actividades pasadas:', activitiesPast)
+}
+
+const fetchActivitiesFuture = async () => {
+  await getallActivitiesByFechaFuture(1)
+  console.log('Actividades futuras:', activitiesFuture)
+}
+
+// onMounted(fetchActivitiesToday, fetchActivitiesPast, fetchActivitiesFuture)
+onMounted(async () => {
+  await fetchActivitiesToday()
+  await fetchActivitiesPast()
+  await fetchActivitiesFuture()
+})
+
+const isEditActivity = ref(false)
+
+const editActivity = item => {
+  isEditActivity.value = true
+  activity.value = { ...item }
+}
+
+const onRefreshActivities = () => {
+  fetchActivitiesToday()
+
+}
+
 const orders = [
-  {
-    tabName: 'Hoy',
-    icon: 'tabler-edit',
-    timeline1: [
-     
-    ],
-    timeline2: [
-    
-    ],
-  },
-  {
-    tabName: 'Anteriores',
-    icon: 'tabler-calendar',
-    timeline1: [
-      {
-        icon: 'tabler-circle-check',
-        type: 'SENDER',
-        name: 'Barry Schowalter',
-        address: '939 Orange, California(CA),92118',
-      },
-      {
-        icon: 'tabler-map-pin',
-        type: 'RECEIVER',
-        name: 'Myrtle Ullrich',
-        address: '101 Boulder, California(CA), 95959',
-      },
-    ],
-    timeline2: [
-      {
-        icon: 'tabler-circle-check',
-        type: 'SENDER',
-        name: 'Veronica Herman',
-        address: '162 Windsor, California(CA), 95492',
-      },
-      {
-        icon: 'tabler-map-pin',
-        type: 'RECEIVER',
-        name: 'Helen Jacobs',
-        address: '487 Sunset, California(CA), 94043',
-      },
-    ],
-  },
- 
-]
-
-const moreList = [
-  {
-    title: 'Refresh',
-    value: 'refresh',
-  },
-  {
-    title: 'Download',
-    value: 'Download',
-  },
-  {
-    title: 'View All',
-    value: 'View All',
-  },
+  { tabName: 'Hoy', icon: 'tabler-edit', actividades: activities },
+  { tabName: 'Anteriores', icon: 'tabler-calendar', actividades: activitiesPast },
+  { tabName: 'Futuros', icon: 'tabler-calendar', actividades: activitiesFuture },
 ]
 </script>
 
 <template>
-  <VRow>
-    <VCard title="Lista de Actividades">
-      <template #append>
-        <div class="mt-n4 me-n2">
-          <MoreBtn :menu-list="moreList" />
-        </div>
-      </template>
-  
-      <VTabs
-        v-model="currentActiveTab"
-        grow
-      >
-        <VTab
-          v-for="order in orders"
-          :key="order.tabName"
+  <div class="toolbar mb-5">
+    <div class="breadcrumbs">
+      <div class="filters">
+        <button
+          v-for="filter in filters"
+          :key="filter"
+          :class="{ active: selectedFilter === filter }"
+          class="px-5"
+          @click="selectedFilter = filter"
         >
-          <VIcon
-            size="20"
-            :icon="order.icon"
-          />
-          {{ order.tabName }}
-        </VTab>
-      </VTabs>
-  
-      <VCardText>
-        <VWindow
+          {{ filter }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <VRow class="match-height">
+    <VCol
+      cols="12"
+      md="4"
+    >
+      <VCard title="Lista de Actividades">
+        <VTabs
           v-model="currentActiveTab"
-          class="disable-tab-transition"
+          grow
         >
-          <VWindowItem
+          <VTab
             v-for="order in orders"
             :key="order.tabName"
-            :value="order.tabName"
           >
-            <div
-              v-for="item in order.timeline1"
-              :key="item.icon"
+            <VIcon
+              size="20"
+              :icon="order.icon"
+            />
+            {{ order.tabName }}
+          </VTab>
+        </VTabs>
+
+        <VCardText>
+          <VWindow
+            v-model="currentActiveTab"
+            class="disable-tab-transition"
+          >
+            <VWindowItem
+              v-for="order in orders"
+              :key="order.tabName"
+              :value="order.tabName"
+              style="max-block-size: 90vh; overflow-y: auto;"
             >
-              <VAvatar
-                size="40"
-                rounded
+              <div
+                v-for="item in order.actividades.value"
+                :key="item.id"
+                fill-dot
+                class="border mb-2 rounded-sm"
               >
-                <img
-                  :src="poraIcon"
-                  alt="Logo pora"
-                  style="border-radius: 30%;"
-                >
-              </VAvatar>
-
-              <!-- Nombre del proyecto y código del departamento -->
-              <div class="project-info">
-                <h3 class="project-name">
-                  {{ item.project }}
-                </h3>
-                <h4 class="department-code">
-                  {{ item.property || 'Sin código' }} <!-- Aquí agregué un valor por defecto -->
-                </h4>
+                <VListItem>
+                  <template #prepend>
+                    <VAvatar
+                      size="50"
+                      rounded
+                    >
+                      <img
+                        :src="poraIcon"
+                        alt="Logo pora"
+                        style="border-radius: 30%;"
+                      >
+                    </VAvatar>
+                  </template>
+                  <VListItemTitle class="font-weight-medium">
+                    {{ item.project_name }}
+                  </VListItemTitle>
+                  <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+                    <span> {{ item.code_property }} </span>
+                    <span class="ml-auto">{{ item.price }}$</span>
+                  </VListItemSubtitle>
+                </VListItem>
+                <div class="mx-7 ">
+                  {{ item.title }}
+                  <div class="mt-2 d-flex justify-between">
+                    <VAvatar
+                      variant="tonal"
+                      rounded
+                      size="22"
+                    >
+                      <VIcon
+                        :icon="tabler-user"
+                        size="20"
+                      />
+                    </VAvatar>
+                    <span
+                      class="mx-2 mt-1"
+                      style="font-size: 0.8em;"
+                    >{{ item.name_opportunity }}</span>
+                    <VChip
+                      label
+                      color="primary"
+                      class="ml-auto"
+                      style="font-size: 0.7em;"
+                    >
+                      {{ item.stage }}
+                    </VChip>
+                  </div>
+                  <div
+                    class="mt-2 d-flex justify-between"
+                    style="font-size: 0.8em;"
+                    @click="editActivity(item)"
+                  >
+                    <VAvatar
+                      variant="tonal"
+                      rounded
+                      size="22"
+                    >
+                      <VIcon
+                        :icon="tabler-calendar"
+                        size="20"
+                      />
+                    </VAvatar>
+                    <span class="mx-2 mt-1">{{ item.type_activity }}</span>
+                    <!-- <span class="ml-auto ">{{ item.scheduled_at }}</span> -->
+                    <span class="ml-auto mt-1 ">
+                      {{ new Date(item.scheduled_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+                    </span>
+                  </div>
+                  <div
+                    class="my-2"
+                    style="font-size: 0.9em;"
+                  >
+                    {{ item.description }}
+                  </div>
+                </div>
               </div>
+            </VWindowItem>
+          </VWindow>
+        </VCardText>
+      </VCard>
+    </VCol>
 
-              <!-- Precio alineado a la derecha -->
-              <p class="price">
-                <strong>{{ item.price }}$</strong>
-              </p>
-            </div>
-          </VWindowItem>
-        </VWindow>
-      </VCardText>
-    </VCard>
+    <VCol
+      cols="12"
+      md="4"
+    >
+      <ActivityEdit
+        v-model:is-drawer-open="isEditActivity"
+        :activities-data="activity"
+        @refresh-activities="onRefreshActivities"
+      />
+    </VCol>
   </VRow>
 </template>
+
+<style scoped>
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.breadcrumbs {
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
+
+  /* Color del texto de breadcrumbs */
+  font-size: 1rem;
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+}
+
+.filters {
+  display: flex;
+  gap: 5px;
+}
+
+.filters button {
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(var(--v-theme-primary), 0.1);
+
+  /* Color del botón con opacidad */
+  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+
+  /* Color del texto del botón */
+  cursor: pointer;
+  padding-block: 5px;
+}
+
+.filters button.active {
+  background-color: rgb(var(--v-theme-primary));
+
+  /* Color de botón activo */
+  color: rgb(var(--v-theme-surface));
+
+  /* Texto del botón activo */
+}
+
+.date-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-picker label {
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
+
+  /* Color del texto */
+  font-size: 0.9rem;
+}
+
+.date-picker input[type="date"] {
+  padding: 10px;
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+
+  /* Borde del selector de fecha */
+  border-radius: 5px;
+  background-color: rgb(var(--v-theme-surface));
+
+  /* Fondo del input */
+  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+
+  /* Color del texto del input */
+}
+</style>
