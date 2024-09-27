@@ -1,11 +1,11 @@
 <script setup>
 import poraIcon from '@/assets/icons/poraIcon.png'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import TaskKanban from './opportunity/TaskKanban.vue'
 
-const { allOpportunityKanbanForUser, kanban } = useOpportunity()
+const { allOpportunityKanbanForUser, kanban, generateProspect } = useOpportunity()
 
 const addNewItem = column => {
   column.items.push({
@@ -29,15 +29,74 @@ const onDragStart = event => {
   console.log('Elemento arrastrado desde:', originColumnTitle.value)
 }
 
+const onMove = event => {
+  const originColumn = event.from.closest('.kanban-column').dataset.columnTitle
+  const destinationColumn = event.to.closest('.kanban-column').dataset.columnTitle
+
+  if (!isMoveValid(originColumn, destinationColumn)) {
+    console.log(`Movimiento NO permitido de ${originColumn} a ${destinationColumn}`)
+    
+    return false 
+  }
+
+  console.log(`Movimiento permitido de ${originColumn} a ${destinationColumn}`)
+  
+  return true 
+}
+
 const onDragEnd = event => {
   destinationColumnTitle.value = event.to.closest('.kanban-column').dataset.columnTitle
   console.log('Elemento movido de', originColumnTitle.value, 'a', destinationColumnTitle.value)
+  if (originColumnTitle.value !== destinationColumnTitle.value) {
+    const item = event.data
+    switch (destinationColumnTitle.value) {
+    case 'LEAD':
+      console.log('Movido a LEAD')
 
+      break
+    case 'PROSPECTO':
+      console.log('Movido a PROSPECTO')
+      generateProspect(item.id, item)
+
+      break
+    case 'PREVENTA':
+      console.log('Movido a PREVENTA')
+
+      break
+    case 'VENTA':
+      console.log('Movido a VENTA')
+
+      break
+    case 'ENTREGA':
+      console.log('Movido a ENTREGA')
+
+      break
+    default:
+      console.log('Movimiento a una columna no definida')
+      break
+    }
+  }
 }
 
 const selectOpportunity = opportunity => {
   selectedOpportunity.value = opportunity
   isDialogVisible.value = true
+}
+
+// Reglas para prevenir movimientos entre ciertas columnas
+const movementRules = {
+  'LEAD': ['LEAD', 'PROSPECTO', 'PREVENTA'], // LEAD no puede moverse directamente a VENTA
+  'PROSPECTO': ['PROSPECTO', 'PREVENTA'],
+  'PREVENTA': ['PREVENTA', 'VENTA'], 
+  'VENTA': ['VENTA', 'ENTREGA'], 
+  'ENTREGA': ['ENTREGA'], 
+}
+
+// Función para validar el movimiento
+const isMoveValid = (fromColumn, toColumn) => {
+  const allowedMoves = movementRules[fromColumn] || []
+  
+  return allowedMoves.includes(toColumn)
 }
 
 onMounted(async () => {
@@ -67,10 +126,11 @@ onMounted(async () => {
       </div>
       <VueDraggable
         v-model="column.items"
-        group="kanban"
+        :group="{ name: column.name, pull: true, put: true }"
         class="kanban-items"
         @start="onDragStart"
         @end="onDragEnd"
+        @move="onMove"
       >
         <div
           v-for="(item) in column.items"
@@ -96,7 +156,7 @@ onMounted(async () => {
                 {{ item.project }}
               </h3>
               <h4 class="department-code">
-                {{ item.property || 'Sin código' }} <!-- Aquí agregué un valor por defecto -->
+                {{ item.property || 'Sin código' }} <!-- Valor por defecto -->
               </h4>
             </div>
 
@@ -106,7 +166,7 @@ onMounted(async () => {
             </p>
           </div>
           <div class="kanban-details">
-            <p><strong>{{ item.customer }}</strong></p> <!-- Cambié `customer` a `client` por consistencia -->
+            <p><strong>{{ item.client }}</strong></p> <!-- Cambié `customer` a `client` -->
             <p>{{ item.phone }}</p>
           </div>  
           <div class="kanban-footer">
@@ -286,5 +346,54 @@ button {
 
 button:hover {
   background-color: rgb(var(--v-theme-on-surface));
+}
+
+@media (max-width: 768px) { /* Para dispositivos móviles */
+  .kanban {
+    flex-direction: column; /* Las columnas estarán apiladas en dispositivos pequeños */
+    padding: 5px; /* Reduce el padding en pantallas pequeñas */
+  }
+
+  .kanban-column {
+    inline-size: 100%; /* Las columnas ocupan todo el ancho disponible */
+    margin-block-end: 20px; /* Espacio entre las columnas apiladas */
+    margin-inline: 0; /* Sin espacio lateral */
+  }
+
+  .kanban-item {
+    padding: 8px;
+    border-radius: 5px;
+  }
+
+  .kanban-header h3, .kanban-header h4, .price {
+    font-size: 0.9rem; /* Reduce tamaño del texto */
+  }
+
+  .kanban-footer .details {
+    font-size: 0.7rem;
+  }
+
+  /* Botón de agregar nuevo en dispositivos móviles */
+  button {
+    font-size: 0.9rem;
+    padding-block: 6px;
+    padding-inline: 12px;
+  }
+}
+
+@media (max-width: 480px) { /* Para pantallas aún más pequeñas */
+  .kanban-header, .kanban-footer {
+    flex-direction: column; /* Apila elementos verticalmente */
+    align-items: flex-start; /* Alinea todo a la izquierda */
+    gap: 5px; /* Menos espacio entre los elementos */
+  }
+
+  .project-info {
+    align-items: flex-start; /* Ajusta la info del proyecto para pantallas pequeñas */
+  }
+
+  .icon-section {
+    justify-content: flex-start;
+  }
 }
 </style>

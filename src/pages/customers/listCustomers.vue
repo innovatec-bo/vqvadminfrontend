@@ -21,12 +21,24 @@ const orderBy = ref()
 // Data table Headers
 const headers = [
   {
+    title: 'CI',
+    key: 'CI',
+  },
+  {
     title: 'Nombre',
     key: 'name',
   },
   {
     title: 'Celular',
     key: 'phone',
+  },
+  {
+    title: 'Correo',
+    key: 'email',
+  },
+  {
+    title: 'Ultima Oportunidad',
+    key: 'lastOpportunity',
   },
   {
     title: 'Accion',
@@ -97,46 +109,27 @@ onMounted(async () =>{
         class="text-no-wrap"
         @update:options="updateOptions"
       >
-        <template #item.customer="{ item }">
-          <div class="d-flex align-center gap-x-3">
-            <VAvatar
-              size="38"
-              :image="item.avatar"
-            />
-            <div class="d-flex flex-column">
-              <RouterLink
-                :to="{ name: 'apps-ecommerce-customer-details-id', params: { id: item.id } }"
-                class="font-weight-medium"
-              >
-                {{ item.customer }}
-              </RouterLink>
-              <span class="text-sm text-disabled">{{ item.email }}</span>
-            </div>
-          </div>
-        </template>
-
-        <template #item.customerId="{ item }">
-          <span class="font-weight-medium text-high-emphasis">#{{ item.customerId }}</span>
-        </template>
-
-        <template #item.orders="{ item }">
-          {{ item.order }}
-        </template>
-
-        <template #item.country="{ item }">
+        <template #item.phone="{ item }">
           <div class="d-flex gap-x-2">
-            <img
-              :src="item.countryFlag"
-              height="22"
-              width="22"
+            <!-- Enlace a WhatsApp API -->
+            <a
+              :href="`https://api.whatsapp.com/send?phone=591${item.phone}`"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-body-1"
             >
-            <span class="text-body-1">{{ item.country }}</span>
+              {{ item.cod_phone }} {{ item.phone }}
+            </a>
           </div>
         </template>
 
-        <template #item.totalSpent="{ item }">
-          <span class="text-body-1 font-weight-medium text-high-emphasis">${{ item.totalSpent }}</span>
+        <!-- Actions -->
+        <template #item.action="{ item }">
+          <IconBtn>
+            <VIcon icon="tabler-edit" />
+          </IconBtn>
         </template>
+
 
         <template #bottom>
           <VDivider />

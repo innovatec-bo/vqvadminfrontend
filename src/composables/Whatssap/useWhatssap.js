@@ -1,8 +1,11 @@
-import { disconnectClient, getClientStatus } from './../../services/Whatssap/whatssapService'
+import { ref } from 'vue'
+import { disconnectClient, getAllMessages, getClientStatus } from './../../services/Whatssap/whatssapService'
 
 export function useWhatssap(){
   const isAuthenticated = ref(false)
   const errorMessage  = ref(null)
+  const messages = ref([])
+  const chat = ref(null)
 
   const checkAuthStatus = async clientId =>{
     try{
@@ -27,11 +30,36 @@ export function useWhatssap(){
       console.error(error)
     }
   }
+
+  const getInfoChat = async (clientId, chatId) =>{
+    try {
+      const response = await getChat(clientId, chatId)
+
+      chat.value = response
+    }catch (err){
+      console.error(err)
+    }
+  }
+
+  const getAllMessagesForChat = async (clientId, chatId) => {
+    try {
+      const response = await getAllMessages(clientId, chatId)
+
+      
+      messages.value = response.messages
+      
+    }catch(err){
+      console.error(err)
+    }
+  }
   
   return {
     isAuthenticated,
     errorMessage,
     checkAuthStatus,
+    getAllMessagesForChat,
     logoutWhatssapWeb,
+    getInfoChat,
+    messages,
   }
 }

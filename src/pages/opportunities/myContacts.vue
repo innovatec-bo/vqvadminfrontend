@@ -25,7 +25,7 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
 
       <div class="filter-controls">
         <!-- Selector de fechas -->
-        <div class="d-flex align-center justify-center ">
+        <div class="date-picker d-flex align-center justify-center">
           <AppDateTimePicker
             v-model="selectedDateRange[0]"
             style="inline-size: 200px;"
@@ -43,15 +43,13 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
         </div>
       </div>
     </div>
-    
+
     <!-- Kanban Board -->
     <div>
       <Kanban />
     </div>
   </div>
 </template>
-
-
 
 <style scoped>
 .kanban-container {
@@ -60,18 +58,21 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap; /* Asegura que los elementos se ajusten en pantallas pequeñas */
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .breadcrumbs {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); /* Color del texto de breadcrumbs */
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
   font-size: 1rem;
 }
 
 .filter-controls {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .filters {
@@ -82,15 +83,15 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
 .filters button {
   border: none;
   border-radius: 5px;
-  background-color: rgba(var(--v-theme-primary), 0.1); /* Color del botón con opacidad */
-  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity)); /* Color del texto del botón */
+  background-color: rgba(var(--v-theme-primary), 0.1);
+  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
   cursor: pointer;
   padding-block: 5px;
 }
 
 .filters button.active {
-  background-color: rgb(var(--v-theme-primary)); /* Color de botón activo */
-  color: rgb(var(--v-theme-surface)); /* Texto del botón activo */
+  background-color: rgb(var(--v-theme-primary));
+  color: rgb(var(--v-theme-surface));
 }
 
 .date-picker {
@@ -99,20 +100,40 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
   gap: 8px;
 }
 
-.date-picker label {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); /* Color del texto */
-  font-size: 0.9rem;
+@media (max-width: 768px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters {
+    justify-content: center;
+  }
+
+  .filters button {
+    flex: 1; /* Hace que los botones ocupen el ancho completo en pantallas pequeñas */
+  }
+
+  .date-picker {
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    inline-size: 100%; /* Ocupa el ancho completo */
+  }
+  
+  .kanban-container {
+    padding: 5px; /* Reduce el padding en pantallas más pequeñas */
+  }
 }
 
-.date-picker input[type="date"] {
-  padding: 10px;
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)); /* Borde del selector de fecha */
-  border-radius: 5px;
-  background-color: rgb(var(--v-theme-surface)); /* Fondo del input */
-  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity)); /* Color del texto del input */
+@media (max-width: 480px) {
+  .filters button {
+    font-size: 0.8rem; /* Reduce el tamaño del texto en pantallas pequeñas */
+    padding-block: 4px;
+  }
+
+  .date-picker input {
+    inline-size: 100%; /* Hace que los inputs ocupen el ancho completo */
+  }
 }
 </style>
-
-
-
-

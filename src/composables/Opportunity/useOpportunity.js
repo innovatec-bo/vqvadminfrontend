@@ -1,7 +1,8 @@
-import { allOpportunityKanban, getOpportunity } from '@/services/Opportunity/opportunityService'
+import { allOpportunityKanban, convertOpportunityProspect, getOpportunity, updateOpportunity } from '@/services/Opportunity/opportunityService'
+import { showSuccessNotification } from "@/utils/notifications"
 
 export function useOpportunity (){
-  const loading = ref(false)
+  const loadingOpportunity = ref(false)
   const error = ref(null)
 
   const opportunity = ref({
@@ -51,21 +52,48 @@ export function useOpportunity (){
     }
   }
 
-  const saveStateChange= async (state, opportunity) => {
+  const generateProspect = async (id, opportunityData) =>{
     try{
-      
-    }catch(error){
-      console.error(error)
+      const response = await convertOpportunityProspect(id, opportunityData)
+
+      console.log(response)
+
+      opportunity.value = response.data
+    }catch(err){
+      console.error(err)
+    }finally {
+
     }
   }
 
+  const changeOpportunity = async (id, opportunityData) => {
+    loadingOpportunity.value = true // Establecer el estado de carga en verdadero
+    try {
+      const response = await updateOpportunity(id, opportunityData) // Asegúrate de que `updateOpportunity` sea una función que acepte estos argumentos
+
+      opportunity.value = response.data // Actualizar el estado de la oportunidad
+      console.log('Oportunidad actualizada: ', opportunity.value)
+      showSuccessNotification('Actualizacion Exitosa', 'Se Actualizaron los cambios de este cliente')
+    } catch (err) {
+      error.value = err // Capturar el error
+      console.error(err)
+    } finally {
+      loadingOpportunity.value = false // Establecer el estado de carga en falso al final
+    }
+  }
+  
+
+  
+
   
   return {
-    loading,
+    loadingOpportunity,
     error,
     opportunity,
     kanban,
     allOpportunityKanbanForUser,
     getOpportunitybyId,
+    changeOpportunity,
+    generateProspect,
   }
 }

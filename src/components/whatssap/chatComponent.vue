@@ -59,7 +59,8 @@ const sendMessage = async () => {
 }
 
 const openChatOfContact = async userId => {
-  await store.getChat(userId, 'DiegoA')
+  console.log(userId)
+  await store.getChat(userId)
 
   // Reset message input
   msg.value = ''
@@ -155,7 +156,7 @@ const chatContentContainerBg = computed(() => themes[name.value].colors?.backgro
       :permanent="$vuetify.display.mdAndUp"
     >
       <ChatLeftSidebarContent
-        v-model:isDrawerOpen="isLeftSidebarOpen"
+        v-model:is-drawer-open="isLeftSidebarOpen"
         v-model:search="q"
         @open-chat-of-contact="openChatOfContact"
         @show-user-profile="isUserProfileSidebarOpen = true"
@@ -190,30 +191,25 @@ const chatContentContainerBg = computed(() => themes[name.value].colors?.backgro
               location="bottom right"
               offset-x="3"
               offset-y="0"
-              :color="resolveAvatarBadgeVariant(store.activeChat.contact.status)"
+              :color="success"
               bordered
             >
               <VAvatar
                 size="38"
-                :variant="!store.activeChat.contact.avatar ? 'tonal' : undefined"
-                :color="!store.activeChat.contact.avatar ? resolveAvatarBadgeVariant(store.activeChat.contact.status) : undefined"
+                :variant="tonal"
+                :color="success"
                 class="cursor-pointer"
               >
-                <VImg
-                  v-if="store.activeChat.contact.avatar"
-                  :src="store.activeChat.contact.avatar"
-                  :alt="store.activeChat.contact.fullName"
-                />
-                <span v-else>{{ avatarText(store.activeChat.contact.fullName) }}</span>
+                <span>{{ avatarText(store.activeChat.name) }}</span>
               </VAvatar>
             </VBadge>
 
             <div class="flex-grow-1 ms-4 overflow-hidden">
               <p class="text-h6 mb-0">
-                {{ store.activeChat.contact.fullName }}
+                {{ store.activeChat.name }}
               </p>
               <p class="text-truncate mb-0 text-disabled">
-                {{ store.activeChat.contact.role }}
+                roles
               </p>
             </div>
           </div>
@@ -258,7 +254,7 @@ const chatContentContainerBg = computed(() => themes[name.value].colors?.backgro
           @submit.prevent="sendMessage"
         >
           <VTextField
-            :key="store.activeChat?.contact.id"
+            :key="store.activeChat?.user"
             v-model="msg"
             variant="solo"
             class="chat-message-input"
