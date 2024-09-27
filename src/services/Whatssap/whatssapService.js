@@ -20,3 +20,9 @@ export const getAllMessages = async (clientId, chatId) => {
     method: 'GET',
   })
 }
+export const inizializateClientWhatssap = async clientId=>{
+  return await $microservice('/whatssap/initialize', {
+    method: 'POST',
+    body: JSON.stringify({ clientId }),
+  })
+}

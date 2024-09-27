@@ -34,10 +34,6 @@ const userStatusRadioOptions = [
     color: 'secondary',
   },
 ]
-
-const logoutWhatssap = async clientId =>{
-  await logoutWhatssapWeb(clientId)
-}
 </script>
 
 <template>
@@ -165,7 +161,7 @@ const logoutWhatssap = async clientId =>{
       <VBtn
         color="primary"
         class="mt-11"
-        @click="logoutWhatssapWeb('DiegoA')"
+        @click="logoutWhatssapWeb"
       >
         Logout
       </VBtn>

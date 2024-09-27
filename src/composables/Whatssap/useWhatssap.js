@@ -1,13 +1,16 @@
+import { useCookie } from '@/@core/composable/useCookie'
 import { ref } from 'vue'
-import { disconnectClient, getAllMessages, getClientStatus } from './../../services/Whatssap/whatssapService'
+import { disconnectClient, getAllMessages, getClientStatus, inizializateClientWhatssap } from './../../services/Whatssap/whatssapService'
 
 export function useWhatssap(){
   const isAuthenticated = ref(false)
   const errorMessage  = ref(null)
   const messages = ref([])
   const chat = ref(null)
+  const userData= useCookie('userData').value
+  const clientId = userData.cod_phone+userData.phone
 
-  const checkAuthStatus = async clientId =>{
+  const checkAuthStatus = async () =>{
     try{
       const response= await getClientStatus(clientId)
 
@@ -22,7 +25,7 @@ export function useWhatssap(){
     }
   }
 
-  const logoutWhatssapWeb= async clientId => {
+  const logoutWhatssapWeb= async () => {
     try{
       await disconnectClient(clientId)
       isAuthenticated.value = false
@@ -31,7 +34,7 @@ export function useWhatssap(){
     }
   }
 
-  const getInfoChat = async (clientId, chatId) =>{
+  const getInfoChat = async chatId =>{
     try {
       const response = await getChat(clientId, chatId)
 
@@ -41,7 +44,7 @@ export function useWhatssap(){
     }
   }
 
-  const getAllMessagesForChat = async (clientId, chatId) => {
+  const getAllMessagesForChat = async chatId => {
     try {
       const response = await getAllMessages(clientId, chatId)
 
@@ -52,7 +55,19 @@ export function useWhatssap(){
       console.error(err)
     }
   }
-  
+
+  const initializeConnectToWhatsapp = async () =>{
+    try{
+      await inizializateClientWhatssap(clientId)
+    }catch (err){
+      console.error(err)
+    }finally {
+      console.log('Initialize Connect To WhatsApp')
+    }
+  }
+
+
+
   return {
     isAuthenticated,
     errorMessage,
@@ -60,6 +75,7 @@ export function useWhatssap(){
     getAllMessagesForChat,
     logoutWhatssapWeb,
     getInfoChat,
+    initializeConnectToWhatsapp,
     messages,
   }
 }

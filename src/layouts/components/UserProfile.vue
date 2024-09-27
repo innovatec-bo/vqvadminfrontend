@@ -32,52 +32,52 @@ const userProfileList = [
   {
     type: 'navItem',
     icon: 'tabler-user',
-    title: 'Profile',
+    title: 'Perfil',
     to: {
-      name: 'apps-user-view-id',
-      params: { id: 21 },
+      name: 'activity-list',
     },
   },
-  {
-    type: 'navItem',
-    icon: 'tabler-settings',
-    title: 'Settings',
-    to: {
-      name: 'pages-account-settings-tab',
-      params: { tab: 'account' },
-    },
-  },
-  {
-    type: 'navItem',
-    icon: 'tabler-credit-card',
-    title: 'Billing',
-    to: {
-      name: 'pages-account-settings-tab',
-      params: { tab: 'billing-plans' },
-    },
-    badgeProps: {
-      color: 'error',
-      content: '3',
-    },
-  },
-  { type: 'divider' },
-  {
-    type: 'navItem',
-    icon: 'tabler-currency-dollar',
-    title: 'Pricing',
-    to: { name: 'pages-pricing' },
-  },
-  {
-    type: 'navItem',
-    icon: 'tabler-help-circle',
-    title: 'FAQ',
-    to: { name: 'pages-faq' },
-  },
+
+  // {
+  //   type: 'navItem',
+  //   icon: 'tabler-settings',
+  //   title: 'Settings',
+  //   to: {
+  //     name: 'pages-account-settings-tab',
+  //     params: { tab: 'account' },
+  //   },
+  // },
+  // {
+  //   type: 'navItem',
+  //   icon: 'tabler-credit-card',
+  //   title: 'Billing',
+  //   to: {
+  //     name: 'pages-account-settings-tab',
+  //     params: { tab: 'billing-plans' },
+  //   },
+  //   badgeProps: {
+  //     color: 'error',
+  //     content: '3',
+  //   },
+  // },
+  // { type: 'divider' },
+  // {
+  //   type: 'navItem',
+  //   icon: 'tabler-currency-dollar',
+  //   title: 'Pricing',
+  //   to: { name: 'pages-pricing' },
+  // },
+  // {
+  //   type: 'navItem',
+  //   icon: 'tabler-help-circle',
+  //   title: 'FAQ',
+  //   to: { name: 'pages-faq' },
+  // },
   { type: 'divider' },
   {
     type: 'navItem',
     icon: 'tabler-logout',
-    title: 'Logout',
+    title: 'Cerrar Sesion',
     onClick: logout,
   },
 ]
@@ -144,9 +144,9 @@ const userProfileList = [
             </template>
 
             <VListItemTitle class="font-weight-medium">
-              {{ userData.fullName || userData.username }}
+              {{ userData.name }} 
             </VListItemTitle>
-            <VListItemSubtitle>{{ userData.role }}</VListItemSubtitle>
+            <VListItemSubtitle>{{ userData.roles[0] }}</VListItemSubtitle>
           </VListItem>
 
           <PerfectScrollbar :options="{ wheelPropagation: false }">

@@ -1,7 +1,7 @@
 <script setup>
 import poraIcon from '@/assets/icons/poraIcon.png'
 import { useActivity } from '@/composables/Activity/useActivity'
-import ActivityEdit from '@/views/activity/ActivityEdit.vue' 
+import ActivityEdit from '@/views/activity/ActivityEdit.vue'
 
 const currentActiveTab = ref('New')
 const filters = ref(['Todos', 'PORA']) // Opciones de filtro
@@ -17,20 +17,20 @@ const {
 
 const activity = ref('')
 
-
+const userData = useCookie('userData').value
 
 const fetchActivitiesToday = async () => {
-  await getallActivitiesByAsesorFecha(1)
+  await getallActivitiesByAsesorFecha(userData.id)
   console.log('Actividades de hoy:', activities)
 }
 
 const fetchActivitiesPast = async () => {
-  await getallActivitiesByFechaPast(1)
+  await getallActivitiesByFechaPast(userData.id)
   console.log('Actividades pasadas:', activitiesPast)
 }
 
 const fetchActivitiesFuture = async () => {
-  await getallActivitiesByFechaFuture(1)
+  await getallActivitiesByFechaFuture(userData.id)
   console.log('Actividades futuras:', activitiesFuture)
 }
 
@@ -110,88 +110,99 @@ const orders = [
               :value="order.tabName"
               style="max-block-size: 90vh; overflow-y: auto;"
             >
-              <div
-                v-for="item in order.actividades.value"
-                :key="item.id"
-                fill-dot
-                class="border mb-2 rounded-sm"
-              >
-                <VListItem>
-                  <template #prepend>
-                    <VAvatar
-                      size="50"
-                      rounded
-                    >
-                      <img
-                        :src="poraIcon"
-                        alt="Logo pora"
-                        style="border-radius: 30%;"
+              <template v-if="order.actividades.value.length === 0">
+                <div
+                  class="no-activities-message"
+                  style="align-items: center;"
+                >
+                  No tienes actividades pendientes
+                </div>
+              </template>
+              <template v-else>
+                <div
+                  v-for="item in order.actividades.value"
+                  :key="item.id"
+                  fill-dot
+                  class="border mb-2 rounded-sm"
+                  @click="editActivity(item)"
+                >
+                  <VListItem>
+                    <template #prepend>
+                      <VAvatar
+                        size="50"
+                        rounded
                       >
-                    </VAvatar>
-                  </template>
-                  <VListItemTitle class="font-weight-medium">
-                    {{ item.project_name }}
-                  </VListItemTitle>
-                  <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-                    <span> {{ item.code_property }} </span>
-                    <span class="ml-auto">{{ item.price }}$</span>
-                  </VListItemSubtitle>
-                </VListItem>
-                <div class="mx-7 ">
-                  {{ item.title }}
-                  <div class="mt-2 d-flex justify-between">
-                    <VAvatar
-                      variant="tonal"
-                      rounded
-                      size="22"
-                    >
-                      <VIcon
-                        :icon="tabler-user"
-                        size="20"
-                      />
-                    </VAvatar>
-                    <span
-                      class="mx-2 mt-1"
+                        <img
+                          :src="poraIcon"
+                          alt="Logo pora"
+                          style="border-radius: 30%;"
+                        >
+                      </VAvatar>
+                    </template>
+                    <VListItemTitle class="font-weight-medium">
+                      {{ item.project_name }}
+                    </VListItemTitle>
+                    <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+                      <span>{{ item.code_property }}</span>
+                      <span class="ml-auto">{{ item.price }}$</span>
+                    </VListItemSubtitle>
+                  </VListItem>
+                  <div class="mx-7 ">
+                    {{ item.title }}
+                    <div class="mt-2 d-flex justify-between">
+                      <VAvatar
+                        variant="tonal"
+                        rounded
+                        size="22"
+                      >
+                        <VIcon
+                          :icon="tabler-user"
+                          size="20"
+                        />
+                      </VAvatar>
+                      <span
+                        class="mx-2 mt-1"
+                        style="font-size: 0.8em;"
+                      >
+                        {{ item.name_opportunity }}
+                      </span>
+                      <VChip
+                        label
+                        color="primary"
+                        class="ml-auto"
+                        style="font-size: 0.7em;"
+                      >
+                        {{ item.stage }}
+                      </VChip>
+                    </div>
+                    <div
+                      class="mt-2 d-flex justify-between"
                       style="font-size: 0.8em;"
-                    >{{ item.name_opportunity }}</span>
-                    <VChip
-                      label
-                      color="primary"
-                      class="ml-auto"
-                      style="font-size: 0.7em;"
                     >
-                      {{ item.stage }}
-                    </VChip>
-                  </div>
-                  <div
-                    class="mt-2 d-flex justify-between"
-                    style="font-size: 0.8em;"
-                    @click="editActivity(item)"
-                  >
-                    <VAvatar
-                      variant="tonal"
-                      rounded
-                      size="22"
+                      <VAvatar
+                        variant="tonal"
+                        rounded
+                        size="22"
+                      >
+                        <VIcon
+                          :icon="tabler-calendar"
+                          size="20"
+                        />
+                      </VAvatar>
+                      <span class="mx-2 mt-1">{{ item.type_activity }}</span>
+                      <span class="ml-auto mt-1 ">
+                        {{ new Date(item.scheduled_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+                      </span>
+                    </div>
+                    <div
+                      class="my-2"
+                      style="font-size: 0.9em;"
                     >
-                      <VIcon
-                        :icon="tabler-calendar"
-                        size="20"
-                      />
-                    </VAvatar>
-                    <span class="mx-2 mt-1">{{ item.type_activity }}</span>
-                    <!-- <span class="ml-auto ">{{ item.scheduled_at }}</span> -->
-                    <span class="ml-auto mt-1 ">
-                      {{ new Date(item.scheduled_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
-                    </span>
-                  </div>
-                  <div
-                    class="my-2"
-                    style="font-size: 0.9em;"
-                  >
-                    {{ item.description }}
+                      {{ item.description }}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </template>
             </VWindowItem>
           </VWindow>
         </VCardText>

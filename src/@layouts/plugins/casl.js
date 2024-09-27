@@ -12,12 +12,23 @@ import { useAbility } from '@casl/vue'
  */
 export const can = (action, subject) => {
   const vm = getCurrentInstance()
-  if (!vm)
+  const ability = useAbility()
+
+  // Si el sujeto (subject) es un array, verificar si alguno de los roles coincide
+  const subjectInRules = Array.isArray(subject)
+    ? subject.some(sub => Object.values(ability.rules).some(rule => rule.subject === sub))
+    : Object.values(ability.rules).some(rule => rule.subject === subject)
+
+  if (!subjectInRules) {
     return false
+  }
+
   const localCan = vm.proxy && '$can' in vm.proxy
   
   return localCan ? vm.proxy?.$can(action, subject) : true
 }
+
+
 
 /**
  * Check if user can view item based on it's ability
@@ -27,13 +38,18 @@ export const can = (action, subject) => {
 export const canViewNavMenuGroup = item => {
   const hasAnyVisibleChild = item.children.some(i => can(i.action, i.subject))
 
-  // If subject and action is defined in item => Return based on children visibility (Hide group if no child is visible)
-  // Else check for ability using provided subject and action along with checking if has any visible child
+  // Si el item tiene múltiples sujetos (roles), verifica si al menos uno es válido
+  const itemHasValidRole = Array.isArray(item.subject)
+    ? item.subject.some(sub => can(item.action, sub))
+    : can(item.action, item.subject)
+
+  // Si no se definen action y subject, retorna basado en los hijos visibles
   if (!(item.action && item.subject))
     return hasAnyVisibleChild
   
-  return can(item.action, item.subject) && hasAnyVisibleChild
+  return itemHasValidRole && hasAnyVisibleChild
 }
+
 export const canNavigate = to => {
   const ability = useAbility()
   
