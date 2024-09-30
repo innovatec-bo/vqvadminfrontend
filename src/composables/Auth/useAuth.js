@@ -13,6 +13,7 @@ export function useAuth() {
   let ability = useAbility()
   
   const loginUser = async credentials => {
+    loading.value=true
     try {
       const response = await login(credentials)
 
@@ -64,7 +65,9 @@ export function useAuth() {
       } else {
         showWarningNotification('ERROR', 'An error occurred while logging in')
       }
-    } 
+    } finally{
+      loading.value = false
+    }
   }
   
   const logoutUser = async () => {

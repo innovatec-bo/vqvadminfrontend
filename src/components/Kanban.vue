@@ -166,7 +166,7 @@ onMounted(async () => {
             </p>
           </div>
           <div class="kanban-details">
-            <p><strong>{{ item.client }}</strong></p> <!-- Cambié `customer` a `client` -->
+            <p><strong>{{ item.name }}</strong></p> 
             <p>{{ item.phone }}</p>
           </div>  
           <div class="kanban-footer">

@@ -26,7 +26,7 @@ definePage({
 })
 
 const passwordLengthValidator = value => value.length >= 8 || 'La contraseña debe tener al menos 8 caracteres'
-const { loginUser } = useAuth()
+const { loginUser, loading } = useAuth()
 const isPasswordVisible = ref(false)
 const refVForm = ref()
 const errors = ref({ email: undefined, password: undefined })
@@ -148,6 +148,8 @@ const onSubmit = () => {
                 <VBtn
                   block
                   type="submit"
+                  :disabled="loading"
+                  :loading="loading"
                 >
                   Login
                 </VBtn>

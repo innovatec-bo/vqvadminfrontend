@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { disconnectClient, getAllMessages, getClientStatus, inizializateClientWhatssap } from './../../services/Whatssap/whatssapService'
 
 export function useWhatssap(){
+  const loadingConnect = ref(false)
   const isAuthenticated = ref(false)
   const errorMessage  = ref(null)
   const messages = ref([])
@@ -57,12 +58,14 @@ export function useWhatssap(){
   }
 
   const initializeConnectToWhatsapp = async () =>{
+    loadingConnect.value= true
     try{
       await inizializateClientWhatssap(clientId)
     }catch (err){
       console.error(err)
     }finally {
       console.log('Initialize Connect To WhatsApp')
+      loadingConnect.value = false
     }
   }
 
@@ -77,5 +80,6 @@ export function useWhatssap(){
     getInfoChat,
     initializeConnectToWhatsapp,
     messages,
+    loadingConnect,
   }
 }

@@ -221,7 +221,7 @@ watch(() => props.isDialogVisible, async newValue => {
                       v-model="opportunity.property_id"
                       label="Departamento de Interés"
                       placeholder="Selecciona un Departamento"
-                      :items="properties.map(property => ({title:property.code, value:property.id}))"
+                      :items="properties.map(property => ({title:property.title, value:property.id}))"
                       outlined
                     />
                   </VCol>

@@ -7,7 +7,7 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 definePage({ meta: { layoutWrapperClasses: 'layout-content-height-fixed' } })
 
-const { isAuthenticated, errorMessage, checkAuthStatus, initializeConnectToWhatsapp } = useWhatssap()
+const { isAuthenticated, errorMessage, loadingConnect, checkAuthStatus, initializeConnectToWhatsapp } = useWhatssap()
 
 // Estado de conexión del socket
 const isConnected = ref(false)
@@ -83,7 +83,11 @@ onBeforeUnmount(() => {
 
     <!-- Botón para solicitar el QR si no está autenticado -->
     <div v-if="!isAuthenticated && !qrCode">
-      <VBtn @click="requestQrCode">
+      <VBtn
+        :disabled="loadingConnect"
+        :loading="loadingConnect"
+        @click="requestQrCode"
+      >
         Conectarme a Whatssap
       </VBtn>
     </div>
