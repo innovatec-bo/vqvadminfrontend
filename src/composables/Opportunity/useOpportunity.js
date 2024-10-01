@@ -1,9 +1,11 @@
+import { useCookie } from '@/@core/composable/useCookie'
 import { allOpportunityKanban, convertOpportunityProspect, getOpportunity, updateOpportunity } from '@/services/Opportunity/opportunityService'
 import { showSuccessNotification } from "@/utils/notifications"
 
 export function useOpportunity (){
   const loadingOpportunity = ref(false)
   const error = ref(null)
+  const userData = useCookie('userData').value
 
   const opportunity = ref({
     description: '',
@@ -29,9 +31,9 @@ export function useOpportunity (){
   const kanban = ref(null)
 
     
-  const allOpportunityKanbanForUser = async userId => {
+  const allOpportunityKanbanForUser = async () => {
     try{
-      const response = await allOpportunityKanban(userId)
+      const response = await allOpportunityKanban(userData.id)
 
       kanban.value = response.data
       console.log(kanban)

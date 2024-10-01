@@ -1,7 +1,7 @@
 <script setup>
 import poraIcon from '@/assets/icons/poraIcon.png'
 import { useActivity } from '@/composables/Activity/useActivity'
-import ActivityEdit from '@/views/activity/ActivityEdit.vue'
+import AddActivity from '@/views/activity/AddActivity.vue'
 
 const currentActiveTab = ref('New')
 const filters = ref(['Todos', 'PORA']) // Opciones de filtro
@@ -211,9 +211,9 @@ const orders = [
 
     <VCol
       cols="12"
-      md="4"
+      md="8"
     >
-      <ActivityEdit
+      <AddActivity
         v-model:is-drawer-open="isEditActivity"
         :activities-data="activity"
         @refresh-activities="onRefreshActivities"

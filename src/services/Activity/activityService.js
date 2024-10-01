@@ -64,3 +64,10 @@ export const getByAsesorRangoFecha= async (asesorid, pagination) =>{
     params: pagination,
   })
 }
+
+export const completedActivity = async (idActivity, data) => {
+  return await $api(`/activity/${idActivity}/complete`, {
+    method: 'PATCH',
+    body: data,
+  })
+}

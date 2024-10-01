@@ -184,7 +184,20 @@ export function useActivity() {
       loadingActivity.value = false
     }
   }
- 
+
+  const completedActivityAndRegister = async (idActivity, data) => {
+    loadingActivity.value = true
+    try{
+      const response = await completedActivity(idActivity, data)
+    }catch (err){
+      //todo: mejorar los mensajes de error
+      error.value =  err.message
+    }finally {
+      loadingActivity.value = false
+    }
+  }
+
+  
   return {
     loadingActivity,
     error,
@@ -198,6 +211,7 @@ export function useActivity() {
     getallActivitiesByFechaPast,
     getallActivitiesByFechaFuture,
     updateActivity,
+    completedActivityAndRegister,
     activity,
     activities: computed(()=>activities.value),
     activitiesPast: computed(()=>activitiesPast.value),

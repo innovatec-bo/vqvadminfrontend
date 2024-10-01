@@ -172,7 +172,6 @@ watch(() => props.isDialogVisible, async newValue => {
                       outlined
                     />
                   </VCol>
-
                   <VCol
                     cols="12"
                     md="6"

@@ -1,11 +1,14 @@
 <script setup>
 import poraIcon from '@/assets/icons/poraIcon.png'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
+import { useSales } from '@/composables/Sales/useSales'
 import { onMounted, ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import TaskKanban from './opportunity/TaskKanban.vue'
+import PreSaleForm from './sale/PreSaleForm.vue'
 
 const { allOpportunityKanbanForUser, kanban, generateProspect } = useOpportunity()
+const { loadingSale, sale, generateSale } = useSales()
 
 const addNewItem = column => {
   column.items.push({
@@ -23,6 +26,8 @@ const selectedOpportunity  = ref(null)
 const isDialogVisible = ref(false)
 const originColumnTitle = ref(null)
 const destinationColumnTitle = ref(null)
+
+const isDialogVisiblePreSale = ref(true)
 
 const onDragStart = event => {
   originColumnTitle.value = event.from.closest('.kanban-column').dataset.columnTitle
@@ -61,6 +66,7 @@ const onDragEnd = event => {
       break
     case 'PREVENTA':
       console.log('Movido a PREVENTA')
+      isDialogVisiblePreSale.value= true
 
       break
     case 'VENTA':
@@ -100,7 +106,7 @@ const isMoveValid = (fromColumn, toColumn) => {
 }
 
 onMounted(async () => {
-  await allOpportunityKanbanForUser(1) 
+  await allOpportunityKanbanForUser() 
 })
 </script>
 
@@ -119,9 +125,6 @@ onMounted(async () => {
         </div>
         <div class="column-info">
           <span class="task-count">({{ column.items.length }})</span>
-          <IconBtn class="icon-btn">
-            <VIcon icon="tabler-dots-vertical" />
-          </IconBtn>
         </div>
       </div>
       <VueDraggable
@@ -149,31 +152,49 @@ onMounted(async () => {
                 style="border-radius: 30%;"
               >
             </VAvatar>
-
             <!-- Nombre del proyecto y código del departamento -->
             <div class="project-info">
               <h3 class="project-name">
                 {{ item.project }}
               </h3>
               <h4 class="department-code">
-                {{ item.property || 'Sin código' }} <!-- Valor por defecto -->
+                {{ item.property || 'Sin código' }}
               </h4>
             </div>
-
             <!-- Precio alineado a la derecha -->
             <p class="price">
               <strong>{{ item.price }}$</strong>
             </p>
           </div>
+
+          <!-- Información del cliente -->
           <div class="kanban-details">
-            <p><strong>{{ item.name }}</strong></p> 
+            <p><strong>{{ item.name }}</strong></p>
             <p>{{ item.phone }}</p>
-          </div>  
+          </div>
+
+          <!-- Detalles del proyecto -->
+          <div class="kanban-project-details">
+            <p
+              v-if="item.status === 'Cumplido'"
+              class="status"
+            >
+              Cumplido
+            </p>
+            <div class="checklist">
+              <p>
+                {{ item.lastActivity?.title || ' ' }} 
+                <VIcon
+                  v-if="item.lastActivity"
+                  icon="tabler-check"
+                />
+              </p>
+            </div>
+          </div>
+
+          <!-- Footer con comentarios y otras acciones -->
           <div class="kanban-footer">
             <div class="icon-section">
-              <IconBtn>
-                <VIcon icon="tabler-x" />
-              </IconBtn>
               <IconBtn>
                 <VIcon icon="tabler-message" />
                 <span class="details">{{ item.cantComments }}</span>
@@ -182,18 +203,18 @@ onMounted(async () => {
           </div>
         </div>
       </VueDraggable>
-      <button @click="addNewItem(column)">
-        + Agregar nuevo
-      </button>
     </div>
   </div>
+
   <TaskKanban 
     v-model:is-dialog-visible="isDialogVisible" 
     :opportunity-kanban="selectedOpportunity"
   />
+  <PreSaleForm v-model="isDialogVisiblePreSale" />
 </template>
 
 <style>
+/* Estilos personalizados para la tarjeta */
 .kanban {
   display: flex;
   padding: 10px;
@@ -214,7 +235,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-block-end: 2px solid rgba(var(--v-border-color), var(--v-border-opacity)); /* Color del borde */
+  border-block-end: 2px solid rgba(var(--v-border-color), var(--v-border-opacity));
   margin-block-end: 10px;
   padding-block-end: 10px;
 }
@@ -225,7 +246,7 @@ onMounted(async () => {
 }
 
 .column-title h2 {
-  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity)); /* Color del texto */
+  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
   font-size: 1.1em;
   font-weight: bold;
   margin-inline-start: 5px;
@@ -233,7 +254,7 @@ onMounted(async () => {
 
 .column-dot {
   border-radius: 50%;
-  background-color: rgb(var(--v-theme-primary)); /* Color del punto */
+  background-color: rgb(var(--v-theme-primary));
   block-size: 8px;
   inline-size: 8px;
 }
@@ -244,15 +265,9 @@ onMounted(async () => {
 }
 
 .task-count {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); /* Color del texto */
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
   font-size: 0.9em;
   margin-inline-end: 10px;
-}
-
-.icon-btn {
-  border: none;
-  background: none;
-  cursor: pointer;
 }
 
 /* Items dentro de las columnas */
@@ -262,26 +277,24 @@ onMounted(async () => {
 
 .kanban-item {
   padding: 10px;
-  border: 1px solid rgba(var(--v-border-color), 0.25); /* Borde con opacidad del 25% */
+  border: 1px solid rgba(var(--v-border-color), 0.25);
   border-radius: 10px;
-  background-color: rgb(var(--v-theme-surface)); /* Color de fondo de la tarjeta */
+  background-color: rgb(var(--v-theme-surface));
   margin-block-end: 10px;
 }
 
 .kanban-header {
   display: flex;
-  align-items: center; /* Alinea verticalmente los elementos */
+  align-items: center;
   justify-content: space-between;
-  gap: 10px; /* Espacio entre el avatar y la información */
+  gap: 10px;
 }
 
-/* Información del proyecto (nombre y código) */
 .project-info {
   display: flex;
-  flex-direction: column; /* Alinea el nombre y el código verticalmente */
+  flex-direction: column;
 }
 
-/* Nombre del proyecto */
 .project-name {
   padding: 0;
   margin: 0;
@@ -290,7 +303,6 @@ onMounted(async () => {
   font-weight: bold;
 }
 
-/* Código del departamento debajo del nombre */
 .department-code {
   padding: 0;
   margin: 0;
@@ -298,7 +310,6 @@ onMounted(async () => {
   font-size: 0.9rem;
 }
 
-/* Precio alineado a la derecha */
 .price {
   padding: 0;
   margin: 0;
@@ -307,36 +318,43 @@ onMounted(async () => {
   font-weight: bold;
 }
 
-.kanban-details {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); /* Color del texto */
-  font-size: 0.9em;
+/* Detalles del proyecto */
+.kanban-project-details {
+  margin-block-start: 10px;
+}
+
+.status {
+  color: rgb(var(--v-theme-success));
+}
+
+.checklist p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .kanban-footer {
   display: flex;
-  color: rgba(var(--v-theme-on-surface), var(--v-low-emphasis-opacity)); /* Color del texto */
+  justify-content: flex-end;
   font-size: 0.8em;
+  gap: 10px;
 }
 
 .icon-section {
   display: flex;
   align-items: center;
-  gap: 10px; /* Espacio entre los íconos */
-}
-
-
-.status {
-  color: rgb(var(--v-theme-success)); /* Color del estado */
+  gap: 10px;
 }
 
 .details {
-  color: rgba(var(--v-theme-on-surface), var(--v-low-emphasis-opacity)); /* Color de los detalles */
+  color: rgba(var(--v-theme-on-surface), var(--v-low-emphasis-opacity));
 }
 
+/* Botones */
 button {
   border: none;
   border-radius: 5px;
-  background-color: rgb(var(--v-theme-primary)); /* Color del botón */
+  background-color: rgb(var(--v-theme-primary));
   color: white;
   cursor: pointer;
   margin-block-start: 10px;
@@ -346,54 +364,5 @@ button {
 
 button:hover {
   background-color: rgb(var(--v-theme-on-surface));
-}
-
-@media (max-width: 768px) { /* Para dispositivos móviles */
-  .kanban {
-    flex-direction: column; /* Las columnas estarán apiladas en dispositivos pequeños */
-    padding: 5px; /* Reduce el padding en pantallas pequeñas */
-  }
-
-  .kanban-column {
-    inline-size: 100%; /* Las columnas ocupan todo el ancho disponible */
-    margin-block-end: 20px; /* Espacio entre las columnas apiladas */
-    margin-inline: 0; /* Sin espacio lateral */
-  }
-
-  .kanban-item {
-    padding: 8px;
-    border-radius: 5px;
-  }
-
-  .kanban-header h3, .kanban-header h4, .price {
-    font-size: 0.9rem; /* Reduce tamaño del texto */
-  }
-
-  .kanban-footer .details {
-    font-size: 0.7rem;
-  }
-
-  /* Botón de agregar nuevo en dispositivos móviles */
-  button {
-    font-size: 0.9rem;
-    padding-block: 6px;
-    padding-inline: 12px;
-  }
-}
-
-@media (max-width: 480px) { /* Para pantallas aún más pequeñas */
-  .kanban-header, .kanban-footer {
-    flex-direction: column; /* Apila elementos verticalmente */
-    align-items: flex-start; /* Alinea todo a la izquierda */
-    gap: 5px; /* Menos espacio entre los elementos */
-  }
-
-  .project-info {
-    align-items: flex-start; /* Ajusta la info del proyecto para pantallas pequeñas */
-  }
-
-  .icon-section {
-    justify-content: flex-start;
-  }
 }
 </style>
