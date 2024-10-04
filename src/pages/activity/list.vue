@@ -61,22 +61,6 @@ const orders = [
 </script>
 
 <template>
-  <div class="toolbar mb-5">
-    <div class="breadcrumbs">
-      <div class="filters">
-        <button
-          v-for="filter in filters"
-          :key="filter"
-          :class="{ active: selectedFilter === filter }"
-          class="px-5"
-          @click="selectedFilter = filter"
-        >
-          {{ filter }}
-        </button>
-      </div>
-    </div>
-  </div>
-
   <VRow class="match-height">
     <VCol
       cols="12"

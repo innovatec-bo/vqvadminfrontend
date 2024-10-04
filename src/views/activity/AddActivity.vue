@@ -46,11 +46,13 @@ const newActivity = ref({
   scheduled_at: null,
 })
 
+
+
 const fetchProperties = async () => {
   await allProperty({ page: 1, itemsPerPage: 100 }) 
 }
 
-const { changeStatusActivity, updateActivity, getallTypeActivities, typeActivities } = useActivity()
+const { changeStatusActivity, completedActivityAndRegister, updateActivity, getallTypeActivities, typeActivities } = useActivity()
 const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity } = useOpportunity()
 const { allProperty, properties } = useProperty()
 
@@ -81,9 +83,26 @@ const closeNavigationDrawer = () => {
 }
 
 const onSubmit = async() => {
-  console.log(newActivity)
-  emit('refreshActivities') 
-  closeNavigationDrawer()
+  completedActivityAndRegister(activitiesData.value.opportunity_id, {
+    title: newActivity.value.title,
+    description: newActivity.value.description,
+    type_activity_id: newActivity.value.type_activity_id,
+    scheduled_at: newActivity.value.scheduled_at,
+    assigned_to: opportunity.value.user_id,
+    property_id: opportunity.value.property_id,
+    sale: {
+      opportunity_id: opportunity.value.id,
+      property_id: opportunity.value.property_id,
+      social_reason: opportunity.value.customer?.name,
+      nit: opportunity.value.customer.ci,
+      payment_method: "CASH",
+      amount: 100,
+      initial_fee: 1,
+    },
+  })
+
+  // emit('refreshActivities') 
+  // closeNavigationDrawer()
 
 }
 
@@ -113,7 +132,7 @@ const handleDrawerModelValueUpdate = val => {
         <div class="d-flex align-center justify-center justify-sm-space-between flex-wrap gap-4">
           <div class="d-flex flex-wrap justify-center justify-sm-start flex-grow-1 gap-4">
             <h5 class="text-h5 text-center text-sm-start font-weight-medium mb-3">
-              Diego Rojas Rios
+              {{ opportunity.customer.name || '' }}
             </h5>
           </div>
 
@@ -127,27 +146,7 @@ const handleDrawerModelValueUpdate = val => {
       </div>
     </VCardText>
     <VCardText>
-      <div class="d-flex align-center justify-space-between mb-2">
-        <VLabel for="payment-terms">
-          {{ activitiesData.title }}
-        </VLabel>
-        <VLabel for="payment-terms">
-          <VChip
-            label
-            color="primary"
-            class="mx-5"
-          >
-            {{ activitiesData.type_activity }}
-          </VChip>
-        </VLabel>
-        <div>
-          <VSwitch
-            id="payment-terms"
-            v-model="checkLastActivity"
-          />
-        </div>
-      </div>
-      <VForm class="mt-4">
+      <VForm>
         <VWindow class=" mx-3">
           <VRow>
             <VCol
@@ -155,6 +154,12 @@ const handleDrawerModelValueUpdate = val => {
               sm="6"
             >
               <VRow>
+                <VCol cols="12">
+                  <VSwitch
+                    value="on"
+                    label="Confirmar Ultima Actividad"
+                  />
+                </VCol>
                 <VCol cols="12">
                   <AppTextField
                     v-model="newActivity.title"
@@ -201,6 +206,17 @@ const handleDrawerModelValueUpdate = val => {
               sm="6"
             >
               <VRow>
+                <VCol cols="12">
+                  <AppSelect
+                    v-model="opportunity.stage_id"
+                    label="Estado del Cliente"
+                    placeholder="Selecciona un Estado"
+                    :items="stageOptions"
+                    item-text="label"
+                    item-value="value"
+                    outlined
+                  />
+                </VCol>
                 <VCol
                   cols="12"
                   md="6"
@@ -218,7 +234,7 @@ const handleDrawerModelValueUpdate = val => {
                 >
                   <AppTextField
                     v-model="opportunity.customer.email"
-                    label="Email del Cliente (Opcional)"
+                    label="Correo (Opcional)"
                     placeholder="Ingresa el email"
                     outlined
                   />
@@ -270,28 +286,29 @@ const handleDrawerModelValueUpdate = val => {
                     outlined
                   />
                 </VCol>
-                <!--
-                  <VCol
+                
+                <VCol
+                  v-if="opportunity.stage_id=== 4"
                   cols="12"
                   md="6"
-                  >
+                >
                   <AppTextField
-                  label="Precio de Negociacion"
-                  placeholder="Ingresa el Precio Final"
-                  outlined
+                    label="Precio de Negociacion"
+                    placeholder="Ingresa el Precio Final"
+                    outlined
                   />
-                  </VCol>
-                  <VCol
+                </VCol>
+                <VCol
+                  v-if="opportunity.stage_id=== 4"
                   cols="12"
                   md="6"
-                  >
+                >
                   <AppTextField
-                  label="Anticipo"
-                  placeholder="Ingresa el Precio Final"
-                  outlined
+                    label="Anticipo"
+                    placeholder="Ingresa el Precio Final"
+                    outlined
                   />
-                  </VCol> 
-                -->
+                </VCol>
               </VRow>
             </VCol>
             <VCol

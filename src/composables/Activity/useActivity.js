@@ -188,7 +188,8 @@ export function useActivity() {
   const completedActivityAndRegister = async (idActivity, data) => {
     loadingActivity.value = true
     try{
-      const response = await completedActivity(idActivity, data)
+      //const response = await completedActivity(idActivity, data)
+      console.log(data)
     }catch (err){
       //todo: mejorar los mensajes de error
       error.value =  err.message

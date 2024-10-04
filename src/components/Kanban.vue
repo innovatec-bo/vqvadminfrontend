@@ -27,7 +27,7 @@ const isDialogVisible = ref(false)
 const originColumnTitle = ref(null)
 const destinationColumnTitle = ref(null)
 
-const isDialogVisiblePreSale = ref(true)
+const isDialogVisiblePreSale = ref(false)
 
 const onDragStart = event => {
   originColumnTitle.value = event.from.closest('.kanban-column').dataset.columnTitle
