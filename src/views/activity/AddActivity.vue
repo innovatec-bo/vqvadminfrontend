@@ -1,6 +1,10 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
+import EditDeliveryOpportunity from '@/components/activity/EditDeliveryOpportunity.vue'
+import EditPreSaleOpportunity from '@/components/activity/EditPreSaleOpportunity.vue'
+import EditProspectOpportunity from '@/components/activity/EditProspectOpportunity.vue'
+import EditSaleOpportunity from '@/components/activity/EditSaleOpportunity.vue'
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProperty } from '@/composables/Realty/useProperty'
@@ -116,6 +120,10 @@ const complet = async()=>{
   emit('update:isDrawerOpen', false) // Cerrar el drawer
 }
 
+const activitySwitch  = state =>{
+  return state === 'COMPLETED'
+}
+
 
 const handleDrawerModelValueUpdate = val => {
   emit('update:isDrawerOpen', val)
@@ -123,226 +131,149 @@ const handleDrawerModelValueUpdate = val => {
 </script>
 
 <template>
-  <VCard
-    v-if="isDrawerOpen"
-    title="Actividades y Etapa"
-  >
-    <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
-      <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
-        <div class="d-flex align-center justify-center justify-sm-space-between flex-wrap gap-4">
-          <div class="d-flex flex-wrap justify-center justify-sm-start flex-grow-1 gap-4">
-            <h5 class="text-h5 text-center text-sm-start font-weight-medium mb-3">
-              {{ opportunity.customer.name || '' }}
-            </h5>
-          </div>
-
-          <VBtn
-            prepend-icon="tabler-check"
-            @click="openHistory"
-          >
-            Historial
-          </VBtn>
-        </div>
-      </div>
-    </VCardText>
-    <VCardText>
-      <VForm>
-        <VWindow class=" mx-3">
+  <!-- Row to hold two VCard components side by side -->
+  <VRow class="d-flex justify-space-between">
+    <!-- First VCard (Activities and Stage) -->
+    <VCol cols="12">
+      <!-- Adjust the column size based on your needs -->
+      <VCard v-if="isDrawerOpen">
+        <VCardTitle>
           <VRow>
             <VCol
               cols="12"
               sm="6"
             >
-              <VRow>
-                <VCol cols="12">
-                  <VSwitch
-                    value="on"
-                    label="Confirmar Ultima Actividad"
-                  />
-                </VCol>
-                <VCol cols="12">
-                  <AppTextField
-                    v-model="newActivity.title"
-                    label="Titulo de la actividad"
-                    placeholder="......"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <AppSelect
-                    v-model="newActivity.type_activity_id"
-                    label="Seleccione una Actividad"
-                    placeholder="Seleccione una Actividad"
-                    :items="typeActivities.map(activity => ({ title: activity.name, value: activity.id }))"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <AppDateTimePicker
-                    v-model="newActivity.scheduled_at"
-                    label="Seleccione la fecha y hora"
-                    placeholder="Select date and time"
-                    :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-                <VCol cols="12">
-                  <AppTextarea
-                    v-model="newActivity.description"
-                    label="Descripcion"
-                    rows="3"
-                    :rules="[requiredValidator]"
-                  />
-                </VCol>
-              </VRow>
+              Etapas
             </VCol>
-            <VDivider vertical="true" />
             <VCol
               cols="12"
               sm="6"
             >
+              <VChip
+                label
+                color="primary"
+              >
+                {{ opportunity.stage.title }}
+              </VChip>
+            </VCol>
+          </VRow>
+        </VCardTitle>
+        <VCardText>
+          <VForm>
+            <VWindow class="mx-3">
               <VRow>
-                <VCol cols="12">
-                  <AppSelect
-                    v-model="opportunity.stage_id"
-                    label="Estado del Cliente"
-                    placeholder="Selecciona un Estado"
-                    :items="stageOptions"
-                    item-text="label"
-                    item-value="value"
-                    outlined
-                  />
+                <VCol
+                  cols="12"
+                  sm="6"
+                >
+                  <VRow>
+                    <VCol cols="12">
+                      <VSwitch
+                        v-for="(activity, index) in opportunity.activities"
+                        :key="activity.id"
+                        :v-model="activitySwitch(activity.state_activity)"
+                        :label="activity.title"
+                      />
+                    </VCol>
+                    <VCol cols="12">
+                      <AppTextField
+                        v-model="newActivity.title"
+                        label="Titulo de la actividad"
+                        placeholder="......"
+                      />
+                    </VCol>
+                    <VCol
+                      cols="12"
+                      md="6"
+                    >
+                      <AppSelect
+                        v-model="newActivity.type_activity_id"
+                        label="Seleccione una Actividad"
+                        placeholder="Seleccione una Actividad"
+                        :items="typeActivities.map(activity => ({ title: activity.name, value: activity.id }))"
+                      />
+                    </VCol>
+                    <VCol
+                      cols="12"
+                      md="6"
+                    >
+                      <AppDateTimePicker
+                        v-model="newActivity.scheduled_at"
+                        label="Seleccione la fecha y hora"
+                        placeholder="Select date and time"
+                        :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
+                        :rules="[requiredValidator]"
+                      />
+                    </VCol>
+                    <VCol cols="12">
+                      <AppTextarea
+                        v-model="newActivity.description"
+                        label="Descripcion"
+                        rows="3"
+                        :rules="[requiredValidator]"
+                      />
+                      <VBtn
+                        size="small"
+                        color="secondary"
+                        class="my-2 mx-2"
+                        @click="closeNavigationDrawer"
+                      >
+                        Cancelar
+                      </VBtn>
+                      <VBtn
+                        size="small"
+                        color="error"
+                        class="my-2 mx-2"
+                      >
+                        Dar de Baja
+                      </VBtn>
+                      <VBtn
+                        size="small"
+                        color="primary"
+                        class="mx-auto"
+                        @click="onSubmit"
+                      >
+                        Guardar
+                      </VBtn>
+                    </VCol>
+                  </VRow>
                 </VCol>
                 <VCol
                   cols="12"
-                  md="6"
+                  sm="6"
+                  style="align-items: center;"
                 >
-                  <AppTextField
-                    v-model="opportunity.customer.name"
-                    label="Nombre del Cliente"
-                    placeholder="Ingresa el nombre"
-                    outlined
+                  <EditProspectOpportunity
+                    v-if="opportunity.stage_id === 2"
+                    :opportunity="opportunity"
                   />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <AppTextField
-                    v-model="opportunity.customer.email"
-                    label="Correo (Opcional)"
-                    placeholder="Ingresa el email"
-                    outlined
+                  <EditPreSaleOpportunity
+                    v-if="opportunity.stage_id === 3"
+                    :opportunity="opportunity"
                   />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <AppTextField
-                    v-model="opportunity.customer.phone"
-                    label="Número de Teléfono"
-                    placeholder="Ingresa el teléfono"
-                    outlined
-                    dense
-                    maxlength="9"
+                  <EditSaleOpportunity
+                    v-if="opportunity.stage_id === 4"
+                    :opportunity="opportunity"
                   />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <AppTextField
-                    v-model="opportunity.customer.ci"
-                    label="CI del Cliente(Opcional)"
-                    placeholder="Ingresa el CI"
-                    outlined
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <AppAutocomplete
-                    v-model="opportunity.property_id"
-                    label="Departamento de Interés"
-                    placeholder="Selecciona un Departamento"
-                    :items="properties.map(property => ({title:property.title, value:property.id}))"
-                    outlined
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <AppSelect
-                    label="Tipo de Compra"
-                    placeholder="Selecciona un Tipo"
-                    :items="['CONTADO', 'CREDITO DIRECTO']"
-                    outlined
-                  />
-                </VCol>
-                
-                <VCol
-                  v-if="opportunity.stage_id=== 4"
-                  cols="12"
-                  md="6"
-                >
-                  <AppTextField
-                    label="Precio de Negociacion"
-                    placeholder="Ingresa el Precio Final"
-                    outlined
-                  />
-                </VCol>
-                <VCol
-                  v-if="opportunity.stage_id=== 4"
-                  cols="12"
-                  md="6"
-                >
-                  <AppTextField
-                    label="Anticipo"
-                    placeholder="Ingresa el Precio Final"
-                    outlined
+                  <EditDeliveryOpportunity
+                    v-if="opportunity.stage_id === 5"
+                    :opportunity="opportunity"
                   />
                 </VCol>
               </VRow>
-            </VCol>
-            <VCol
-              cols="12"
-              style="align-items: center;"
-            >
-              <VBtn
-                size="small"
-                color="secondary"
-                class="my-2 mx-2"
-                @click="closeNavigationDrawer"
-              >
-                Cancelar
-              </VBtn>
-              <VBtn
-                size="small"
-                color="error"
-                class="my-2 mx-2"
-              >
-                Dar de Baja
-              </VBtn>
-              <VBtn
-                size="small"
-                color="primary"
-                class="mx-auto"
-                @click="onSubmit"  
-              >
-                Guardar
-              </VBtn> 
-            </VCol>
-          </VRow>
-        </VWindow>
-      </VForm>
-    </VCardText>
-  </VCard>
-  <CustomerHistory v-model:is-drawer-open="historyDrawerVisible" />
+            </VWindow>
+          </VForm>
+        </VCardText>
+      </VCard>
+    </VCol>
+
+    <!-- Second VCard (Customer History) -->
+    <VCol
+      cols="12"
+      md="6"
+    >
+      <CustomerHistory v-model:is-drawer-open="historyDrawerVisible" />
+    </VCol>
+  </VRow>
 </template>
+

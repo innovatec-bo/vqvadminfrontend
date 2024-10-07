@@ -92,7 +92,7 @@ const orders = [
               v-for="order in orders"
               :key="order.tabName"
               :value="order.tabName"
-              style="max-block-size: 90vh; overflow-y: auto;"
+              style="max-block-size: 500px; overflow-y: auto;"
             >
               <template v-if="order.actividades.value.length === 0">
                 <div
@@ -123,66 +123,63 @@ const orders = [
                         >
                       </VAvatar>
                     </template>
-                    <VListItemTitle class="font-weight-medium">
-                      {{ item.project_name }}
-                    </VListItemTitle>
-                    <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-                      <span>{{ item.code_property }}</span>
-                      <span class="ml-auto">{{ item.price }}$</span>
-                    </VListItemSubtitle>
+                    <VRow>
+                      <VCol
+                        cols="12"
+                        md="7"
+                      >
+                        <VListItemTitle class="font-weight-medium">
+                          {{ item.project_name }} | {{ item.code_property }}
+                        </VListItemTitle>
+                        <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+                          <span>$ {{ item.price }}</span>
+                        </VListItemSubtitle>
+                      </VCol>
+                      <VCol
+                        cols="12"
+                        md="5"
+                      >
+                        <VChip
+                          label
+                          color="primary"
+                          class="ml-auto"
+                          style="font-size: 0.7em;"
+                        >
+                          {{ item.stage }}
+                        </VChip>
+                      </VCol>
+                    </VRow>
                   </VListItem>
-                  <div class="mx-7 ">
-                    {{ item.title }}
-                    <div class="mt-2 d-flex justify-between">
-                      <VAvatar
-                        variant="tonal"
-                        rounded
-                        size="22"
-                      >
-                        <VIcon
-                          :icon="tabler-user"
-                          size="20"
-                        />
-                      </VAvatar>
-                      <span
-                        class="mx-2 mt-1"
-                        style="font-size: 0.8em;"
-                      >
-                        {{ item.name_opportunity }}
-                      </span>
-                      <VChip
-                        label
-                        color="primary"
-                        class="ml-auto"
-                        style="font-size: 0.7em;"
-                      >
-                        {{ item.stage }}
-                      </VChip>
-                    </div>
-                    <div
-                      class="mt-2 d-flex justify-between"
-                      style="font-size: 0.8em;"
+                  <div class="mx-3 ">
+                    <VChip
+                      label
+                      color="secondary"
+                      class="w-100 d-flex justify-content-between my-2"
                     >
-                      <VAvatar
-                        variant="tonal"
-                        rounded
-                        size="22"
-                      >
-                        <VIcon
-                          :icon="tabler-calendar"
-                          size="20"
-                        />
-                      </VAvatar>
-                      <span class="mx-2 mt-1">{{ item.type_activity }}</span>
-                      <span class="ml-auto mt-1 ">
-                        {{ new Date(item.scheduled_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
-                      </span>
-                    </div>
+                      <IconBtn>
+                        <VIcon icon="tabler-phone" />
+                      </IconBtn>
+                      <div style="flex-grow: 2;">
+                        {{ item.type_activity }}
+                      </div>
+                      <div class="mx-2">
+                        |
+                      </div> <!-- Separador con margen -->
+                      <div>
+                        {{ item.name_opportunity }}
+                      </div>
+                    </VChip>
+
                     <div
-                      class="my-2"
+                      class="d-flex justify-content-between my-2"
                       style="font-size: 0.9em;"
                     >
-                      {{ item.description }}
+                      <div style="flex-grow: 1;">
+                        Ver Actividad
+                      </div>
+                      <div>
+                        {{ item.scheduled_at }}
+                      </div>
                     </div>
                   </div>
                 </div>
