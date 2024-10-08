@@ -35,7 +35,7 @@ const resolveFeedbackIcon = feedback => {
 // Consulta los mensajes cuando el componente se monta
 onMounted(async () => {
   console.log(store.activeChat.chat.id.user)
-  await getAllMessagesForChat('DiegoA',  `${store.activeChat.chat.id.user}@c.us`)
+  await getAllMessagesForChat(`${store.activeChat.chat.id.user}@c.us`)
 })
 
 // Función para formatear la fecha

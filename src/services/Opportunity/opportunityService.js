@@ -22,3 +22,9 @@ export const updateOpportunity = async (id, opportunity) => {
     body: opportunity,
   })
 }
+
+export const changeStatus = async (opportunityId, stateId) => {
+  return await $api(`/opportunity/${opportunityId}/stage/${stateId}`, {
+    method: 'PATCH',
+  })
+}

@@ -1,5 +1,6 @@
 <!-- ❗Errors in the form are set on line 60 -->
 <script setup>
+import postPora from '@/assets/canzza/postPora.png'
 import { useAuth } from '@/composables/Auth/useAuth'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
@@ -25,13 +26,13 @@ definePage({
 })
 
 const passwordLengthValidator = value => value.length >= 8 || 'La contraseña debe tener al menos 8 caracteres'
-const { loginUser } = useAuth()
+const { loginUser, loading } = useAuth()
 const isPasswordVisible = ref(false)
 const refVForm = ref()
 const errors = ref({ email: undefined, password: undefined })
 
 const credentials = ref({
-  email: 'admin@demo.com',
+  email: 'admin@canzza.com',
   password: 'admin',
 })
 
@@ -59,13 +60,22 @@ const onSubmit = () => {
       lg="8"
       class="d-none d-lg-flex"
     >
-      <div class="position-relative bg-background rounded-lg w-100 ma-8 me-0">
-        <div class="d-flex align-center justify-center w-100 h-100">
-          <VImg
-            max-width="505"
-            :src="authThemeImg"
-            class="auth-illustration mt-16 mb-2"
-          />
+      <div
+        class="position-relative bg-background rounded-lg w-100 ma-8 me-0"
+        :style="{
+          backgroundImage: `url(${postPora})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          height: '100%',
+          width: '100%',
+        }"
+      >
+        <div
+          class="d-flex align-center justify-center"
+          style="position: absolute; z-index: 1; inset-block: 0 0; inset-inline: 0 0;"
+        >
+        <!-- Aquí puedes colocar el contenido superpuesto si es necesario -->
         </div>
 
         <VImg
@@ -133,17 +143,13 @@ const onSubmit = () => {
                     v-model="rememberMe"
                     label="Recordar"
                   />
-                  <RouterLink
-                    class="text-primary ms-2 mb-1"
-                    :to="{ name: 'forgot-password' }"
-                  >
-                    Forgot Password?
-                  </RouterLink>
                 </div>
                 <br>
                 <VBtn
                   block
                   type="submit"
+                  :disabled="loading"
+                  :loading="loading"
                 >
                   Login
                 </VBtn>
@@ -158,4 +164,10 @@ const onSubmit = () => {
 
 <style lang="scss">
 @use "@core/scss/template/pages/page-auth.scss";
+
+
+.responsive-img {
+  block-size: auto; /* Mantener la proporción de la imagen */
+  max-inline-size: 100%;
+}
 </style>

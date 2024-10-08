@@ -32,7 +32,7 @@ const scrollToBottomInChatLog = () => {
 // Search query
 const q = ref('')
 
-watch(q, val => store.fetchChats(val), { immediate: true })
+watch(q, val => store.fetchChats(), { immediate: true })
 
 // Open Sidebar in smAndDown when "start conversation" is clicked
 const startConversation = () => {

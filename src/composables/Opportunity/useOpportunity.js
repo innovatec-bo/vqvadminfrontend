@@ -1,9 +1,11 @@
-import { allOpportunityKanban, convertOpportunityProspect, getOpportunity, updateOpportunity } from '@/services/Opportunity/opportunityService'
+import { useCookie } from '@/@core/composable/useCookie'
+import { allOpportunityKanban, changeStatus, convertOpportunityProspect, getOpportunity, updateOpportunity } from '@/services/Opportunity/opportunityService'
 import { showSuccessNotification } from "@/utils/notifications"
 
 export function useOpportunity (){
   const loadingOpportunity = ref(false)
   const error = ref(null)
+  const userData = useCookie('userData').value
 
   const opportunity = ref({
     description: '',
@@ -29,9 +31,9 @@ export function useOpportunity (){
   const kanban = ref(null)
 
     
-  const allOpportunityKanbanForUser = async userId => {
+  const allOpportunityKanbanForUser = async () => {
     try{
-      const response = await allOpportunityKanban(userId)
+      const response = await allOpportunityKanban(userData.id)
 
       kanban.value = response.data
       console.log(kanban)
@@ -81,6 +83,21 @@ export function useOpportunity (){
       loadingOpportunity.value = false // Establecer el estado de carga en falso al final
     }
   }
+
+  const changeStatusByOpportunity = async (id, stageId) => {
+    loadingOpportunity.value = true
+    try {
+      const response = await changeStatus(id, stageId)
+
+      console.log('Oportunidad actualizada: ', response)
+      opportunity.value = response.data
+
+    }catch (err){
+      console.error(err)
+    }finally {
+      loadingOpportunity.value = false
+    }
+  }
   
 
   
@@ -92,6 +109,7 @@ export function useOpportunity (){
     opportunity,
     kanban,
     allOpportunityKanbanForUser,
+    changeStatusByOpportunity,
     getOpportunitybyId,
     changeOpportunity,
     generateProspect,

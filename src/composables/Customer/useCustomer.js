@@ -1,4 +1,5 @@
 import { listCustomerPaginate, registerCustomer } from '@/services/Customer/customerService'
+import { createThread } from '@/services/OpenAI/openAIService'
 import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -21,14 +22,19 @@ export function useCustomer(){
     loading.value = true
     error.value = null
     try {
+      const thread = await createThread()
+
+      console.log(thread)
+
       const customerData = {
         name: data.name,
         phone: data.phone,
+        thread: thread.id,
 
         // email: data.email,
         // ci: data.ci,
         // eslint-disable-next-line camelcase
-        cod_phone: data.countryCode,
+        cod_phone: data.countryCode.replace(/\+/g, ''),
         description: data.description,
       }
 

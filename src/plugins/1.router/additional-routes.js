@@ -8,14 +8,27 @@ export const redirects = [
     path: '/',
     name: 'index',
     redirect: to => {
-      // TODO: Get type from backend
+
+      // Obtener datos del usuario desde la cookie
       const userData = useCookie('userData')
-      const userRole = userData.value?.role
-      if (userRole === 'admin')
+
+      // Imprimir los datos de roles para verificar
+      console.log('roles: ', userData.value)
+
+      // Obtener el array de roles del usuario
+      const userRoles = userData.value?.roles || []
+
+      // Comprobar si el usuario tiene el rol de 'admin' o 'ASESOR'
+      if (userRoles.includes('ADMINISTRADOR')) {
         return { name: 'dashboards-crm' }
-      if (userRole === 'client')
-        return { name: 'access-control' }
+      }
+
+      if (userRoles.includes('ASESOR')) {
+        return { name: 'activity-list' }
+      }
       
+
+      // Si no tiene ninguno de los roles, redirigir al login
       return { name: 'login', query: to.query }
     },
   },

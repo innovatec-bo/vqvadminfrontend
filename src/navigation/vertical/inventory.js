@@ -1,5 +1,7 @@
 export default [
-  { heading: 'Inventario' },
+  { heading: 'Inventario',
+    subject: 'ADMINISTRADOR',
+  },
   {
     title: 'Proyectos',
     icon: { icon: 'tabler-toggle-left' },
