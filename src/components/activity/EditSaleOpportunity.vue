@@ -1,7 +1,7 @@
 <script setup>
-import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
 import poraIcon from '@/assets/icons/poraIcon.png'
 import { useProperty } from '@/composables/Realty/useProperty'
+
 import { onMounted } from 'vue'
 
 const props = defineProps({
@@ -27,103 +27,164 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- Sección de Perfil -->
-  <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
-    <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
-      <h4 class="mb-4">
-        Perfil
-      </h4>
-      <div class="d-flex align-center justify-center justify-sm-space-between flex-wrap gap-4">
-        <div class="d-flex align-center gap-x-3">
-          <span class="text-5xl font-weight-medium">
-            {{ avatarText(props.opportunity.customer.name) }}
-          </span>
-          <div class="d-flex flex-column">
-            <RouterLink
-              :to="{ name: 'apps-ecommerce-customer-details-id', params: { id: 1 } }"
-              class="font-weight-medium"
+  <!-- Saldos -->
+  <div>
+    <VRow class="mb-2 mt-2">
+      <VCol
+        cols="4"
+        class="border rounded-sm mx-1"
+      >
+        <VListItemTitle class="font-weight-medium">
+          Saldo
+        </VListItemTitle>
+        <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+          <span class="text-h5">$ {{ props.opportunity.sales.amount -props.opportunity.sales.initial_fee }}</span>
+        </VListItemSubtitle>
+      </VCol>
+      <VCol
+        cols="3"
+        class="border rounded-sm mx-1"
+      >
+        <VListItemTitle class="font-weight-medium">
+          Anticipo
+        </VListItemTitle>
+        <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+          <span class="text-h5">$ {{ props.opportunity.sales.initial_fee }}</span>
+        </VListItemSubtitle>
+      </VCol>
+      <VCol
+        cols="4"
+        class="border rounded-sm mx-1"
+      >
+        <VListItemTitle class="font-weight-medium">
+          Precio Final
+        </VListItemTitle>
+        <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+          <!-- <span>${{ props.opportunity.sales.amount }}</span> -->
+          <span class="text-h5">${{ props.opportunity.sales.amount }}</span>
+        </VListItemSubtitle>
+      </VCol>
+    </VRow>
+  </div>
+
+  <!-- Propiedades -->
+  <div>
+    <VCard title="Propiedades">
+      <VCardText>
+        <div v-if="props.opportunity.sales.properties && props.opportunity.sales.properties.length > 0">
+          <div
+            v-for="properti in props.opportunity.sales.properties"
+            :key="properti.id"
+            class="d-flex align-center justify-between"
+          >
+            <VAvatar
+              size="50"
+              rounded
             >
-              {{ props.opportunity.customer.name }}
-            </RouterLink>
-            <span class="text-sm text-disabled">{{ props.opportunity.customer.phone }}</span>
+              <img
+                :src="poraIcon"
+                alt="Logo pora"
+                style="border-radius: 30%;"
+              >
+            </VAvatar>
+            <VCol
+              cols="12"
+              md="7"
+            >
+              <VListItemTitle class="font-weight-medium">
+                {{ properti.project_title }} | {{ properti.title }} 
+              </VListItemTitle>
+              <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+                <span>$ {{ properti.pivot_price }}</span>
+              </VListItemSubtitle>
+            </VCol>
           </div>
         </div>
+      </VCardText>
+    </VCard>
+  </div>
 
-        <VBtn
-          color="secondary"
-          @click="openHistory"
+  <!-- cuota inicial  -->
+  <div>
+    <VCard
+      title="Cuota Inicial"
+      class="mt-5"
+    >
+      <VCardText>
+        <VTable
+          density="compact"
+          class="text-no-wrap"
         >
-          Editar Perfil
-        </VBtn>
-      </div>
-    </div>
-  </VCardText>
+          <thead>
+            <tr>
+              <th>
+                Type
+              </th>
+              <th>
+                Fecha
+              </th>
+              <th>
+                Monto
+              </th>
+              <th>
+                Action
+              </th>
+            </tr>
+          </thead>
 
-  <!-- Sección de Proyecto -->
-  <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
-    <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
-      <h4 class="mb-4">
-        Proyecto
-      </h4>
-      <div class="d-flex align-center justify-center justify-sm-space-between flex-wrap gap-4">
-        <!-- Selección del departamento -->
-        <AppSelect
-          label="Departamento de interés"
-          :items="properties.map(property => ({
-            name: property.title,
-            value: property.id,
-            avatar: poraIcon,
-          }))"
-          item-title="name"
-          item-value="name"
-          placeholder="Select Item"
-          multiple
-          clearable
-          clear-icon="tabler-x"
-        >
-          <template #selection="{ item }">
-            <VChip>
-              <template #prepend>
-                <VAvatar
-                  start
-                  :image="poraIcon"
-                />
-              </template>
+          <tbody>
+            <tr
+              v-for="item in props.opportunity.sales.payment_plans"
+              :key="item.dessert"
+            >
+              <td>
+                {{ item.type }}
+              </td>
+              <td>
+                {{ new Date(item.date).toLocaleDateString() }}
+              </td>
+              <td>
+                {{ item.amount }}
+              </td>
+              <td>
+                {{ item.is_paid }}
+              </td>
+            </tr>
+          </tbody>
+        </VTable>
+      </VCardText>
+    </VCard>
+  </div>
+  <!-- saldo -->
 
-              <span>{{ item.title }}</span>
-            </VChip>
-          </template>
-        </AppSelect>
-      </div>
-    </div>
-  </VCardText>
-
-  <!-- Sección de Procedimientos -->
-  <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
-    <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
-      <h4 class="mb-4">
-        Procedimientos
-      </h4>
-      <div v-if="props.opportunity.procedure && props.opportunity.procedure.length > 0">
-        <div
-          v-for="procedure in props.opportunity.procedure"
-          :key="procedure.id"
-          class="d-flex align-center justify-between"
-        >
-          <span>{{ procedure.title }}</span>
-          <VCheckbox
-            v-model="procedure.pivot.is_check"
-            label="Realizado?"
-            @change="markProcedureAsDone(procedure.id, procedure.pivot.is_check)"
-          />
+  <!-- procesos  -->
+  <div>
+    <VCard
+      title="Procesos"
+      class="mt-5"
+    >
+      <VCardText class="d-flex align-bottom  gap-x-5">
+        <div v-if="props.opportunity.procedure && props.opportunity.procedure.length > 0">
+          <div
+            v-for="procedure in props.opportunity.procedure"
+            :key="procedure.id"
+            class="d-flex align-center justify-between"
+          >
+            <VCheckbox
+              v-model="procedure.pivot.is_check"
+              :label="procedure.title"
+              class="mx-2"
+              @change="markProcedureAsDone(procedure.id, procedure.pivot.is_check)"
+            />
+          </div>
         </div>
-      </div>
-      <div v-else>
-        <span>No hay procedimientos disponibles.</span>
-      </div>
-    </div>
-  </VCardText>
-  
+        <div v-else>
+          <span>No hay procedimientos disponibles.</span>
+        </div>
+      </VCardText>
+    </VCard>
+  </div>
+
 
   <!-- Botón Generar Cotización -->
   <VCardText class="d-flex justify-center mt-4">
@@ -132,8 +193,7 @@ onMounted(() => {
       large
       @click="generateQuote"
     >
-      Generar Ventaaaaa
+      Siguiente Etapa
     </VBtn>
   </VCardText>
 </template>
-
