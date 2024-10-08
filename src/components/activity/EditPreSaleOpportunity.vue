@@ -1,8 +1,11 @@
 <script setup>
-import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
-import poraIcon from '@/assets/icons/poraIcon.png'
+import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProperty } from '@/composables/Realty/useProperty'
+import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import { onMounted } from 'vue'
+import EditCustomerDialog from '../customer/EditCustomerDialog.vue'
+import PreSaleForm from '../sale/PreSaleForm.vue'
+
 
 const props = defineProps({
   opportunity: {
@@ -11,8 +14,31 @@ const props = defineProps({
   },
 })
 
+
+
 const { property, allProperty, properties } = useProperty()
-const quotes = ref([])
+
+const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()
+const opencustomerDialog = ref(false)
+
+const generateSaleDialog = ref(false)
+
+const opencustomer = () =>{
+  opencustomerDialog.value = true
+}
+
+const openSaleForm = () => {
+  generateSaleDialog.value = true
+}
+
+const generatePreSale = async opportunityId => {
+  changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value)
+}
+
+const markProcedureAsDone = (procedureId, isChecked) => {
+  // Aquí puedes implementar la lógica para actualizar el estado del procedimiento.
+  console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
+}
 
 onMounted(() => {
   allProperty({
@@ -47,87 +73,36 @@ onMounted(() => {
 
         <VBtn
           color="secondary"
-          @click="openHistory"
+          @click="opencustomer"
         >
-          Editar Perfil
+          Editar Informacion
         </VBtn>
       </div>
     </div>
   </VCardText>
-
-  <!-- Sección de Proyecto -->
+  <!-- Sección de Procedimientos -->
   <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
     <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
       <h4 class="mb-4">
-        Proyecto
+        Procedimientos
       </h4>
-      <div class="d-flex align-center justify-center justify-sm-space-between flex-wrap gap-4">
-        <!-- Selección del departamento -->
-        <AppSelect
-          label="Departamento de interés"
-          :items="properties.map(property => ({
-            name: property.title,
-            value: property.id,
-            avatar: poraIcon,
-          }))"
-          item-title="name"
-          item-value="name"
-          placeholder="Select Item"
-          multiple
-          clearable
-          clear-icon="tabler-x"
+      <div v-if="props.opportunity.procedure && props.opportunity.procedure.length > 0">
+        <div
+          v-for="procedure in props.opportunity.procedure"
+          :key="procedure.id"
+          class="d-flex align-center justify-between"
         >
-          <template #selection="{ item }">
-            <VChip>
-              <template #prepend>
-                <VAvatar
-                  start
-                  :image="poraIcon"
-                />
-              </template>
-
-              <span>{{ item.title }}</span>
-            </VChip>
-          </template>
-        </AppSelect>
+          <span>{{ procedure.title }}</span>
+          <VCheckbox
+            v-model="procedure.pivot.is_check"
+            label="Realizado?"
+            @change="markProcedureAsDone(procedure.id, procedure.pivot.is_check)"
+          />
+        </div>
       </div>
-    </div>
-  </VCardText>
-  <!-- Sección de Cotizaciones -->
-  <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
-    <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
-      <h4 class="mb-4">
-        Cotizaciones
-      </h4>
-      
-      <!-- Tabla de cotizaciones -->
-      <VTable
-        v-if="quotes.length"
-        class="mt-4"
-      >
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Fecha</th>
-            <th>Monto</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="quote in quotes"
-            :key="quote.id"
-          >
-            <td>{{ quote.id }}</td>
-            <td>{{ quote.date }}</td>
-            <td>{{ quote.amount }}</td>
-            <td>{{ quote.status }}</td>
-          </tr>
-        </tbody>
-      </VTable>
-      <p v-else>
-        No hay cotizaciones disponibles.
-      </p>
+      <div v-else>
+        <span>No hay procedimientos disponibles.</span>
+      </div>
     </div>
   </VCardText>
 
@@ -136,17 +111,26 @@ onMounted(() => {
     <VBtn
       color="primary"
       large
-      class="mx-2" 
+      class="mx-1" 
       @click="generateQuote"
     >
-      Nueva Cotizacion
+      Agregar Cotizacion
     </VBtn>
     <VBtn
       color="primary"
       class="mx-auto"
+      @click="openSaleForm"
     >
-      Siguiente Etapa
+      Generar Venta
     </VBtn>
   </VCardText>
+  <EditCustomerDialog
+    v-model:is-dialog-visible="opencustomerDialog"
+    :opportunity-kanban="props.opportunity"
+  />
+  <PreSaleForm
+    v-model:is-dialog-visible="generateSaleDialog"
+    :opportunity="props.opportunity"
+  />
 </template>
 

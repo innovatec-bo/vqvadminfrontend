@@ -369,6 +369,7 @@ declare module 'vue' {
     DemoTooltipTransition: typeof import('./src/views/demos/components/tooltip/DemoTooltipTransition.vue')['default']
     DemoTooltipVModelSupport: typeof import('./src/views/demos/components/tooltip/DemoTooltipVModelSupport.vue')['default']
     DialogCloseBtn: typeof import('./src/@core/components/DialogCloseBtn.vue')['default']
+    EditCustomerDialog: typeof import('./src/components/customer/EditCustomerDialog.vue')['default']
     EditDeliveryOpportunity: typeof import('./src/components/activity/EditDeliveryOpportunity.vue')['default']
     EditPreSaleOpportunity: typeof import('./src/components/activity/EditPreSaleOpportunity.vue')['default']
     EditPreVentaOpportunity: typeof import('./src/components/activity/EditPreVentaOpportunity.vue')['default']

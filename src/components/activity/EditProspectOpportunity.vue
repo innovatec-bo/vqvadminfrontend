@@ -1,8 +1,11 @@
+<!-- eslint-disable camelcase -->
 <script setup>
-import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
-import poraIcon from '@/assets/icons/poraIcon.png'
+import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
+import { useProcess } from '@/composables/Process/useProcess'
 import { useProperty } from '@/composables/Realty/useProperty'
+import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import { onMounted } from 'vue'
+import EditCustomerDialog from '../customer/EditCustomerDialog.vue'
 
 const props = defineProps({
   opportunity: {
@@ -11,7 +14,30 @@ const props = defineProps({
   },
 })
 
+
+
 const { property, allProperty, properties } = useProperty()
+const { checkProcessForOpportunity } = useProcess()
+
+const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()
+const opencustomerDialog = ref(false)
+
+const opencustomer = () =>{
+  opencustomerDialog.value = true
+}
+
+const generatePreSale = async opportunityId => {
+  changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value)
+}
+
+const markProcedureAsDone = (procedureId, isChecked) => {
+  console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
+  checkProcessForOpportunity(props.opportunity.id, procedureId, {
+    is_check: isChecked,
+  })
+
+}
+
 
 onMounted(() => {
   allProperty({
@@ -46,49 +72,36 @@ onMounted(() => {
 
         <VBtn
           color="secondary"
-          @click="openHistory"
+          @click="opencustomer"
         >
-          Editar Perfil
+          Editar Informacion
         </VBtn>
       </div>
     </div>
   </VCardText>
 
-  <!-- Sección de Proyecto -->
+  <!-- Sección de Procedimientos -->
   <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
     <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
       <h4 class="mb-4">
-        Proyecto
+        Procedimientos
       </h4>
-      <div class="d-flex align-center justify-center justify-sm-space-between flex-wrap gap-4">
-        <!-- Selección del departamento -->
-        <AppSelect
-          label="Departamento de interés"
-          :items="properties.map(property => ({
-            name: property.title,
-            value: property.id,
-            avatar: poraIcon,
-          }))"
-          item-title="name"
-          item-value="name"
-          placeholder="Select Item"
-          multiple
-          clearable
-          clear-icon="tabler-x"
+      <div v-if="props.opportunity.procedure && props.opportunity.procedure.length > 0">
+        <div
+          v-for="procedure in props.opportunity.procedure"
+          :key="procedure.id"
+          class="d-flex align-center justify-between"
         >
-          <template #selection="{ item }">
-            <VChip>
-              <template #prepend>
-                <VAvatar
-                  start
-                  :image="poraIcon"
-                />
-              </template>
-
-              <span>{{ item.title }}</span>
-            </VChip>
-          </template>
-        </AppSelect>
+          <span>{{ procedure.title }}</span>
+          <VCheckbox
+            v-model="procedure.pivot.is_check"
+            label="Realizado?"
+            @change="markProcedureAsDone(procedure.id, procedure.pivot.is_check)"
+          />
+        </div>
+      </div>
+      <div v-else>
+        <span>No hay procedimientos disponibles.</span>
       </div>
     </div>
   </VCardText>
@@ -98,10 +111,24 @@ onMounted(() => {
     <VBtn
       color="primary"
       large
+      class="mx-1" 
       @click="generateQuote"
     >
       Generar Cotización
     </VBtn>
+    <VBtn
+      color="primary"
+      class="mx-auto"
+      :disabled="loadingOpportunity"
+      :loading="loadingOpportunity"
+      @click="generatePreSale(props.opportunity.id)"
+    >
+      Siguiente Etapa
+    </VBtn>
   </VCardText>
+  <EditCustomerDialog
+    v-model:is-dialog-visible="opencustomerDialog"
+    :opportunity-kanban="props.opportunity"
+  />
 </template>
 

@@ -13,6 +13,11 @@ const props = defineProps({
 
 const { property, allProperty, properties } = useProperty()
 
+const markProcedureAsDone = (procedureId, isChecked) => {
+  // Aquí puedes implementar la lógica para actualizar el estado del procedimiento.
+  console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
+}
+
 onMounted(() => {
   allProperty({
     page: 1,
@@ -92,6 +97,33 @@ onMounted(() => {
       </div>
     </div>
   </VCardText>
+
+  <!-- Sección de Procedimientos -->
+  <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
+    <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
+      <h4 class="mb-4">
+        Procedimientos
+      </h4>
+      <div v-if="props.opportunity.procedure && props.opportunity.procedure.length > 0">
+        <div
+          v-for="procedure in props.opportunity.procedure"
+          :key="procedure.id"
+          class="d-flex align-center justify-between"
+        >
+          <span>{{ procedure.title }}</span>
+          <VCheckbox
+            v-model="procedure.pivot.is_check"
+            label="Realizado?"
+            @change="markProcedureAsDone(procedure.id, procedure.pivot.is_check)"
+          />
+        </div>
+      </div>
+      <div v-else>
+        <span>No hay procedimientos disponibles.</span>
+      </div>
+    </div>
+  </VCardText>
+  
 
   <!-- Botón Generar Cotización -->
   <VCardText class="d-flex justify-center mt-4">

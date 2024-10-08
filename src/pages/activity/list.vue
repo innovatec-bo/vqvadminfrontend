@@ -54,9 +54,9 @@ const onRefreshActivities = () => {
 }
 
 const orders = [
-  { tabName: 'Hoy', icon: 'tabler-edit', actividades: activities },
-  { tabName: 'Anteriores', icon: 'tabler-calendar', actividades: activitiesPast },
-  { tabName: 'Futuros', icon: 'tabler-calendar', actividades: activitiesFuture },
+  { tabName: 'Hoy', icon: 'tabler-edit', actividades: activities, badge: activities.value.length },
+  { tabName: 'Anteriores', icon: 'tabler-calendar', actividades: activitiesPast, badge: activitiesPast.value.length },
+  { tabName: 'Futuros', icon: 'tabler-calendar', actividades: activitiesFuture, badge: activitiesFuture.value.length },
 ]
 </script>
 
@@ -79,7 +79,13 @@ const orders = [
               size="20"
               :icon="order.icon"
             />
-            {{ order.tabName }}
+            <VBadge
+              :content="order.badge"
+              :offset-x="-18"
+              :offset-y="6"
+            >
+              {{ order.tabName }}
+            </VBadge>
           </VTab>
         </VTabs>
 

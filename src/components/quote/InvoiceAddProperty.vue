@@ -1,7 +1,6 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import { PropertyType } from '@/enums/PropertyType'
-import { PaymentMethod } from '@/enums/PaymentMethod'
 
 const props = defineProps({
   properties: {
@@ -99,7 +98,7 @@ const addDepartament = () => {
       <!-- Botón para agregar nueva propiedad -->
       <div class="d-flex justify-end mt-4">
         <VBtn
-          color="primary"
+          color="secondary"
           class="me-2"
           @click="addDepartament"
         >
@@ -107,7 +106,7 @@ const addDepartament = () => {
         </VBtn>
 
         <VBtn
-          color="primary"
+          color="secondary"
           @click="addPark"
         >
           Agregar Parqueo
