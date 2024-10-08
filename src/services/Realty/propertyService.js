@@ -38,5 +38,11 @@ export const deletePropertyById = async propertyId => {
   })
 }
 
+export const getPropertiesForType = async type => {
+  return await $api(`/properties/${type}`, {
+    method: 'GET',
+  })
+}
+
 
 
