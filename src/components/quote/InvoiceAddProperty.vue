@@ -1,5 +1,7 @@
 <!-- eslint-disable camelcase -->
 <script setup>
+import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
+import { useProperty } from '@/composables/Realty/useProperty'
 import { PropertyType } from '@/enums/PropertyType'
 
 const props = defineProps({
@@ -14,6 +16,11 @@ const emit = defineEmits([
   'totalAmount',
   'addProperty',
 ])
+
+const { properties: propertyApi, propertiesForType } = useProperty()
+
+const propertyPark = ref([])
+const propertyDepartament = ref([])
 
 const addPark = () =>{
   const newProduct = {
@@ -36,6 +43,21 @@ const addDepartament = () => {
 
   emit('addProperty', newProduct) // Emite el evento con el nuevo producto
 }
+
+onMounted(async () => {
+  try {
+    const departament = await propertiesForType(PropertyType.DEPARTAMENT.value)
+ 
+    propertyDepartament.value = departament
+
+    const park = await propertiesForType(PropertyType.PARK.value)
+
+    propertyPark.value = park
+    
+  } catch (error) {
+    console.error('Error al obtener las propiedades:', error)
+  }
+})
 </script>
 
 <template>
@@ -55,9 +77,10 @@ const addDepartament = () => {
           sm="4"
           style="padding-block: 0;padding-inline: 8px;"
         >
-          <AppTextField
+          <AppSelect
             :label="property.property_type_name"
-            placeholder="Escribe el nombre del departamento"
+            placeholder="Selecciona una propiedad"
+            :items="property.property_type === PropertyType.DEPARTAMENT.value ? propertyDepartament : propertyPark"
             outlined
             dense
             class="custom-salesforce-input"

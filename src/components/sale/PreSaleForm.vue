@@ -1,5 +1,6 @@
 <!-- eslint-disable camelcase -->
 <script setup>
+import { useProperty } from '@/composables/Realty/useProperty'
 import { PaymentMethod } from '@/enums/PaymentMethod'
 import { PropertyType } from '@/enums/PropertyType'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
@@ -18,7 +19,11 @@ const props = defineProps({
   },
 })
 
+
 const emit = defineEmits(['update:isDialogVisible'])
+
+
+const { properties, propertiesForType } = useProperty()
 
 
 const dialogVisibleUpdate = val => {
@@ -116,10 +121,7 @@ watch(
               {{ themeConfig.app.title }}
             </h6>
           </div>
-          <!-- 👉 Address -->
-          <p class="mb-0">
-            Office 149, 450 South Brand Brooklyn
-          </p>
+          <H3>Formulario de Venta</H3>
         </div>
 
         <!-- 👉 Right Content -->

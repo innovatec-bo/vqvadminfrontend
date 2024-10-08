@@ -1,4 +1,4 @@
-import { allProperties, allPropertiesProject, deletePropertyById, getPropertyById, registerProperty } from '@/services/Realty/propertyService'
+import { allProperties, allPropertiesProject, deletePropertyById, getPropertiesForType, getPropertyById, registerProperty } from '@/services/Realty/propertyService'
 import { showSuccessNotification } from '@/utils/notifications'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -126,6 +126,20 @@ export function useProperty() {
     }
   }
 
+  const propertiesForType = async type =>{
+    try{
+      const response = await getPropertiesForType(type)
+
+      console.log('propertyfortype ', response.data)
+
+      return  response.data
+
+    }catch (err){
+      console.log(err)
+    }
+  }
+
+  
   return {
     loadingProperty,
     error,
@@ -133,6 +147,7 @@ export function useProperty() {
     getPropertyId,
     allProperty,
     allPropertybyProject,
+    propertiesForType,
     removeProperty,
     properties: computed(() => properties.value),
     property,
