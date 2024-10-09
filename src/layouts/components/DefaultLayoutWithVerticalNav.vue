@@ -74,8 +74,5 @@ watch([
     <template #footer>
       <Footer />
     </template>
-
-    <!-- 👉 Customizer -->
-    <TheCustomizer />
   </VerticalNavLayout>
 </template>

@@ -5,6 +5,7 @@ import EditDeliveryOpportunity from '@/components/activity/EditDeliveryOpportuni
 import EditPreSaleOpportunity from '@/components/activity/EditPreSaleOpportunity.vue'
 import EditProspectOpportunity from '@/components/activity/EditProspectOpportunity.vue'
 import EditSaleOpportunity from '@/components/activity/EditSaleOpportunity.vue'
+import SellerReport from '@/components/report/SellerReport.vue'
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProperty } from '@/composables/Realty/useProperty'
@@ -272,6 +273,7 @@ const handleDrawerModelValueUpdate = val => {
           </VForm>
         </VCardText>
       </VCard>
+      <SellerReport v-else />
     </VCol>
 
     <!-- Second VCard (Customer History) -->
@@ -283,4 +285,3 @@ const handleDrawerModelValueUpdate = val => {
     </VCol>
   </VRow>
 </template>
-

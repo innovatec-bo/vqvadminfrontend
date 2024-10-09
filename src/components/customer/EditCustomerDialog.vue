@@ -23,7 +23,6 @@ const { allProperty, properties } = useProperty()
 const { getallTypeActivities, typeActivities, registerActivity, loadingActivity, changeStatusActivity } = useActivity()
 const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity } = useOpportunity()
 
-
 const dialogVisibleUpdate = () => {
   emit('update:isDialogVisible', false)
 }
@@ -35,7 +34,6 @@ const saveData = async () => {
     id: opportunity.value.id, 
     description: opportunity.value.description,
     property_id: opportunity.value.property_id,
-    
     customer: {
       id: opportunity.value.customer.id,
       name: opportunity.value.customer.name,
@@ -80,12 +78,12 @@ watch(() => props.isDialogVisible, async newValue => {
     <DialogCloseBtn @click="dialogVisibleUpdate" />
     <VCard>
       <VCardTitle class="text-h4 font-weight-semibold mb-4">
-        Información del Cliente y Oportunidad
+        <h4>Información del Cliente y Oportunidad</h4>
       </VCardTitle>
 
       <VCardText>
         <VForm @submit.prevent="saveData">
-          <VRow>
+          <VRow dense>
             <!-- Sección de Información del Cliente -->
             <VCol
               cols="12"

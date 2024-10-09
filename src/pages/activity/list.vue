@@ -62,12 +62,19 @@ const orders = [
 </script>
 
 <template>
-  <VRow class="match-height">
+  <VRow
+    class="match-height"
+    style=" display: flex;block-size: 100vh;"
+  >
     <VCol
       cols="12"
       md="4"
+      style="display: flex; flex-direction: column;"
     >
-      <VCard title="Lista de Actividades">
+      <VCard
+        title="Lista de Actividades"
+        class="flex-grow-1"
+      >
         <VTabs
           v-model="currentActiveTab"
           grow
@@ -80,19 +87,11 @@ const orders = [
               size="20"
               :icon="order.icon"
             />
-            <!--
-              <VBadge
-              :content="order.badge"
-              :offset-x="-18"
-              :offset-y="6"
-              >
-              </VBadge> 
-            -->
             {{ order.tabName }}
           </VTab>
         </VTabs>
 
-        <VCardText>
+        <VCardText style="flex-grow: 1; overflow-y: auto;">
           <!-- Mostrar el spinner mientras carga -->
           <VOverlay
             v-if="isLoading"
@@ -173,11 +172,11 @@ const orders = [
                       </VCol>
                     </VRow>
                   </VListItem>
-                  <div class="mx-3 ">
+                  <div class="mx-3">
                     <VChip
                       label
                       color="secondary"
-                      class="w-100 h-50 d-flex justify-content-between  my-2"
+                      class="w-100 h-50 d-flex justify-content-between my-2"
                     >
                       <IconBtn>
                         <VIcon icon="tabler-phone" />
@@ -216,16 +215,15 @@ const orders = [
     <VCol
       cols="12"
       md="8"
+      style="display: flex; flex-direction: column;"
     >
-      <!-- Componente AddActivity -->
       <AddActivity
         v-model:is-drawer-open="isEditActivity"
         :activities-data="activity"
+        class="flex-grow-1"
         @refresh-activities="onRefreshActivities"
         @loaded="isLoading = false"
-      >
-        />
-      </addactivity>
+      />
     </VCol>
   </VRow>
 </template>
