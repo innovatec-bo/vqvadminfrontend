@@ -29,7 +29,6 @@ export function useOpportunity (){
   })
 
   const kanban = ref(null)
-
     
   const allOpportunityKanbanForUser = async () => {
     try{
@@ -84,10 +83,10 @@ export function useOpportunity (){
     }
   }
 
-  const changeStatusByOpportunity = async (id, stageId) => {
+  const changeStatusByOpportunity = async (id, stageId, $data) => {
     loadingOpportunity.value = true
     try {
-      const response = await changeStatus(id, stageId)
+      const response = await changeStatus(id, stageId, $data)
 
       console.log('Oportunidad actualizada: ', response)
       opportunity.value = response.data
@@ -101,10 +100,6 @@ export function useOpportunity (){
       loadingOpportunity.value = false
     }
   }
-  
-
-  
-
   
   return {
     loadingOpportunity,

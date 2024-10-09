@@ -10,19 +10,18 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits(['updateStageId', 'complet'])
 const { changeStatusByOpportunity } = useOpportunity()
 const { checkProcessForOpportunity } = useProcess()
 
 const changeStatus = async () => {
   try {
-    await changeStatusByOpportunity(props.opportunity.id, 7)
+    await changeStatusByOpportunity(props.opportunity.id, 7, {})
+    emit('complet')
   } catch (err) {
     console.error('Error updating customer:', err)
   }
 }
-
-onMounted(() => {
-})
 
 const markProcedureAsDone = (procedureId, isChecked) => {
   console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)

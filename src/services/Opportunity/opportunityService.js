@@ -23,8 +23,9 @@ export const updateOpportunity = async (id, opportunity) => {
   })
 }
 
-export const changeStatus = async (opportunityId, stateId) => {
+export const changeStatus = async (opportunityId, stateId, $data) => {
   return await $api(`/opportunity/${opportunityId}/stage/${stateId}`, {
     method: 'PATCH',
+    body: $data,
   })
 }

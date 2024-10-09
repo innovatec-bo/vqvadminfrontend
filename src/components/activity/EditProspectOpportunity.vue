@@ -12,9 +12,7 @@ const props = defineProps({
   },
 })
 
-
 const emit = defineEmits(['updateStageId'])
-
 const { checkProcessForOpportunity } = useProcess()
 
 const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()
@@ -25,7 +23,7 @@ const opencustomer = () =>{
 }
 
 const generatePreSale = async opportunityId => {
-  changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value)
+  changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value, {})
 
   emit('updateStageId', opportunityId)
 }
