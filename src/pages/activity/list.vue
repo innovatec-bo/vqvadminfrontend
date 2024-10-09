@@ -1,7 +1,6 @@
 <script setup>
-import poraIcon from '@/assets/icons/poraIcon.png';
-import { useActivity } from '@/composables/Activity/useActivity';
-import AddActivity from '@/views/activity/AddActivity.vue';
+import { useActivity } from '@/composables/Activity/useActivity'
+import AddActivity from '@/views/activity/AddActivity.vue'
 
 const currentActiveTab = ref('New')
 const filters = ref(['Todos', 'PORA']) // Opciones de filtro
@@ -59,6 +58,39 @@ const orders = [
   { tabName: 'Anteriores', icon: 'tabler-calendar', actividades: activitiesPast, badge: activitiesPast.value.length },
   { tabName: 'Futuros', icon: 'tabler-calendar', actividades: activitiesFuture, badge: activitiesFuture.value.length },
 ]
+
+const getFirstWord = str => {
+  return str.split(' ')[0] // Divide el string por espacios y devuelve la primera palabra
+}
+
+const formatDate = dateString => {
+  const date = new Date(dateString)
+
+  const day = date.getDate() // Día del mes
+
+  const months = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre',
+  ]
+
+  const month = months[date.getMonth()] // Mes en formato humano
+
+  const hours = date.getHours().toString().padStart(2, '0') // Hora con dos dígitos
+  const minutes = date.getMinutes().toString().padStart(2, '0') // Minutos con dos dígitos
+
+  // Retorna la fecha en formato: 7 de marzo, 14:00
+  return `${day} de ${month}, ${hours}:${minutes}`
+}
 </script>
 
 <template>
@@ -68,7 +100,7 @@ const orders = [
   >
     <VCol
       cols="12"
-      md="4"
+      md="3"
       style="display: flex; flex-direction: column;"
     >
       <VCard
@@ -83,11 +115,9 @@ const orders = [
             v-for="order in orders"
             :key="order.tabName"
           >
-            <VIcon
-              size="20"
-              :icon="order.icon"
-            />
-            {{ order.tabName }}
+            <span style="font-size: 14px;">
+              {{ order.tabName }}
+            </span>
           </VTab>
         </VTabs>
 
@@ -131,79 +161,79 @@ const orders = [
                   @click="editActivity(item)"
                 >
                   <VListItem>
-                    <template #prepend>
-                      <VAvatar 
-                        v-if="item.project_name"
-                        size="50"
-                        rounded
-                      >
-                        <img
-                          :src="poraIcon"
-                          alt="Logo pora"
-                          style="border-radius: 30%;"
-                        >
-                      </VAvatar>
-                    </template>
                     <VRow>
                       <VCol
                         v-if="item.project_name"
                         cols="12"
                         md="7"
                       >
-                        <VListItemTitle class="font-weight-medium">
-                          {{ item.project_name }} | {{ item.code_property }}
-                        </VListItemTitle>
-                        <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-                          <span>$ {{ item.price }}</span>
+                        <VListItemSubtitle class="text-disabled d-flex justify-between ">
+                          <strong>
+                            {{ item.project_name }} | {{ item.code_property }}
+                          </strong>
                         </VListItemSubtitle>
+                        <VListItemTitle class="font-weight-medium">
+                          <span>$ {{ item.price }}</span>
+                        </VListItemTitle>
                       </VCol>
+                      <VCol
+                        v-if="!item.project_name"
+                        cols="12"
+                        md="7"
+                      >
+                        <VChip
+                          class="d-flex justify-center align-center"
+                          style=" display: inline-flex;border-radius: 4px; block-size: 36px; inline-size: 36px;"
+                        >
+                          <VIcon
+                            size="25"
+                            icon="tabler-home"
+                          />
+                        </VChip>
+                      </VCol>
+
                       <VCol
                         cols="12"
                         md="5"
+                        class="d-flex justify-end align-center"
                       >
                         <VChip
                           label
                           color="primary"
                           class="ml-auto"
-                          style="font-size: 0.7em;"
+                          style="font-size: 10px;"
                         >
                           {{ item.stage }}
                         </VChip>
                       </VCol>
                     </VRow>
                   </VListItem>
-                  <div class="mx-3">
+                  <VListItem class="">
+                    <!-- todo: conseguir icono por actividad -->
                     <VChip
                       label
                       color="secondary"
-                      class="w-100 h-50 d-flex justify-content-between my-2"
+                      class="w-100 h-48"
                     >
-                      <IconBtn>
-                        <VIcon icon="tabler-phone" />
-                      </IconBtn>
-                      <div style="flex-grow: 2;">
-                        {{ item.type_activity }}
-                      </div>
+                      <VIcon icon="tabler-phone" />
                       <div class="mx-2">
-                        |
-                      </div> <!-- Separador con margen -->
-                      <div>
-                        {{ item.name_opportunity }}
+                        {{ item.type_activity }} &nbsp • &nbsp {{ getFirstWord(item.name_opportunity) }}
                       </div>
                     </VChip>
-
+                  </VListItem>
+                  <VListItem>
                     <div
-                      class="d-flex justify-content-between my-2"
+                      class="d-flex justify-content-between "
                       style="font-size: 0.9em;"
                     >
                       <div style="flex-grow: 1;">
-                        Ver Actividad
+                        Ver
                       </div>
                       <div>
-                        {{ item.scheduled_at }}
+                        {{ formatDate(item.scheduled_at) }}
                       </div>
                     </div>
-                  </div>
+                  </VListItem>
                 </div>
               </template>
             </VWindowItem>
@@ -214,7 +244,7 @@ const orders = [
 
     <VCol
       cols="12"
-      md="8"
+      md="9"
       style="display: flex; flex-direction: column;"
     >
       <AddActivity

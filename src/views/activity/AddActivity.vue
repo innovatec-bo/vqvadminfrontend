@@ -141,9 +141,8 @@ const handleDrawerModelValueUpdate = val => {
             <VCol
               cols="12"
               sm="6"
-              class="pl-5"
             >
-              Etapas
+              Actividades
             </VCol>
             <VCol
               cols="12"
@@ -157,121 +156,115 @@ const handleDrawerModelValueUpdate = val => {
               </VChip>
             </VCol>
           </VRow>
-        </VCardTitle>
+        </VCardTitle>  
+       
+       
         <VCardText>
-          <VForm>
-            <VWindow class="mx-3">
-              <VRow>
-                <VCol
-                  cols="12"
-                  sm="6"
-                >
-                  <VRow>
-                    <VCol cols="12">
-                      <VSwitch
-                        v-for="(activity, index) in opportunity.activities"
-                        :key="activity.id"
-                        :v-model="activitySwitch(activity.state_activity)"
-                        :label="activity.title"
-                      />
-                    </VCol>
-                    <VCol cols="12">
-                      <AppTextField
-                        v-model="newActivity.title"
-                        label="Titulo de la actividad"
-                        placeholder="......"
-                      />
-                    </VCol>
-                    <VCol
-                      cols="12"
-                      md="6"
+          <VWindow class="mx-3">
+            <VRow>
+              <VCol
+                cols="12"
+                sm="5"
+              >
+                <VRow>
+                  <VCol cols="12">
+                    <VSwitch
+                      v-for="(activity, index) in opportunity.activities"
+                      :key="activity.id"
+                      :v-model="activitySwitch(activity.state_activity)"
+                      :label="activity.title"
+                    />
+                  </VCol>
+                  <VCol cols="12">
+                    <AppTextField
+                      v-model="newActivity.title"
+                      label="Titulo de la actividad"
+                      placeholder="......"
+                    />
+                  </VCol>
+                  <VCol cols="12">
+                    <AppSelect
+                      v-model="newActivity.type_activity_id"
+                      label="Seleccione una Actividad"
+                      placeholder="Seleccione una Actividad"
+                      :items="typeActivities.map(activity => ({ title: activity.name, value: activity.id }))"
+                    />
+                  </VCol>
+                  <VCol cols="12">
+                    <AppDateTimePicker
+                      v-model="newActivity.scheduled_at"
+                      label="Seleccione la fecha y hora"
+                      placeholder="Select date and time"
+                      :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
+                      :rules="[requiredValidator]"
+                    />
+                  </VCol>
+                  <VCol cols="12">
+                    <AppTextarea
+                      v-model="newActivity.description"
+                      label="Descripcion"
+                      rows="3"
+                      :rules="[requiredValidator]"
+                    />
+                    <VBtn
+                      size="small"
+                      color="secondary"
+                      class="my-2 mx-2"
+                      @click="closeNavigationDrawer"
                     >
-                      <AppSelect
-                        v-model="newActivity.type_activity_id"
-                        label="Seleccione una Actividad"
-                        placeholder="Seleccione una Actividad"
-                        :items="typeActivities.map(activity => ({ title: activity.name, value: activity.id }))"
-                      />
-                    </VCol>
-                    <VCol
-                      cols="12"
-                      md="6"
+                      Cancelar
+                    </VBtn>
+                    <VBtn
+                      size="small"
+                      color="error"
+                      class="my-2 mx-2"
                     >
-                      <AppDateTimePicker
-                        v-model="newActivity.scheduled_at"
-                        label="Seleccione la fecha y hora"
-                        placeholder="Select date and time"
-                        :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
-                        :rules="[requiredValidator]"
-                      />
-                    </VCol>
-                    <VCol cols="12">
-                      <AppTextarea
-                        v-model="newActivity.description"
-                        label="Descripcion"
-                        rows="3"
-                        :rules="[requiredValidator]"
-                      />
-                      <VBtn
-                        size="small"
-                        color="secondary"
-                        class="my-2 mx-2"
-                        @click="closeNavigationDrawer"
-                      >
-                        Cancelar
-                      </VBtn>
-                      <VBtn
-                        size="small"
-                        color="error"
-                        class="my-2 mx-2"
-                      >
-                        Dar de Baja
-                      </VBtn>
-                      <VBtn
-                        size="small"
-                        color="primary"
-                        class="mx-auto"
-                        :loading="loadingActivity"
-                        :disabled="loadingActivity"
-                        @click="onSubmit"
-                      >
-                        Guardar
-                      </VBtn>
-                    </VCol>
-                  </VRow>
-                </VCol>
-                <VCol
-                  cols="12"
-                  sm="6"
-                  style="align-items: center;"
-                >
-                  <EditProspectOpportunity
-                    v-if="opportunity.stage_id === 2"
-                    :opportunity="opportunity"
-                    @update-stage-id="handleStageIdUpdate"
-                  />
-                  <EditPreSaleOpportunity
-                    v-if="opportunity.stage_id === 3"
-                    :opportunity="opportunity"
-                    @update-stage-id="handleStageIdUpdate"
-                  />
-                  <EditSaleOpportunity
-                    v-if="opportunity.stage_id === 4"
-                    :opportunity="opportunity"
-                    @refresh-activities="onRefreshOpportunity"
-                    @update-stage-id="handleStageIdUpdate"
-                  />
-                  <EditDeliveryOpportunity
-                    v-if="opportunity.stage_id === 5"
-                    :opportunity="opportunity"
-                    @refresh-activities="onRefreshOpportunity"
-                    @update-stage-id="handleStageIdUpdate"
-                    @complet="complet"
-                  />
-                </VCol>
-              </VRow>
-            </VWindow>
-          </VForm>
+                      Dar de Baja
+                    </VBtn>
+                    <VBtn
+                      size="small"
+                      color="primary"
+                      class="mx-auto"
+                      :loading="loadingActivity"
+                      :disabled="loadingActivity"
+                      @click="onSubmit"
+                    >
+                      Guardar
+                    </VBtn>
+                  </VCol>
+                </VRow>
+              </VCol>
+              <VCol
+                cols="12"
+                sm="7"
+                style="align-items: center;"
+              >
+                <EditProspectOpportunity
+                  v-if="opportunity.stage_id === 2"
+                  :opportunity="opportunity"
+                  @update-stage-id="handleStageIdUpdate"
+                />
+                <EditPreSaleOpportunity
+                  v-if="opportunity.stage_id === 3"
+                  :opportunity="opportunity"
+                  @update-stage-id="handleStageIdUpdate"
+                />
+                <EditSaleOpportunity
+                  v-if="opportunity.stage_id === 4"
+                  :opportunity="opportunity"
+                  @refresh-activities="onRefreshOpportunity"
+                  @update-stage-id="handleStageIdUpdate"
+                />
+                <EditDeliveryOpportunity
+                  v-if="opportunity.stage_id === 5"
+                  :opportunity="opportunity"
+                  @refresh-activities="onRefreshOpportunity"
+                  @update-stage-id="handleStageIdUpdate"
+                  @complet="complet"
+                />
+              </VCol>
+            </VRow>
+          </VWindow>
         </VCardText>
       </VCard>
       <SellerReport v-else />
