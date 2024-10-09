@@ -1,6 +1,6 @@
 <script setup>
 import poraIcon from '@/assets/icons/poraIcon.png'
-import { useProperty } from '@/composables/Realty/useProperty'
+import { useProcess } from '@/composables/Process/useProcess'
 import { onMounted } from 'vue'
 import DeliveryForm from '../sale/DeliveryForm.vue'
 
@@ -11,11 +11,23 @@ const props = defineProps({
   },
 })
 
-const { property, allProperty, properties } = useProperty()
+const emit = defineEmits([
+  'onRefreshOpportunity',
+])
+
+const { checkProcessForOpportunity } = useProcess()
 
 const markProcedureAsDone = (procedureId, isChecked) => {
-  // Aquí puedes implementar la lógica para actualizar el estado del procedimiento.
   console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
+  checkProcessForOpportunity(props.opportunity.id, procedureId, {
+    // eslint-disable-next-line camelcase
+    is_check: isChecked,
+  })
+
+}
+
+const onRefreshSale = () => {
+  emit('onRefreshOpportunity') 
 }
 
 const confirmDelivery = ref(false)
@@ -25,10 +37,7 @@ const openDeliveryForm = () => {
 }
 
 onMounted(() => {
-  allProperty({
-    page: 1,
-    itemsPerPage: 500,
-  })
+
 })
 </script>
 
@@ -179,6 +188,8 @@ onMounted(() => {
             <VCheckbox
               v-model="procedure.pivot.is_check"
               :label="procedure.title"
+              :true-value="1"
+              :false-value="0"
               class="mx-2"
               @change="markProcedureAsDone(procedure.id, procedure.pivot.is_check)"
             />
@@ -191,7 +202,7 @@ onMounted(() => {
     </VCard>
   </div>
 
-  <!-- Botón Generar Cotización -->
+  <!-- Botón pasar estado -->
   <VCardText class="d-flex justify-center mt-4">
     <VBtn
       color="primary"
@@ -205,5 +216,6 @@ onMounted(() => {
   <DeliveryForm
     v-model:is-dialog-visible="confirmDelivery"
     :opportunity="props.opportunity"
+    @refresh-activities="onRefreshSale"
   />
 </template>

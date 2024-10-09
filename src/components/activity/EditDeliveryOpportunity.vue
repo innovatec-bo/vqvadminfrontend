@@ -22,10 +22,6 @@ const changeStatus = async () => {
 }
 
 onMounted(() => {
-  // allProperty({
-  //   page: 1,
-  //   itemsPerPage: 500,
-  // })
 })
 
 const markProcedureAsDone = (procedureId, isChecked) => {
@@ -91,6 +87,8 @@ const markProcedureAsDone = (procedureId, isChecked) => {
             <VCheckbox
               v-model="procedure.pivot.is_check"
               :label="procedure.title"
+              :true-value="1"
+              :false-value="0"
               class="mx-2"
               :value="!!procedure.pivot.is_check"
               @change="markProcedureAsDone(procedure.id, procedure.pivot.is_check)"

@@ -9,6 +9,7 @@ import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProperty } from '@/composables/Realty/useProperty'
 import { StagesOpportunity } from '@/enums/StagesOpportunity'
+import { watch } from 'vue'
 import CustomerHistory from '../Bitacora/CustomerHistory.vue'
 
 const props = defineProps({
@@ -50,8 +51,6 @@ const newActivity = ref({
   scheduled_at: null,
 })
 
-
-
 const fetchProperties = async () => {
   await allProperty({ page: 1, itemsPerPage: 100 }) 
 }
@@ -73,6 +72,9 @@ const allTypeActivity = async () => {
   await getallTypeActivities()
 }
 
+const onRefreshOpportunity = () => {
+  getOpportunitybyId(activitiesData.value.opportunity_id)
+}
 
 const closeNavigationDrawer = () => {
   emit('update:isDrawerOpen', false)
@@ -255,10 +257,12 @@ const handleDrawerModelValueUpdate = val => {
                   <EditSaleOpportunity
                     v-if="opportunity.stage_id === 4"
                     :opportunity="opportunity"
+                    @refresh-activities="onRefreshOpportunity"
                   />
                   <EditDeliveryOpportunity
                     v-if="opportunity.stage_id === 5"
                     :opportunity="opportunity"
+                    @refresh-activities="onRefreshOpportunity"
                   />
                 </VCol>
               </VRow>

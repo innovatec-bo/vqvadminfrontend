@@ -13,7 +13,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:isDialogVisible'])
+const emit = defineEmits(['update:isDialogVisible', 'onRefreshSale'])
 
 const { changeStatusByOpportunity } = useOpportunity()
 
@@ -39,6 +39,8 @@ const onFormSubmit = async () => {
   emit('update:isDialogVisible', false)
   try {
     await changeStatusByOpportunity(props.opportunity.id, 5)
+    emit('onRefreshSale') 
+  
   } catch (err) {
     console.error('Error updating customer:', err)
   }
@@ -89,7 +91,7 @@ const resetForm = () => {
             class="d-flex flex-wrap justify-center gap-4"
           >
             <VBtn @click="onFormSubmit">
-              Submit
+              Pasar a Entrega
             </VBtn>
             <VBtn
               color="secondary"
