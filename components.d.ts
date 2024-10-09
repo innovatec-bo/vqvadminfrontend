@@ -13,7 +13,6 @@ declare module 'vue' {
     AddEditRoleDialog: typeof import('./src/components/dialogs/AddEditRoleDialog.vue')['default']
     AddOportunity: typeof import('./src/components/opportunity/AddOportunity.vue')['default']
     AddPaymentMethodDialog: typeof import('./src/components/dialogs/AddPaymentMethodDialog.vue')['default']
-    AddQouteInvoice: typeof import('./src/components/quote/AddQouteInvoice.vue')['default']
     AddQuoteInvoice: typeof import('./src/components/quote/AddQuoteInvoice.vue')['default']
     AppAutocomplete: typeof import('./src/@core/components/app-form-elements/AppAutocomplete.vue')['default']
     AppBarSearch: typeof import('./src/@core/components/AppBarSearch.vue')['default']
@@ -36,7 +35,6 @@ declare module 'vue' {
     CardStatisticsVerticalSimple: typeof import('./src/@core/components/CardStatisticsVerticalSimple.vue')['default']
     ChatComponent: typeof import('./src/components/whatssap/chatComponent.vue')['default']
     ConfirmDialog: typeof import('./src/components/dialogs/ConfirmDialog.vue')['default']
-    copy: typeof import('./src/components/activity/EditStageOpportunity copy.vue')['default']
     CreateAppDialog: typeof import('./src/components/dialogs/CreateAppDialog.vue')['default']
     CustomCheckboxes: typeof import('./src/@core/components/app-form-elements/CustomCheckboxes.vue')['default']
     CustomCheckboxesWithIcon: typeof import('./src/@core/components/app-form-elements/CustomCheckboxesWithIcon.vue')['default']
@@ -372,7 +370,6 @@ declare module 'vue' {
     EditCustomerDialog: typeof import('./src/components/customer/EditCustomerDialog.vue')['default']
     EditDeliveryOpportunity: typeof import('./src/components/activity/EditDeliveryOpportunity.vue')['default']
     EditPreSaleOpportunity: typeof import('./src/components/activity/EditPreSaleOpportunity.vue')['default']
-    EditPreVentaOpportunity: typeof import('./src/components/activity/EditPreVentaOpportunity.vue')['default']
     EditProspectOpportunity: typeof import('./src/components/activity/EditProspectOpportunity.vue')['default']
     EditSaleOpportunity: typeof import('./src/components/activity/EditSaleOpportunity.vue')['default']
     EditStageOpportunity: typeof import('./src/components/activity/EditStageOpportunity.vue')['default']
@@ -404,6 +401,5 @@ declare module 'vue' {
     TwoFactorAuthDialog: typeof import('./src/components/dialogs/TwoFactorAuthDialog.vue')['default']
     UserInfoEditDialog: typeof import('./src/components/dialogs/UserInfoEditDialog.vue')['default']
     UserUpgradePlanDialog: typeof import('./src/components/dialogs/UserUpgradePlanDialog.vue')['default']
-    VueApexCharts: typeof import('vue3-apexcharts')['default']
   }
 }

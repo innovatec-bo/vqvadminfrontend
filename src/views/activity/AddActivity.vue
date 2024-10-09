@@ -137,11 +137,12 @@ const handleDrawerModelValueUpdate = val => {
     <VCol cols="12">
       <!-- Adjust the column size based on your needs -->
       <VCard v-if="isDrawerOpen">
-        <VCardTitle>
+        <VCardTitle class="pt-10">
           <VRow>
             <VCol
               cols="12"
               sm="6"
+              class="pl-5"
             >
               Etapas
             </VCol>
