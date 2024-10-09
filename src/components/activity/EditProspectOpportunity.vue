@@ -27,7 +27,7 @@ const opencustomer = () =>{
 const generatePreSale = async opportunityId => {
   changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value)
 
-  emit('updateStageId', StagesOpportunity.PRESALE.value)
+  emit('updateStageId', opportunityId)
 }
 
 const markProcedureAsDone = (procedureId, isChecked) => {

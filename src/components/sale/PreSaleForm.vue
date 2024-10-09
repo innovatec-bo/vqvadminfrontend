@@ -21,7 +21,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:isDialogVisible'])
+const emit = defineEmits(['update:isDialogVisible', 'registerSale'])
 
 const { properties, propertiesForType } = useProperty()
 const { generateSale, loadingSale } = useSales()
@@ -99,6 +99,9 @@ const generateSalePage = async () => {
   // }
   console.log('data de la venta: ', salesData.value)
   await generateSale(salesData.value)
+  emit('update:isDialogVisible', false)
+
+  emit('registerSale', salesData.value.opportunity_id)
 }
 
 watch(
