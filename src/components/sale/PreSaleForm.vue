@@ -1,8 +1,10 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import { useProperty } from '@/composables/Realty/useProperty'
+import { useSales } from '@/composables/Sales/useSales'
 import { PaymentMethod } from '@/enums/PaymentMethod'
 import { PropertyType } from '@/enums/PropertyType'
+import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 import InvoiceAddMoney from '../quote/InvoiceAddMoney.vue'
@@ -24,7 +26,7 @@ const emit = defineEmits(['update:isDialogVisible'])
 
 
 const { properties, propertiesForType } = useProperty()
-
+const { generateSale, loadingSale } = useSales()
 
 const dialogVisibleUpdate = val => {
   emit('update:isDialogVisible', val)
@@ -43,7 +45,8 @@ const salesData = ref({
   contract_signing_date: null,
   amount: null,
   initial_fee: null,
-  opportunity_id: null,
+  opportunity_id: props.opportunity?.id ?? null,
+  stage_id: StagesOpportunity.SALE.value,
   customer_id: null,
   properties: [{
     property_id: null,
@@ -66,8 +69,38 @@ const addItem = newProduct => {
   salesData.value.properties.push(newProduct)
 }
 
-const generateSale = async () => {
-  console.log(salesData)
+const calculateInitialFeeDifference = () => {
+  const totalDiffersInitialFee = salesData.value.differs_initial_fee.reduce((sum, fee) => sum + (fee.amount || 0), 0)
+  
+  return totalDiffersInitialFee - salesData.value.initial_fee
+}
+
+// Función para calcular la diferencia en el saldo
+const calculateBalanceDifference = () => {
+  const totalDiffersBalance = salesData.value.differs_balance.reduce((sum, balance) => sum + (balance.amount || 0), 0)
+  
+  return totalDiffersBalance - (salesData.value.amount - salesData.value.initial_fee)
+}
+
+const generateSalePage = async () => {
+  // const initialFeeDifference = calculateInitialFeeDifference()
+
+  // if (initialFeeDifference !== 0) {
+  //   salesData.value.differs_initial_fee.push({
+  //     date: new Date(),
+  //     amount: initialFeeDifference,
+  //   })
+  // }
+
+  // const balanceDifference = calculateBalanceDifference()
+  // if (balanceDifference !== 0){
+  //   salesData.value.differs_balance.push({
+  //     date: new Date(),
+  //     amount: balanceDifference,
+  //   })
+  // }
+  console.log('data de la venta: ', salesData.value)
+  await generateSale(salesData.value)
 }
 
 watch(
@@ -130,7 +163,7 @@ watch(
           <h6 class="d-flex align-center font-weight-medium justify-sm-end text-xl mb-3">
             <VBtn
               color="primary"
-              @click="generateSale"
+              @click="generateSalePage"
             >
               Registrar Venta
             </VBtn>

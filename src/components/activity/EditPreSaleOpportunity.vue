@@ -1,12 +1,10 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
-import { useProperty } from '@/composables/Realty/useProperty'
+import { useProcess } from '@/composables/Process/useProcess'
 import { StagesOpportunity } from '@/enums/StagesOpportunity'
-import { onMounted } from 'vue'
 import EditCustomerDialog from '../customer/EditCustomerDialog.vue'
 import PreSaleForm from '../sale/PreSaleForm.vue'
-
 
 const props = defineProps({
   opportunity: {
@@ -15,6 +13,7 @@ const props = defineProps({
   },
 })
 
+const { checkProcessForOpportunity } = useProcess()
 
 const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()
 const opencustomerDialog = ref(false)
@@ -36,6 +35,9 @@ const generatePreSale = async opportunityId => {
 const markProcedureAsDone = (procedureId, isChecked) => {
   // Aquí puedes implementar la lógica para actualizar el estado del procedimiento.
   console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
+  checkProcessForOpportunity(props.opportunity.id, procedureId, {
+    is_check: isChecked,
+  })
 }
 </script>
 

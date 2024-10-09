@@ -8,7 +8,6 @@ import EditSaleOpportunity from '@/components/activity/EditSaleOpportunity.vue'
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProperty } from '@/composables/Realty/useProperty'
-import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import CustomerHistory from '../Bitacora/CustomerHistory.vue'
 
 const props = defineProps({
@@ -33,11 +32,6 @@ const emit = defineEmits([
   'refreshActivities',
 ])
 
-const stageOptions = Object.values(StagesOpportunity).map(stage => ({
-  title: stage.label,
-  value: stage.value,
-}))
-
 const historyDrawerVisible = ref(false)
 const checkLastActivity = ref(false)
 
@@ -61,6 +55,12 @@ const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity }
 const { allProperty, properties } = useProperty()
 
 const activitiesData = ref(structuredClone(toRaw(props.activitiesData)))
+
+
+const handleStageIdUpdate = newStageId => {
+  getOpportunitybyId(opportunity.id)
+}
+
 
 watch(props, () => {
   activitiesData.value = structuredClone(toRaw(props.activitiesData))
@@ -246,6 +246,7 @@ const handleDrawerModelValueUpdate = val => {
                   <EditProspectOpportunity
                     v-if="opportunity.stage_id === 2"
                     :opportunity="opportunity"
+                    @update-stage-id="handleStageIdUpdate"
                   />
                   <EditPreSaleOpportunity
                     v-if="opportunity.stage_id === 3"

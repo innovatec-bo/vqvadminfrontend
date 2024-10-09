@@ -78,9 +78,12 @@ onMounted(async () => {
           style="padding-block: 0;padding-inline: 8px;"
         >
           <AppSelect
+            v-model="property.property_id"
             :label="property.property_type_name"
             placeholder="Selecciona una propiedad"
             :items="property.property_type === PropertyType.DEPARTAMENT.value ? propertyDepartament : propertyPark"
+            item-title="title"
+            item-value="id"
             outlined
             dense
             class="custom-salesforce-input"
