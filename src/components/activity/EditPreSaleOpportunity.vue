@@ -29,7 +29,7 @@ const openSaleForm = () => {
 }
 
 const generatePreSale = async opportunityId => {
-  changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value)
+  changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value, {})
 }
 
 const markProcedureAsDone = (procedureId, isChecked) => {

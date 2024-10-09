@@ -48,14 +48,14 @@ onMounted(() => {
   <div>
     <VRow class="mb-2 mt-2">
       <VCol
-        cols="4"
+        cols="3"
         class="border rounded-sm mx-1"
       >
         <VListItemTitle class="font-weight-medium">
           Saldo
         </VListItemTitle>
         <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-          <span class="text-h5">$ {{ props.opportunity.sales.amount -props.opportunity.sales.initial_fee }}</span>
+          <span class="text-h6">$ {{ props.opportunity.sales.amount -props.opportunity.sales.initial_fee }}</span>
         </VListItemSubtitle>
       </VCol>
       <VCol
@@ -66,7 +66,7 @@ onMounted(() => {
           Anticipo
         </VListItemTitle>
         <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-          <span class="text-h5">$ {{ props.opportunity.sales.initial_fee }}</span>
+          <span class="text-h6">$ {{ props.opportunity.sales.initial_fee }}</span>
         </VListItemSubtitle>
       </VCol>
       <VCol
@@ -77,8 +77,7 @@ onMounted(() => {
           Precio Final
         </VListItemTitle>
         <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-          <!-- <span>${{ props.opportunity.sales.amount }}</span> -->
-          <span class="text-h5">${{ props.opportunity.sales.amount }}</span>
+          <span class="text-h6">${{ props.opportunity.sales.amount }}</span>
         </VListItemSubtitle>
       </VCol>
     </VRow>

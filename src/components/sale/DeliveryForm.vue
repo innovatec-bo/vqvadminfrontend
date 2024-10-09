@@ -21,26 +21,18 @@ const dialogVisibleUpdate = val => {
   emit('update:isDialogVisible', val)
 }
 
-// const projectData = ref({
-//   delivery_date: '',
-// })
 const projectData = ref(structuredClone(toRaw(props.opportunity)))
 
 watch(props, () => {
   projectData.value = structuredClone(toRaw(props.opportunity))
 })
 
-// watch(() => props.isDialogVisible, newVal => {
-//   console.log("Modal visibility changed:", newVal)
-// })
-
-
 const onFormSubmit = async () => {
   emit('update:isDialogVisible', false)
   try {
-    await changeStatusByOpportunity(props.opportunity.id, 5)
-    emit('onRefreshSale') 
-  
+    await changeStatusByOpportunity(props.opportunity.id, 5, {
+      delivery_date: projectData.value.sales.delivery_date,
+    })
   } catch (err) {
     console.error('Error updating customer:', err)
   }
@@ -48,8 +40,6 @@ const onFormSubmit = async () => {
 
 const resetForm = () => {
   emit('update:isDialogVisible', false)
-
-  // projectData.value = structuredClone(toRaw(props.projectData))
 }
 </script>
 
@@ -64,44 +54,40 @@ const resetForm = () => {
 
     <VCard class="pa-sm-8 pa-5">
       <!-- 👉 Title -->
-      <VCardItem>
-        <VCardTitle class="text-h3 text-center">
-          Confirmar Fecha
-        </VCardTitle>
-      </VCardItem>
+      <VCardTitle class="text-h3 text-center">
+        Confirmar Fecha
+      </VCardTitle>
       <VCardText>
-        <!-- 👉 Form -->
-     
-        <VRow>
-          <VCardText>
-            <VRow>
-              <VCol cols="12">
-                <AppDateTimePicker
-                  v-model="projectData.sales.delivery_date"
-                  label="Confirmar la fecha y hora de Entrega"
-                  :rules="[requiredValidator]"
-                  @change="() => console.log('Date changed')"
-                />
-              </VCol>
-            </VRow>
-          </VCardText>
-          <!-- Botones -->
-          <VCol
-            cols="12"
-            class="d-flex flex-wrap justify-center gap-4"
-          >
-            <VBtn @click="onFormSubmit">
-              Pasar a Entrega
-            </VBtn>
-            <VBtn
-              color="secondary"
-              variant="tonal"
-              @click="resetForm"
+        <VCardText>
+          <VRow>
+            <VCol
+              cols="12"
+              style="padding-block: 0;padding-inline: 8px;"
             >
-              Cancel
-            </VBtn>
-          </VCol>
-        </VRow>
+              <VTextField
+                v-model="projectData.sales.delivery_date"
+                label="Fecha de Entrega"
+                type="date"
+                :rules="[requiredValidator]"
+              />
+            </VCol>
+          </VRow>
+        </VCardText>
+        <VCol
+          cols="12"
+          class="d-flex flex-wrap justify-center gap-4"
+        >
+          <VBtn @click="onFormSubmit">
+            Pasar a Entrega
+          </VBtn>
+          <VBtn
+            color="secondary"
+            variant="tonal"
+            @click="resetForm"
+          >
+            Cancel
+          </VBtn>
+        </VCol>
       </VCardText>
     </VCard>
   </VDialog>
