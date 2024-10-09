@@ -91,10 +91,12 @@ export function useOpportunity (){
 
       console.log('Oportunidad actualizada: ', response)
       opportunity.value = response.data
-      showSuccessNotification('Nueva Etapa', 'El Cliente paso a una nueva etapa de seguimiento.')
-
+      showSuccessNotification('Actualizacion Exitosa', 'Se actualizo el Estado de la Oportunidad')
     }catch (err){
-      console.error(err)
+      console.log(err)
+      if(err.response && err.response.status== 500){
+        showWarningNotification('Advertencia', err.response._data.message)
+      }
     }finally {
       loadingOpportunity.value = false
     }

@@ -21,9 +21,7 @@ const props = defineProps({
   },
 })
 
-
 const emit = defineEmits(['update:isDialogVisible'])
-
 
 const { properties, propertiesForType } = useProperty()
 const { generateSale, loadingSale } = useSales()

@@ -3,8 +3,8 @@
 import poraIcon from '@/assets/icons/poraIcon.png'
 import { useProcess } from '@/composables/Process/useProcess'
 import { useProperty } from '@/composables/Realty/useProperty'
-
 import { onMounted } from 'vue'
+import DeliveryForm from '../sale/DeliveryForm.vue'
 
 const props = defineProps({
   opportunity: {
@@ -12,6 +12,10 @@ const props = defineProps({
     required: true,
   },
 })
+
+const emit = defineEmits([
+  'onRefreshOpportunity',
+])
 
 const { checkProcessForOpportunity } = useProcess()
 const { property, allProperty, properties } = useProperty()
@@ -24,12 +28,18 @@ const markProcedureAsDone = (procedureId, isChecked) => {
 
 }
 
+const onRefreshSale = () => {
+  emit('onRefreshOpportunity') 
+}
+
+const confirmDelivery = ref(false)
+
+const openDeliveryForm = () => {
+  confirmDelivery.value = true
+}
 
 onMounted(() => {
-  allProperty({
-    page: 1,
-    itemsPerPage: 500,
-  })
+
 })
 </script>
 
@@ -193,15 +203,20 @@ onMounted(() => {
     </VCard>
   </div>
 
-
-  <!-- Botón Generar Cotización -->
+  <!-- Botón pasar estado -->
   <VCardText class="d-flex justify-center mt-4">
     <VBtn
       color="primary"
       large
-      @click="generateQuote"
+      @click="openDeliveryForm"
     >
       Siguiente Etapa
     </VBtn>
   </VCardText>
+ 
+  <DeliveryForm
+    v-model:is-dialog-visible="confirmDelivery"
+    :opportunity="props.opportunity"
+    @refresh-activities="onRefreshSale"
+  />
 </template>
