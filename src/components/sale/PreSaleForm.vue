@@ -19,12 +19,9 @@ const props = defineProps({
   },
 })
 
-
 const emit = defineEmits(['update:isDialogVisible'])
 
-
 const { properties, propertiesForType } = useProperty()
-
 
 const dialogVisibleUpdate = val => {
   emit('update:isDialogVisible', val)

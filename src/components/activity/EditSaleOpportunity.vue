@@ -1,8 +1,8 @@
 <script setup>
 import poraIcon from '@/assets/icons/poraIcon.png'
 import { useProperty } from '@/composables/Realty/useProperty'
-
 import { onMounted } from 'vue'
+import DeliveryForm from '../sale/DeliveryForm.vue'
 
 const props = defineProps({
   opportunity: {
@@ -16,6 +16,12 @@ const { property, allProperty, properties } = useProperty()
 const markProcedureAsDone = (procedureId, isChecked) => {
   // Aquí puedes implementar la lógica para actualizar el estado del procedimiento.
   console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
+}
+
+const confirmDelivery = ref(false)
+
+const openDeliveryForm = () => {
+  confirmDelivery.value = true
 }
 
 onMounted(() => {
@@ -185,15 +191,19 @@ onMounted(() => {
     </VCard>
   </div>
 
-
   <!-- Botón Generar Cotización -->
   <VCardText class="d-flex justify-center mt-4">
     <VBtn
       color="primary"
       large
-      @click="generateQuote"
+      @click="openDeliveryForm"
     >
       Siguiente Etapa
     </VBtn>
   </VCardText>
+ 
+  <DeliveryForm
+    v-model:is-dialog-visible="confirmDelivery"
+    :opportunity="props.opportunity"
+  />
 </template>
