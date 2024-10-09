@@ -2,9 +2,7 @@
 <script setup>
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProcess } from '@/composables/Process/useProcess'
-import { useProperty } from '@/composables/Realty/useProperty'
 import { StagesOpportunity } from '@/enums/StagesOpportunity'
-import { onMounted } from 'vue'
 import EditCustomerDialog from '../customer/EditCustomerDialog.vue'
 
 const props = defineProps({
@@ -15,8 +13,8 @@ const props = defineProps({
 })
 
 
+const emit = defineEmits(['updateStageId'])
 
-const { property, allProperty, properties } = useProperty()
 const { checkProcessForOpportunity } = useProcess()
 
 const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()
@@ -28,6 +26,8 @@ const opencustomer = () =>{
 
 const generatePreSale = async opportunityId => {
   changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value)
+
+  emit('updateStageId', StagesOpportunity.PRESALE.value)
 }
 
 const markProcedureAsDone = (procedureId, isChecked) => {
@@ -37,14 +37,6 @@ const markProcedureAsDone = (procedureId, isChecked) => {
   })
 
 }
-
-
-onMounted(() => {
-  allProperty({
-    page: 1,
-    itemsPerPage: 500,
-  })
-})
 </script>
 
 <template>
@@ -80,7 +72,6 @@ onMounted(() => {
     </div>
   </VCardText>
 
-  <!-- Sección de Procedimientos -->
   <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
     <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
       <h4 class="mb-4">
@@ -92,10 +83,11 @@ onMounted(() => {
           :key="procedure.id"
           class="d-flex align-center justify-between"
         >
-          <span>{{ procedure.title }}</span>
           <VCheckbox
             v-model="procedure.pivot.is_check"
-            label="Realizado?"
+            :label="procedure.title"
+            :true-value="1"
+            :false-value="0"
             @change="markProcedureAsDone(procedure.id, procedure.pivot.is_check)"
           />
         </div>

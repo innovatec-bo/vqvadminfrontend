@@ -1,4 +1,5 @@
 import { createSale } from "@/services/Sales/saleService"
+import { showSuccessNotification } from "@/utils/notifications"
 
 export function useSales (){
   const loadingSale = ref(false)
@@ -11,6 +12,7 @@ export function useSales (){
     try{
       const response = await createSale(saleData)
 
+      showSuccessNotification('Venta generada con Exito', 'Se registro una nueva venta')
       console.log('venta: ', response)
       sale.value = response.data
     }catch(err){
@@ -20,11 +22,11 @@ export function useSales (){
     }
   }
 
-  return [
+  return{
     loadingSale,
     sales,
     error,
     sale,
     generateSale,
-  ]
+  }
 } 

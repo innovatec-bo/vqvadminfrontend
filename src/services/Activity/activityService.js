@@ -66,7 +66,7 @@ export const getByAsesorRangoFecha= async (asesorid, pagination) =>{
 }
 
 export const completedActivity = async (idActivity, data) => {
-  return await $api(`/activity/${idActivity}/complete`, {
+  return await $api(`/activity/${idActivity}/change_status`, {
     method: 'PATCH',
     body: data,
   })

@@ -16,9 +16,10 @@ const {
   activitiesFuture } = useActivity()
 
 const activity = ref('')
-
 const userData = useCookie('userData').value
+const isLoading = ref(true) // Variable de estado de carga
 
+// Funciones para obtener actividades
 const fetchActivitiesToday = async () => {
   await getallActivitiesByAsesorFecha(userData.id)
   console.log('Actividades de hoy:', activities)
@@ -34,11 +35,12 @@ const fetchActivitiesFuture = async () => {
   console.log('Actividades futuras:', activitiesFuture)
 }
 
-// onMounted(fetchActivitiesToday, fetchActivitiesPast, fetchActivitiesFuture)
+// Cargar todas las actividades al montar el componente
 onMounted(async () => {
   await fetchActivitiesToday()
   await fetchActivitiesPast()
   await fetchActivitiesFuture()
+  isLoading.value = false // Finaliza la carga después de obtener las actividades
 })
 
 const isEditActivity = ref(false)
@@ -50,7 +52,6 @@ const editActivity = item => {
 
 const onRefreshActivities = () => {
   fetchActivitiesToday()
-
 }
 
 const orders = [
@@ -79,17 +80,31 @@ const orders = [
               size="20"
               :icon="order.icon"
             />
-            <VBadge
+            <!--
+              <VBadge
               :content="order.badge"
               :offset-x="-18"
               :offset-y="6"
-            >
-              {{ order.tabName }}
-            </VBadge>
+              >
+              </VBadge> 
+            -->
+            {{ order.tabName }}
           </VTab>
         </VTabs>
 
         <VCardText>
+          <!-- Mostrar el spinner mientras carga -->
+          <VOverlay
+            v-if="isLoading"
+            absolute
+            opacity="0.7"
+          >
+            <VCircularProgress
+              indeterminate
+              size="70"
+            />
+          </VOverlay>
+
           <VWindow
             v-model="currentActiveTab"
             class="disable-tab-transition"
@@ -113,12 +128,13 @@ const orders = [
                   v-for="item in order.actividades.value"
                   :key="item.id"
                   fill-dot
-                  class="border mb-2 rounded-sm"
+                  class="border mb-2 rounded-sm py-2"
                   @click="editActivity(item)"
                 >
                   <VListItem>
                     <template #prepend>
-                      <VAvatar
+                      <VAvatar 
+                        v-if="item.project_name"
                         size="50"
                         rounded
                       >
@@ -131,6 +147,7 @@ const orders = [
                     </template>
                     <VRow>
                       <VCol
+                        v-if="item.project_name"
                         cols="12"
                         md="7"
                       >
@@ -160,7 +177,7 @@ const orders = [
                     <VChip
                       label
                       color="secondary"
-                      class="w-100 d-flex justify-content-between my-2"
+                      class="w-100 h-50 d-flex justify-content-between  my-2"
                     >
                       <IconBtn>
                         <VIcon icon="tabler-phone" />
@@ -200,14 +217,19 @@ const orders = [
       cols="12"
       md="8"
     >
+      <!-- Componente AddActivity -->
       <AddActivity
         v-model:is-drawer-open="isEditActivity"
         :activities-data="activity"
         @refresh-activities="onRefreshActivities"
-      />
+        @loaded="isLoading = false"
+      >
+        />
+      </addactivity>
     </VCol>
   </VRow>
 </template>
+
 
 <style scoped>
 .toolbar {

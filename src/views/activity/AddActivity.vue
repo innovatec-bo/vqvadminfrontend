@@ -8,7 +8,7 @@ import EditSaleOpportunity from '@/components/activity/EditSaleOpportunity.vue'
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProperty } from '@/composables/Realty/useProperty'
-import { StagesOpportunity } from '@/enums/StagesOpportunity'
+import { watch } from 'vue'
 import CustomerHistory from '../Bitacora/CustomerHistory.vue'
 
 const props = defineProps({
@@ -33,11 +33,6 @@ const emit = defineEmits([
   'refreshActivities',
 ])
 
-const stageOptions = Object.values(StagesOpportunity).map(stage => ({
-  title: stage.label,
-  value: stage.value,
-}))
-
 const historyDrawerVisible = ref(false)
 const checkLastActivity = ref(false)
 
@@ -48,19 +43,24 @@ const newActivity = ref({
   opportunity_id: null,
   assigned_to: null,
   scheduled_at: null,
+  status: 'COMPLETED',
 })
-
-
 
 const fetchProperties = async () => {
   await allProperty({ page: 1, itemsPerPage: 100 }) 
 }
 
-const { changeStatusActivity, completedActivityAndRegister, updateActivity, getallTypeActivities, typeActivities } = useActivity()
+const { changeStatusActivity, completedActivityAndRegister, updateActivity, getallTypeActivities, typeActivities, loadingActivity } = useActivity()
 const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity } = useOpportunity()
 const { allProperty, properties } = useProperty()
 
 const activitiesData = ref(structuredClone(toRaw(props.activitiesData)))
+
+
+const handleStageIdUpdate = newStageId => {
+  getOpportunitybyId(opportunity.id)
+}
+
 
 watch(props, () => {
   activitiesData.value = structuredClone(toRaw(props.activitiesData))
@@ -73,6 +73,9 @@ const allTypeActivity = async () => {
   await getallTypeActivities()
 }
 
+const onRefreshOpportunity = () => {
+  getOpportunitybyId(activitiesData.value.opportunity_id)
+}
 
 const closeNavigationDrawer = () => {
   emit('update:isDrawerOpen', false)
@@ -83,6 +86,7 @@ const closeNavigationDrawer = () => {
     scheduled_at: null,
     opportunity_id: null,
     assigned_to: null,
+    status: 'COMPLETED',
   }
 }
 
@@ -94,15 +98,8 @@ const onSubmit = async() => {
     scheduled_at: newActivity.value.scheduled_at,
     assigned_to: opportunity.value.user_id,
     property_id: opportunity.value.property_id,
-    sale: {
-      opportunity_id: opportunity.value.id,
-      property_id: opportunity.value.property_id,
-      social_reason: opportunity.value.customer?.name,
-      nit: opportunity.value.customer.ci,
-      payment_method: "CASH",
-      amount: 100,
-      initial_fee: 1,
-    },
+    opportunity_id: opportunity.value.id,
+    status: 'COMPLETED',
   })
 
   // emit('refreshActivities') 
@@ -232,6 +229,8 @@ const handleDrawerModelValueUpdate = val => {
                         size="small"
                         color="primary"
                         class="mx-auto"
+                        :loading="loadingActivity"
+                        :disabled="loadingActivity"
                         @click="onSubmit"
                       >
                         Guardar
@@ -247,6 +246,7 @@ const handleDrawerModelValueUpdate = val => {
                   <EditProspectOpportunity
                     v-if="opportunity.stage_id === 2"
                     :opportunity="opportunity"
+                    @update-stage-id="handleStageIdUpdate"
                   />
                   <EditPreSaleOpportunity
                     v-if="opportunity.stage_id === 3"
@@ -255,10 +255,12 @@ const handleDrawerModelValueUpdate = val => {
                   <EditSaleOpportunity
                     v-if="opportunity.stage_id === 4"
                     :opportunity="opportunity"
+                    @refresh-activities="onRefreshOpportunity"
                   />
                   <EditDeliveryOpportunity
                     v-if="opportunity.stage_id === 5"
                     :opportunity="opportunity"
+                    @refresh-activities="onRefreshOpportunity"
                   />
                 </VCol>
               </VRow>
