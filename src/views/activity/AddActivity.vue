@@ -42,6 +42,7 @@ const newActivity = ref({
   opportunity_id: null,
   assigned_to: null,
   scheduled_at: null,
+  status: 'COMPLETED',
 })
 
 
@@ -50,7 +51,7 @@ const fetchProperties = async () => {
   await allProperty({ page: 1, itemsPerPage: 100 }) 
 }
 
-const { changeStatusActivity, completedActivityAndRegister, updateActivity, getallTypeActivities, typeActivities } = useActivity()
+const { changeStatusActivity, completedActivityAndRegister, updateActivity, getallTypeActivities, typeActivities, loadingActivity } = useActivity()
 const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity } = useOpportunity()
 const { allProperty, properties } = useProperty()
 
@@ -83,6 +84,7 @@ const closeNavigationDrawer = () => {
     scheduled_at: null,
     opportunity_id: null,
     assigned_to: null,
+    status: 'COMPLETED',
   }
 }
 
@@ -94,15 +96,8 @@ const onSubmit = async() => {
     scheduled_at: newActivity.value.scheduled_at,
     assigned_to: opportunity.value.user_id,
     property_id: opportunity.value.property_id,
-    sale: {
-      opportunity_id: opportunity.value.id,
-      property_id: opportunity.value.property_id,
-      social_reason: opportunity.value.customer?.name,
-      nit: opportunity.value.customer.ci,
-      payment_method: "CASH",
-      amount: 100,
-      initial_fee: 1,
-    },
+    opportunity_id: opportunity.value.id,
+    status: 'COMPLETED',
   })
 
   // emit('refreshActivities') 
@@ -232,6 +227,8 @@ const handleDrawerModelValueUpdate = val => {
                         size="small"
                         color="primary"
                         class="mx-auto"
+                        :loading="loadingActivity"
+                        :disabled="loadingActivity"
                         @click="onSubmit"
                       >
                         Guardar

@@ -1,5 +1,7 @@
+<!-- eslint-disable camelcase -->
 <script setup>
 import poraIcon from '@/assets/icons/poraIcon.png'
+import { useProcess } from '@/composables/Process/useProcess'
 import { useProperty } from '@/composables/Realty/useProperty'
 
 import { onMounted } from 'vue'
@@ -11,12 +13,17 @@ const props = defineProps({
   },
 })
 
+const { checkProcessForOpportunity } = useProcess()
 const { property, allProperty, properties } = useProperty()
 
 const markProcedureAsDone = (procedureId, isChecked) => {
-  // Aquí puedes implementar la lógica para actualizar el estado del procedimiento.
   console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
+  checkProcessForOpportunity(props.opportunity.id, procedureId, {
+    is_check: isChecked,
+  })
+
 }
+
 
 onMounted(() => {
   allProperty({
@@ -173,7 +180,8 @@ onMounted(() => {
             <VCheckbox
               v-model="procedure.pivot.is_check"
               :label="procedure.title"
-              class="mx-2"
+              :true-value="1"
+              :false-value="0"
               @change="markProcedureAsDone(procedure.id, procedure.pivot.is_check)"
             />
           </div>

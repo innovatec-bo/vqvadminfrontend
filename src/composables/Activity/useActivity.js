@@ -1,4 +1,4 @@
-import { allTypeActivities, changeStatus, get, getByAsesorFecha, getByAsesorFechaFuture, getByAsesorFechaPast, getByAsesorRangoFecha, register, update } from "@/services/Activity/activityService"
+import { allTypeActivities, changeStatus, completedActivity, get, getByAsesorFecha, getByAsesorFechaFuture, getByAsesorFechaPast, getByAsesorRangoFecha, register, update } from "@/services/Activity/activityService"
 import { computed } from "vue"
 import { useRouter } from 'vue-router'
 
@@ -188,8 +188,12 @@ export function useActivity() {
   const completedActivityAndRegister = async (idActivity, data) => {
     loadingActivity.value = true
     try{
-      //const response = await completedActivity(idActivity, data)
-      console.log(data)
+      const response = await completedActivity(idActivity, data)
+
+      showSuccessNotification('Se Reagendo Nueva Actividad', 'Se Completo la Antigua actividad y se agrego una nueva')
+
+      console.log(response)
+
     }catch (err){
       //todo: mejorar los mensajes de error
       error.value =  err.message
