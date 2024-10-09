@@ -13,7 +13,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:isDialogVisible', 'onRefreshSale'])
+const emit = defineEmits(['update:isDialogVisible', 'updateDeliveryDate'])
 
 const { changeStatusByOpportunity } = useOpportunity()
 
@@ -33,6 +33,7 @@ const onFormSubmit = async () => {
     await changeStatusByOpportunity(props.opportunity.id, 5, {
       delivery_date: projectData.value.sales.delivery_date,
     })
+    emit('updateDeliveryDate', projectData.value.id)
   } catch (err) {
     console.error('Error updating customer:', err)
   }

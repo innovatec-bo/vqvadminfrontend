@@ -1,7 +1,7 @@
 <script setup>
-import poraIcon from '@/assets/icons/poraIcon.png'
-import { useActivity } from '@/composables/Activity/useActivity'
-import AddActivity from '@/views/activity/AddActivity.vue'
+import poraIcon from '@/assets/icons/poraIcon.png';
+import { useActivity } from '@/composables/Activity/useActivity';
+import AddActivity from '@/views/activity/AddActivity.vue';
 
 const currentActiveTab = ref('New')
 const filters = ref(['Todos', 'PORA']) // Opciones de filtro
@@ -51,7 +51,7 @@ const editActivity = item => {
 }
 
 const onRefreshActivities = () => {
-  fetchActivitiesToday()
+  onMounted()
 }
 
 const orders = [

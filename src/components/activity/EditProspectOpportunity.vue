@@ -12,9 +12,7 @@ const props = defineProps({
   },
 })
 
-
 const emit = defineEmits(['updateStageId'])
-
 const { checkProcessForOpportunity } = useProcess()
 
 const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()

@@ -2,8 +2,6 @@
 <script setup>
 import poraIcon from '@/assets/icons/poraIcon.png'
 import { useProcess } from '@/composables/Process/useProcess'
-import { useProperty } from '@/composables/Realty/useProperty'
-import { onMounted } from 'vue'
 import DeliveryForm from '../sale/DeliveryForm.vue'
 
 const props = defineProps({
@@ -13,34 +11,24 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'onRefreshOpportunity',
-])
-
+const emit = defineEmits(['updateStageId'])
 const { checkProcessForOpportunity } = useProcess()
-const { property, allProperty, properties } = useProperty()
-
-const markProcedureAsDone = (procedureId, isChecked) => {
-  console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
-  checkProcessForOpportunity(props.opportunity.id, procedureId, {
-    is_check: isChecked,
-  })
-
-}
-
-const onRefreshSale = () => {
-  emit('onRefreshOpportunity') 
-}
-
 const confirmDelivery = ref(false)
 
 const openDeliveryForm = () => {
   confirmDelivery.value = true
 }
 
-onMounted(() => {
+const markProcedureAsDone = (procedureId, isChecked) => {
+  console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
+  checkProcessForOpportunity(props.opportunity.id, procedureId, {
+    is_check: isChecked,
+  })
+}
 
-})
+const updateDeliveryDate = async opportunityId => {
+  emit('updateStageId', opportunityId)
+}
 </script>
 
 <template>
@@ -216,6 +204,6 @@ onMounted(() => {
   <DeliveryForm
     v-model:is-dialog-visible="confirmDelivery"
     :opportunity="props.opportunity"
-    @refresh-activities="onRefreshSale"
+    @update-delivery-date="updateDeliveryDate"
   />
 </template>

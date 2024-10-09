@@ -265,6 +265,7 @@ const handleDrawerModelValueUpdate = val => {
                     :opportunity="opportunity"
                     @refresh-activities="onRefreshOpportunity"
                     @update-stage-id="handleStageIdUpdate"
+                    @complet="complet"
                   />
                 </VCol>
               </VRow>
