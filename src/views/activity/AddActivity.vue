@@ -102,9 +102,9 @@ const onSubmit = async() => {
     opportunity_id: opportunity.value.id,
     status: 'COMPLETED',
   })
-
-  // emit('refreshActivities') 
-  // closeNavigationDrawer()
+  
+  emit('refreshActivities') 
+  closeNavigationDrawer()
 
 }
 
