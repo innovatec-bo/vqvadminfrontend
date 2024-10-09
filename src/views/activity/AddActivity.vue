@@ -57,8 +57,9 @@ const { allProperty, properties } = useProperty()
 const activitiesData = ref(structuredClone(toRaw(props.activitiesData)))
 
 
-const handleStageIdUpdate = newStageId => {
-  getOpportunitybyId(opportunity.id)
+const handleStageIdUpdate = opportunityId => {
+  console.log('esta consultando de nuevo despues de cambiar etapa ')
+  getOpportunitybyId(opportunityId)
 }
 
 
@@ -101,9 +102,9 @@ const onSubmit = async() => {
     opportunity_id: opportunity.value.id,
     status: 'COMPLETED',
   })
-
-  // emit('refreshActivities') 
-  // closeNavigationDrawer()
+  
+  emit('refreshActivities') 
+  closeNavigationDrawer()
 
 }
 
@@ -251,16 +252,19 @@ const handleDrawerModelValueUpdate = val => {
                   <EditPreSaleOpportunity
                     v-if="opportunity.stage_id === 3"
                     :opportunity="opportunity"
+                    @update-stage-id="handleStageIdUpdate"
                   />
                   <EditSaleOpportunity
                     v-if="opportunity.stage_id === 4"
                     :opportunity="opportunity"
                     @refresh-activities="onRefreshOpportunity"
+                    @update-stage-id="handleStageIdUpdate"
                   />
                   <EditDeliveryOpportunity
                     v-if="opportunity.stage_id === 5"
                     :opportunity="opportunity"
                     @refresh-activities="onRefreshOpportunity"
+                    @update-stage-id="handleStageIdUpdate"
                   />
                 </VCol>
               </VRow>

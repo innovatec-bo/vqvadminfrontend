@@ -2,7 +2,6 @@
 <script setup>
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProcess } from '@/composables/Process/useProcess'
-import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import EditCustomerDialog from '../customer/EditCustomerDialog.vue'
 import PreSaleForm from '../sale/PreSaleForm.vue'
 
@@ -12,6 +11,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const emit = defineEmits(['updateStageId'])
 
 const { checkProcessForOpportunity } = useProcess()
 
@@ -28,8 +29,8 @@ const openSaleForm = () => {
   generateSaleDialog.value = true
 }
 
-const generatePreSale = async opportunityId => {
-  changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value, {})
+const registerSale = async opportunityId => {
+  emit('updateStageId', opportunityId)
 }
 
 const markProcedureAsDone = (procedureId, isChecked) => {
@@ -125,6 +126,7 @@ const markProcedureAsDone = (procedureId, isChecked) => {
   <PreSaleForm
     v-model:is-dialog-visible="generateSaleDialog"
     :opportunity="props.opportunity"
+    @register-sale="registerSale"
   />
 </template>
 
