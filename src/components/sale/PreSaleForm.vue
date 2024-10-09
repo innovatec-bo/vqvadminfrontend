@@ -53,50 +53,48 @@ const salesData = ref({
     property_type: PropertyType.DEPARTAMENT.value,
     property_type_name: PropertyType.DEPARTAMENT.label,
   }],
-  differs_initial_fee: [{
-    date: null,
-    amount: null,
-  }],
-  differs_balance: [{
-    date: null,
-    amount: null,
-  }],
+  differs_initial_fee: [],
+  differs_balance: [],
 })
 
 const addItem = newProduct => {
   salesData.value.properties.push(newProduct)
 }
 
+const removeItem = () => {
+
+}
+
 const calculateInitialFeeDifference = () => {
   const totalDiffersInitialFee = salesData.value.differs_initial_fee.reduce((sum, fee) => sum + (fee.amount || 0), 0)
   
-  return totalDiffersInitialFee - salesData.value.initial_fee
+  return salesData.value.initial_fee - totalDiffersInitialFee 
 }
 
 // Función para calcular la diferencia en el saldo
 const calculateBalanceDifference = () => {
   const totalDiffersBalance = salesData.value.differs_balance.reduce((sum, balance) => sum + (balance.amount || 0), 0)
   
-  return totalDiffersBalance - (salesData.value.amount - salesData.value.initial_fee)
+  return  (salesData.value.amount - salesData.value.initial_fee) - totalDiffersBalance
 }
 
 const generateSalePage = async () => {
-  // const initialFeeDifference = calculateInitialFeeDifference()
+  const initialFeeDifference = calculateInitialFeeDifference()
 
-  // if (initialFeeDifference !== 0) {
-  //   salesData.value.differs_initial_fee.push({
-  //     date: new Date(),
-  //     amount: initialFeeDifference,
-  //   })
-  // }
+  if (initialFeeDifference !== 0) {
+    salesData.value.differs_initial_fee.push({
+      date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+      amount: initialFeeDifference,
+    })
+  }
 
-  // const balanceDifference = calculateBalanceDifference()
-  // if (balanceDifference !== 0){
-  //   salesData.value.differs_balance.push({
-  //     date: new Date(),
-  //     amount: balanceDifference,
-  //   })
-  // }
+  const balanceDifference = calculateBalanceDifference()
+  if (balanceDifference !== 0){
+    salesData.value.differs_balance.push({
+      date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+      amount: balanceDifference,
+    })
+  }
   console.log('data de la venta: ', salesData.value)
   await generateSale(salesData.value)
   emit('update:isDialogVisible', false)
@@ -164,6 +162,8 @@ watch(
           <h6 class="d-flex align-center font-weight-medium justify-sm-end text-xl mb-3">
             <VBtn
               color="primary"
+              :loading="loadingSale"
+              :disabled="loadingSale"
               @click="generateSalePage"
             >
               Registrar Venta
@@ -295,6 +295,7 @@ watch(
             <InvoiceAddProperty
               :properties="salesData.properties"
               @add-property="addItem"
+              @remove-property="removeItem"
             />  
           </VCol>
           <VCol
