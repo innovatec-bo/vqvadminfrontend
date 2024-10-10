@@ -93,7 +93,7 @@ const closeNavigationDrawer = () => {
 }
 
 const onSubmit = async() => {
-  completedActivityAndRegister(activitiesData.value.opportunity_id, {
+  completedActivityAndRegister(activitiesData.value.id, {
     title: newActivity.value.title,
     description: newActivity.value.description,
     type_activity_id: newActivity.value.type_activity_id,

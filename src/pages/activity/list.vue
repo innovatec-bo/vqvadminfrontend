@@ -100,7 +100,7 @@ const formatDate = dateString => {
   >
     <VCol
       cols="12"
-      md="3"
+      md="4"
       style="display: flex; flex-direction: column;"
     >
       <VCard
@@ -137,19 +137,31 @@ const formatDate = dateString => {
           <VWindow
             v-model="currentActiveTab"
             class="disable-tab-transition"
+            style="max-block-size: 500px; overflow-y: auto;"
           >
             <VWindowItem
               v-for="order in orders"
               :key="order.tabName"
               :value="order.tabName"
-              style="max-block-size: 500px; overflow-y: auto;"
             >
               <template v-if="order.actividades.value.length === 0">
                 <div
-                  class="no-activities-message"
-                  style="align-items: center;"
+                  class="no-activities-message d-flex flex-column justify-center align-center"
+                  style="min-block-size: 200px; text-align: center;"
                 >
-                  No tienes actividades pendientes
+                  <VIcon
+                    size="64"
+                    color="grey"
+                    icon="tabler-calendar-off"
+                    class="mb-4"
+                    style="animation: bounce 1s infinite;"
+                  />
+                  <div style=" color: #888;font-size: 1.2em;">
+                    ¡No tienes actividades pendientes!
+                  </div>
+                  <div style=" color: #aaa;font-size: 0.9em; margin-block-start: 8px;">
+                    ¡Relájate y disfruta tu día!
+                  </div>
                 </div>
               </template>
               <template v-else>
@@ -163,23 +175,9 @@ const formatDate = dateString => {
                   <VListItem>
                     <VRow>
                       <VCol
-                        v-if="item.project_name"
                         cols="12"
-                        md="7"
-                      >
-                        <VListItemSubtitle class="text-disabled d-flex justify-between ">
-                          <strong>
-                            {{ item.project_name }} | {{ item.code_property }}
-                          </strong>
-                        </VListItemSubtitle>
-                        <VListItemTitle class="font-weight-medium">
-                          <span>$ {{ item.price }}</span>
-                        </VListItemTitle>
-                      </VCol>
-                      <VCol
-                        v-if="!item.project_name"
-                        cols="12"
-                        md="7"
+                        md="2"
+                        style="padding-inline-end: 0;"
                       >
                         <VChip
                           class="d-flex justify-center align-center"
@@ -191,6 +189,29 @@ const formatDate = dateString => {
                           />
                         </VChip>
                       </VCol>
+                      <VCol
+                        v-if="item.project_name"
+                        cols="12"
+                        md="5"
+                        class="d-flex flex-column align-start"
+                        style="padding-inline-start: 0;"
+                      >
+                        <VListItemSubtitle class="text-left">
+                          <strong>
+                            {{ item.property_title }}
+                          </strong>
+                        </VListItemSubtitle>
+                        <VListItemTitle class="font-weight-medium text-left">
+                          <span>$ {{ item.price }}</span>
+                        </VListItemTitle>
+                      </VCol>
+
+
+                      <VCol
+                        v-if="!item.project_name"
+                        cols="12"
+                        md="5"
+                      />
 
                       <VCol
                         cols="12"
@@ -217,7 +238,7 @@ const formatDate = dateString => {
                     >
                       <VIcon icon="tabler-phone" />
                       <div class="mx-2">
-                        {{ item.type_activity }} &nbsp • &nbsp {{ getFirstWord(item.name_opportunity) }}
+                        {{ item.type_activity }} &nbsp • &nbsp {{ (item.name_opportunity) }}
                       </div>
                     </VChip>
                   </VListItem>
@@ -244,7 +265,7 @@ const formatDate = dateString => {
 
     <VCol
       cols="12"
-      md="9"
+      md="8"
       style="display: flex; flex-direction: column;"
     >
       <AddActivity
@@ -331,5 +352,15 @@ const formatDate = dateString => {
   color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
 
   /* Color del texto del input */
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 </style>
