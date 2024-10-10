@@ -2,6 +2,7 @@
 <script setup>
 import poraIcon from '@/assets/icons/poraIcon.png'
 import { useProcess } from '@/composables/Process/useProcess'
+import { usePaymentPlans } from '@/composables/Sales/usePaymentPlans'
 import DeliveryForm from '../sale/DeliveryForm.vue'
 
 const props = defineProps({
@@ -13,6 +14,8 @@ const props = defineProps({
 
 const emit = defineEmits(['updateStageId'])
 const { checkProcessForOpportunity } = useProcess()
+const { confirmPaymentPlans } = usePaymentPlans()
+
 const confirmDelivery = ref(false)
 
 const openDeliveryForm = () => {
@@ -26,6 +29,11 @@ const markProcedureAsDone = (procedureId, isChecked) => {
   })
 }
 
+const confirmPayment = paymentplanId => {
+  console.log(paymentplanId)
+  confirmPaymentPlans( paymentplanId)
+}
+
 const updateDeliveryDate = async opportunityId => {
   emit('updateStageId', opportunityId)
 }
@@ -34,46 +42,53 @@ const updateDeliveryDate = async opportunityId => {
 <template>
   <!-- Saldos -->
   <div>
-    <VRow class="mb-2 mt-2">
-      <VCol
-        cols="3"
-        class="border rounded-sm mx-1"
-      >
-        <VListItemTitle class="font-weight-medium">
-          Saldo
-        </VListItemTitle>
-        <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-          <span class="text-h6">$ {{ props.opportunity.sales.amount -props.opportunity.sales.initial_fee }}</span>
-        </VListItemSubtitle>
-      </VCol>
-      <VCol
-        cols="3"
-        class="border rounded-sm mx-1"
-      >
-        <VListItemTitle class="font-weight-medium">
-          Anticipo
-        </VListItemTitle>
-        <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-          <span class="text-h6">$ {{ props.opportunity.sales.initial_fee }}</span>
-        </VListItemSubtitle>
-      </VCol>
-      <VCol
-        cols="4"
-        class="border rounded-sm mx-1"
-      >
-        <VListItemTitle class="font-weight-medium">
-          Precio Final
-        </VListItemTitle>
-        <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-          <span class="text-h6">${{ props.opportunity.sales.amount }}</span>
-        </VListItemSubtitle>
-      </VCol>
-    </VRow>
+    <VCard>
+      <VCardText>
+        <VRow>
+          <VCol
+            cols="4"
+            class="border rounded-sm mx-1"
+          >
+            <VListItemTitle class="font-weight-medium">
+              Saldo
+            </VListItemTitle>
+            <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+              <span class="text-h6">$ {{ props.opportunity.sales.amount -props.opportunity.sales.initial_fee }}</span>
+            </VListItemSubtitle>
+          </VCol>
+          <VCol
+            cols="3"
+            class="border rounded-sm mx-1"
+          >
+            <VListItemTitle class="font-weight-medium">
+              Anticipo
+            </VListItemTitle>
+            <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+              <span class="text-h6">$ {{ props.opportunity.sales.initial_fee }}</span>
+            </VListItemSubtitle>
+          </VCol>
+          <VCol
+            cols="4"
+            class="border rounded-sm mx-1"
+          >
+            <VListItemTitle class="font-weight-medium">
+              Precio Final
+            </VListItemTitle>
+            <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+              <span class="text-h6">${{ props.opportunity.sales.amount }}</span>
+            </VListItemSubtitle>
+          </VCol>
+        </VRow>
+      </VCardText>
+    </VCard>
   </div>
 
   <!-- Propiedades -->
   <div>
-    <VCard title="Propiedades">
+    <VCard
+      title="Propiedades"
+      class="mt-5"
+    >
       <VCardText>
         <div v-if="props.opportunity.sales.properties && props.opportunity.sales.properties.length > 0">
           <div
@@ -118,11 +133,12 @@ const updateDeliveryDate = async opportunityId => {
         <VTable
           density="compact"
           class="text-no-wrap"
+          style="font-size: 12px;"
         >
           <thead>
             <tr>
               <th>
-                Type
+                Tipo
               </th>
               <th>
                 Fecha
@@ -151,7 +167,12 @@ const updateDeliveryDate = async opportunityId => {
                 {{ item.amount }}
               </td>
               <td>
-                {{ item.is_paid }}
+                <VCheckbox
+                  v-model="item.is_paid"
+                  :true-value="1"
+                  :false-value="0"
+                  @change="confirmPayment(item.id)"
+                />
               </td>
             </tr>
           </tbody>
