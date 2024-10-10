@@ -382,6 +382,7 @@ declare module 'vue' {
     Kanban: typeof import('./src/components/Kanban.vue')['default']
     MoreBtn: typeof import('./src/@core/components/MoreBtn.vue')['default']
     Notifications: typeof import('./src/@core/components/Notifications.vue')['default']
+    PaymentPlanEdit: typeof import('./src/components/sale/PaymentPlanEdit.vue')['default']
     PaymentProvidersDialog: typeof import('./src/components/dialogs/PaymentProvidersDialog.vue')['default']
     PreSaleForm: typeof import('./src/components/sale/PreSaleForm.vue')['default']
     PricingPlanDialog: typeof import('./src/components/dialogs/PricingPlanDialog.vue')['default']
