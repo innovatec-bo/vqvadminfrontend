@@ -1,6 +1,5 @@
 <!-- eslint-disable camelcase -->
 <script setup>
-import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProperty } from '@/composables/Realty/useProperty'
 import { StagesOpportunity } from '@/enums/StagesOpportunity'
@@ -20,7 +19,6 @@ const stageOptions = Object.values(StagesOpportunity).map(stage => ({
 // Obtener funciones y variables de `useProperty`
 const { allProperty, properties } = useProperty()
 
-const { getallTypeActivities, typeActivities, registerActivity, loadingActivity, changeStatusActivity } = useActivity()
 const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity } = useOpportunity()
 
 const dialogVisibleUpdate = () => {
@@ -45,8 +43,7 @@ const saveData = async () => {
   }
 
   await changeOpportunity(opportunity.value.id, data)
-
-  dialogVisibleUpdate()
+  emit('update:isDialogVisible', false)
 }
 
 const fetchOpportunityData = async () => {
@@ -69,22 +66,20 @@ watch(() => props.isDialogVisible, async newValue => {
 
 <template>
   <VDialog
-    max-width="850"
+    max-width="800"
     :model-value="props.isDialogVisible"
     persistent
     :close-on-esc="false"
     @update:model-value="dialogVisibleUpdate"
   >
     <DialogCloseBtn @click="dialogVisibleUpdate" />
-    <VCard>
-      <VCardTitle class="text-h4 font-weight-semibold mb-4">
-        <h4>Información del Cliente y Oportunidad</h4>
-      </VCardTitle>
-
+    <VCard
+      title="Información del Cliente y Oportunidad"
+      class="pa-sm-8 pa-5"
+    >
       <VCardText>
         <VForm @submit.prevent="saveData">
           <VRow dense>
-            <!-- Sección de Información del Cliente -->
             <VCol
               cols="12"
               md="6"
@@ -180,7 +175,7 @@ watch(() => props.isDialogVisible, async newValue => {
                 :disabled="loadingOpportunity"
                 :loading="loadingOpportunity"
               >
-                Guardar Cambios
+                Guardar 
               </VBtn>
               <VBtn
                 color="secondary"
@@ -197,14 +192,4 @@ watch(() => props.isDialogVisible, async newValue => {
   </VDialog>
 </template>
 
-<style lang="scss">
-.refer-link-input {
-  .v-field--appended {
-    padding-inline-end: 0;
-  }
 
-  .v-field__append-inner {
-    padding-block-start: 0.125rem;
-  }
-}
-</style>

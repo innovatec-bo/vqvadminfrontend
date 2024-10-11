@@ -121,6 +121,7 @@ const formatDate = dateString => {
           </VTab>
         </VTabs>
 
+        <br>
         <VCardText style="flex-grow: 1; overflow-y: auto;">
           <!-- Mostrar el spinner mientras carga -->
           <VOverlay
@@ -205,14 +206,11 @@ const formatDate = dateString => {
                           <span>$ {{ item.price }}</span>
                         </VListItemTitle>
                       </VCol>
-
-
                       <VCol
                         v-if="!item.project_name"
                         cols="12"
                         md="5"
                       />
-
                       <VCol
                         cols="12"
                         md="5"

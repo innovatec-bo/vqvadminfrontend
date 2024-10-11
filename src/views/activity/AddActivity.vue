@@ -123,7 +123,6 @@ const activitySwitch  = state =>{
   return state === 'COMPLETED'
 }
 
-
 const handleDrawerModelValueUpdate = val => {
   emit('update:isDrawerOpen', val)
 }
@@ -135,32 +134,9 @@ const handleDrawerModelValueUpdate = val => {
     <!-- First VCard (Activities and Stage) -->
     <VCol cols="12">
       <!-- Adjust the column size based on your needs -->
-      <VCard v-if="isDrawerOpen">
-        <VCardTitle class="pt-10">
-          <VRow>
-            <VCol
-              cols="12"
-              sm="6"
-            >
-              Actividades
-            </VCol>
-            <VCol
-              cols="12"
-              sm="6"
-            >
-              <VChip
-                label
-                color="primary"
-              >
-                {{ opportunity.stage.title }}
-              </VChip>
-            </VCol>
-          </VRow>
-        </VCardTitle>  
-       
-       
+      <VCard v-if="isDrawerOpen">               
         <VCardText>
-          <VWindow class="mx-3">
+          <VWindow class="mx-2 my-2">
             <VRow>
               <VCol
                 cols="12"
@@ -168,32 +144,38 @@ const handleDrawerModelValueUpdate = val => {
               >
                 <VRow>
                   <VCol cols="12">
+                    <span style="font-size: 18px; font-weight: 500; ">
+                      Actividad
+                    </span>
+                  </VCol>
+                  <VCol cols="12">
                     <VSwitch
-                      v-for="(activity, index) in opportunity.activities"
+                      v-for="(activity) in opportunity.activities"
                       :key="activity.id"
                       :v-model="activitySwitch(activity.state_activity)"
                       :label="activity.title"
+                      style="font-size: 10px;"
                     />
                   </VCol>
                   <VCol cols="12">
                     <AppTextField
                       v-model="newActivity.title"
                       label="Titulo de la actividad"
-                      placeholder="......"
+                      placeholder="..."
                     />
                   </VCol>
                   <VCol cols="12">
                     <AppSelect
                       v-model="newActivity.type_activity_id"
-                      label="Seleccione una Actividad"
-                      placeholder="Seleccione una Actividad"
+                      label="Tipo de Actividad"
+                      placeholder="Selecciona el Tipo de Actividad"
                       :items="typeActivities.map(activity => ({ title: activity.name, value: activity.id }))"
                     />
                   </VCol>
                   <VCol cols="12">
                     <AppDateTimePicker
                       v-model="newActivity.scheduled_at"
-                      label="Seleccione la fecha y hora"
+                      label="Seleccione la Fecha y Hora"
                       placeholder="Select date and time"
                       :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
                       :rules="[requiredValidator]"
@@ -206,30 +188,36 @@ const handleDrawerModelValueUpdate = val => {
                       rows="3"
                       :rules="[requiredValidator]"
                     />
+                  </VCol>
+                  <!--
                     <VBtn
-                      size="small"
-                      color="secondary"
-                      class="my-2 mx-2"
-                      @click="closeNavigationDrawer"
+                    size="small"
+                    color="secondary"
+                    class="my-2 mx-2"
+                    @click="closeNavigationDrawer"
                     >
-                      Cancelar
-                    </VBtn>
+                    Cancelar
+                    </VBtn> 
+                  -->
+                  <VCol>
                     <VBtn
                       size="small"
-                      color="error"
-                      class="my-2 mx-2"
-                    >
-                      Dar de Baja
-                    </VBtn>
-                    <VBtn
-                      size="small"
-                      color="primary"
+                      color="prymary"
+                      variant="tonal"
                       class="mx-auto"
                       :loading="loadingActivity"
                       :disabled="loadingActivity"
                       @click="onSubmit"
                     >
-                      Guardar
+                      Crear Actividad
+                    </VBtn>
+                    <VBtn
+                      size="small"
+                      color="error"
+                      variant="tonal"
+                      class="my-2 mx-2"
+                    >
+                      Dar de Baja
                     </VBtn>
                   </VCol>
                 </VRow>
@@ -239,6 +227,25 @@ const handleDrawerModelValueUpdate = val => {
                 sm="7"
                 style="align-items: center;"
               >
+                <VRow class="mb-2">
+                  <VCol cols="6">
+                    <span style="font-size: 18px; font-weight: 500; ">
+                      Etapa
+                    </span>
+                  </VCol>                
+                  <VCol
+                    cols="12"
+                    md="6"
+                    class="d-flex justify-end align-center"
+                  >
+                    <VChip
+                      label
+                      color="primary"
+                    >
+                      {{ opportunity.stage.title }}
+                    </VChip>
+                  </VCol>
+                </VRow>
                 <EditProspectOpportunity
                   v-if="opportunity.stage_id === 2"
                   :opportunity="opportunity"

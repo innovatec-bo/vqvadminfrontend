@@ -1,5 +1,4 @@
 import { getProcessesbyOpportunityForStage, updateCheckProcessByIdForOpportunity } from "@/services/Process/processService"
-import { showSuccessNotification } from "@/utils/notifications"
 
 export function useProcess(){
   const process = ref(null)
@@ -19,6 +18,8 @@ export function useProcess(){
 
   const checkProcessForOpportunity = async (opportunityId, processId, processData) => {
     try{
+      console.log(processData)
+
       const response = await updateCheckProcessByIdForOpportunity(opportunityId, processId, processData)
 
       showSuccessNotification('Marcado Exitoso', 'Se Actualizo el estado del proceso')

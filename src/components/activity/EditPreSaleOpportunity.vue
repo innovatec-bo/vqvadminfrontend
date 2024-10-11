@@ -1,6 +1,5 @@
 <!-- eslint-disable camelcase -->
 <script setup>
-import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProcess } from '@/composables/Process/useProcess'
 import EditCustomerDialog from '../customer/EditCustomerDialog.vue'
 import PreSaleForm from '../sale/PreSaleForm.vue'
@@ -13,12 +12,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['updateStageId'])
-
 const { checkProcessForOpportunity } = useProcess()
-
-const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()
 const opencustomerDialog = ref(false)
-
 const generateSaleDialog = ref(false)
 
 const opencustomer = () =>{
@@ -33,80 +28,103 @@ const registerSale = async opportunityId => {
   emit('updateStageId', opportunityId)
 }
 
-const markProcedureAsDone = (procedureId, isChecked) => {
+const markProcedureAsDone = async (procedureId, isChecked) => {
   // Aquí puedes implementar la lógica para actualizar el estado del procedimiento.
   console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
-  checkProcessForOpportunity(props.opportunity.id, procedureId, {
-    is_check: isChecked,
+  await checkProcessForOpportunity(props.opportunity.id, procedureId, {
+    is_check: !isChecked,
   })
+  emit('updateStageId', props.opportunity.id)
 }
 </script>
 
 <template>
   <!-- Sección de Perfil -->
-  <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
-    <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
-      <h4 class="mb-4">
+  <div class="d-flex align-bottom flex-sm-row flex-column justify-center  ">
+    <div class="user-profile-info">
+      <span style="font-size: 14px; font-weight: 500; ">
         Perfil
-      </h4>
+      </span> 
+     
       <div class="d-flex align-center justify-center justify-sm-space-between flex-wrap gap-4">
         <div class="d-flex align-center gap-x-3">
-          <span class="text-5xl font-weight-medium">
+          <span class="text-4xl font-weight-medium">
             {{ avatarText(props.opportunity.customer.name) }}
           </span>
-          <div class="d-flex flex-column">
+          <div
+            class="d-flex flex-column py-2"
+            style="font-size: 14px;"
+          >
             <RouterLink
               :to="{ name: 'apps-ecommerce-customer-details-id', params: { id: 1 } }"
-              class="font-weight-medium"
+              class="font-weight-base"
             >
               {{ props.opportunity.customer.name }}
             </RouterLink>
             <span class="text-sm text-disabled">{{ props.opportunity.customer.phone }}</span>
           </div>
-        </div>
+          <VBtn
+            color="secondary"
+            variant="tonal"
+            size="small"
 
-        <VBtn
-          color="secondary"
-          @click="opencustomer"
-        >
-          Editar Informacion
-        </VBtn>
+            @click="opencustomer"
+          >
+            Editar Perfil
+          </VBtn>
+        </div>
       </div>
     </div>
-  </VCardText>
-  <VCardText class="d-flex align-bottom flex-sm-row flex-column justify-center gap-x-5">
-    <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
-      <h4 class="mb-4">
-        Procedimientos
-      </h4>
-      <div v-if="props.opportunity.procedure && props.opportunity.procedure.length > 0">
-        <div
-          v-for="procedure in props.opportunity.procedure"
-          :key="procedure.id"
-          class="d-flex align-center justify-between"
+  </div>
+  <!-- procesos  -->
+  <div>
+    <span style="font-size: 14px; font-weight: 500; ">
+      Procesos
+    </span> 
+     
+    <div
+      v-if="props.opportunity.procedure && props.opportunity.procedure.length > 0"
+      class="d-flex flex-wrap gap-2 my-5"
+    >
+      <div
+        v-for="procedure in props.opportunity.procedure"
+        :key="procedure.id"
+      >
+        <VChip
+          :color="procedure.pivot.is_check ? 'primary' : 'secondary'"
+          variant="outlined"
+          class="my-1"
+          style="cursor: pointer;"
+          fill-dot
+          @click="markProcedureAsDone(procedure.id, procedure.pivot.is_check)" 
         >
-          <VCheckbox
-            v-model="procedure.pivot.is_check"
-            :label="procedure.title"
-            :true-value="1"
-            :false-value="0"
-            @change="markProcedureAsDone(procedure.id, procedure.pivot.is_check)"
+          <VIcon
+            v-if="procedure.pivot.is_check"
+            icon="tabler-check"
+            class="mr-2"
           />
-        </div>
-      </div>
-      <div v-else>
-        <span>No hay procedimientos disponibles.</span>
+          {{ procedure.title }}
+        </VChip>
       </div>
     </div>
-  </VCardText>
+    <div v-else>
+      <span>No hay procedimientos disponibles.</span>
+    </div>
+  </div>
 
-
+  <!-- Cotizacion  -->
+  <div>
+    <span style="font-size: 14px; font-weight: 500; ">
+      Cotizacion
+    </span>
+  </div>
   <!-- Botón Generar Cotización -->
   <VCardText class="d-flex justify-center mt-4">
     <VBtn
       color="primary"
-      large
       class="mx-1" 
+      variant="tonal"
+      size="small"
       @click="generateQuote"
     >
       Agregar Cotizacion
@@ -114,11 +132,15 @@ const markProcedureAsDone = (procedureId, isChecked) => {
     <VBtn
       color="primary"
       class="mx-auto"
+      size="small"
       @click="openSaleForm"
     >
       Generar Venta
     </VBtn>
   </VCardText>
+
+
+  <!-- Cards -->
   <EditCustomerDialog
     v-model:is-dialog-visible="opencustomerDialog"
     :opportunity-kanban="props.opportunity"
