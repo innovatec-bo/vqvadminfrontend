@@ -40,7 +40,7 @@ const markProcedureAsDone = async (procedureId, isChecked) => {
 
 <template>
   <!-- Sección de Perfil -->
-  <div class="d-flex align-bottom flex-sm-row flex-column justify-center  ">
+  <div class="d-flex align-bottom flex-sm-row flex-column">
     <div class="user-profile-info">
       <span style="font-size: 14px; font-weight: 500; ">
         Perfil
@@ -115,8 +115,64 @@ const markProcedureAsDone = async (procedureId, isChecked) => {
   <!-- Cotizacion  -->
   <div>
     <span style="font-size: 14px; font-weight: 500; ">
-      Cotizacion
-    </span>
+      Cotizaciones
+    </span> 
+    <div
+      v-if="props.opportunity.quotes && props.opportunity.quotes.length > 0"
+      class="d-flex flex-wrap gap-2 my-5"
+    >
+      <VTable
+        density="compact"
+        class="text-no-wrap "
+        style="font-size: 12px;"
+      >
+        <thead>
+          <tr>
+            <th>
+              Nombre
+            </th>
+            <th>
+              Fecha
+            </th>
+            <th>
+              Monto
+            </th>
+            <th />
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr
+            v-for="item in props.opportunity.quotes"
+            :key="item.id"
+          >
+            <td>
+              {{ item.social_reason }}
+            </td>
+            <td>
+              {{ new Date(item.created_at).toLocaleDateString() }}
+            </td>
+            <td>
+              {{ item.amount }}
+            </td>
+            <td>
+              <!-- Todo: aprobar  -->
+              <VRow>
+                <VCheckbox
+                  v-model="item.is_paid"
+                  :true-value="1"
+                  :false-value="0"
+                />
+              </VRow>
+            </td>
+          </tr>
+        </tbody>
+      </VTable>
+    </div>
+    
+    <div v-else>
+      <span>No hay procedimientos disponibles.</span>
+    </div>
   </div>
   <!-- Botón Generar Cotización -->
   <VCardText class="d-flex justify-center mt-4">

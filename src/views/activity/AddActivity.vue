@@ -8,7 +8,6 @@ import EditSaleOpportunity from '@/components/activity/EditSaleOpportunity.vue'
 import SellerReport from '@/components/report/SellerReport.vue'
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
-import { useProperty } from '@/composables/Realty/useProperty'
 import { watch } from 'vue'
 import CustomerHistory from '../Bitacora/CustomerHistory.vue'
 
@@ -36,6 +35,7 @@ const emit = defineEmits([
 
 const historyDrawerVisible = ref(false)
 const checkLastActivity = ref(false)
+const columnRadio = ref('radio-1')
 
 const newActivity = ref({
   title: '',
@@ -47,13 +47,10 @@ const newActivity = ref({
   status: 'COMPLETED',
 })
 
-const fetchProperties = async () => {
-  await allProperty({ page: 1, itemsPerPage: 100 }) 
-}
 
-const { changeStatusActivity, completedActivityAndRegister, updateActivity, getallTypeActivities, typeActivities, loadingActivity } = useActivity()
-const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity } = useOpportunity()
-const { allProperty, properties } = useProperty()
+
+const { completedActivityAndRegister, getallTypeActivities, typeActivities, loadingActivity } = useActivity()
+const { getOpportunitybyId, opportunity } = useOpportunity()
 
 const activitiesData = ref(structuredClone(toRaw(props.activitiesData)))
 
@@ -67,7 +64,6 @@ const handleStageIdUpdate = opportunityId => {
 watch(props, () => {
   activitiesData.value = structuredClone(toRaw(props.activitiesData))
   getOpportunitybyId(activitiesData.value.opportunity_id)
-  fetchProperties()
   allTypeActivity()
 })
 
@@ -93,6 +89,12 @@ const closeNavigationDrawer = () => {
 }
 
 const onSubmit = async() => {
+  let action = ''
+  if (columnRadio.value === 'radio-1') {
+    action = 'COMPLETED'
+  } else if (columnRadio.value === 'radio-2') {
+    action = 'CANCELLED'
+  }
   completedActivityAndRegister(activitiesData.value.id, {
     title: newActivity.value.title,
     description: newActivity.value.description,
@@ -101,7 +103,7 @@ const onSubmit = async() => {
     assigned_to: opportunity.value.user_id,
     property_id: opportunity.value.property_id,
     opportunity_id: opportunity.value.id,
-    status: 'COMPLETED',
+    status: action,
   })
   
   emit('refreshActivities') 
@@ -114,7 +116,6 @@ const openHistory =  () => {
 }
 
 const complet = async()=>{
-
   emit('refreshActivities') 
   emit('update:isDrawerOpen', false) // Cerrar el drawer
 }
@@ -149,14 +150,30 @@ const handleDrawerModelValueUpdate = val => {
                     </span>
                   </VCol>
                   <VCol cols="12">
-                    <VSwitch
-                      v-for="(activity) in opportunity.activities"
-                      :key="activity.id"
-                      :v-model="activitySwitch(activity.state_activity)"
-                      :label="activity.title"
-                      style="font-size: 10px;"
-                    />
+                    <div class="mb-2">
+                      <span>
+                        {{ props.activitiesData.type_activity }} &nbsp • &nbsp
+                        {{ props.activitiesData.title }}
+                      </span>
+                    </div>
+                    <VRadioGroup
+                      v-model="columnRadio"
+                      style="font-size: 10px; "
+                    >
+                      <VRadio
+                        label="Completar Actividad"
+                        value="radio-1"
+                        density="compact"
+                      />
+                      <VRadio
+                        label="Cancelar Actividad"
+                        value="radio-2"
+                        density="compact"
+                      />
+                    </VRadioGroup>
+                    <VDivider class="mt-2" />
                   </VCol>
+                
                   <VCol cols="12">
                     <AppTextField
                       v-model="newActivity.title"

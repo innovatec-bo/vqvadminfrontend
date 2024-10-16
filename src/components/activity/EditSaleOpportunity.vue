@@ -159,7 +159,7 @@ const updateDeliveryDate = async opportunityId => {
 
       <tbody>
         <tr
-          v-for="item in props.opportunity.sales.payment_plans"
+          v-for="item in props.opportunity.sales.initial_payments"
           :key="item.id"
         >
           <td>
@@ -223,7 +223,7 @@ const updateDeliveryDate = async opportunityId => {
 
       <tbody>
         <tr
-          v-for="item in props.opportunity.sales.payment_plans"
+          v-for="item in props.opportunity.sales.balance_payments"
           :key="item.id"
         >
           <td>

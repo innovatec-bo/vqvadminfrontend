@@ -59,6 +59,21 @@ const orders = [
   { tabName: 'Futuros', icon: 'tabler-calendar', actividades: activitiesFuture, badge: activitiesFuture.value.length },
 ]
 
+const iconosActivity = [
+  { type: 'Visita', icon: 'tabler-current-location' },
+  { type: 'Llamada', icon: 'tabler-phone' },
+  { type: 'Cotizacion', icon: 'tabler-cash' },
+  { type: 'Otro', icon: 'tabler-table' },
+]
+
+const getIconForActivity = activityType => {
+  const iconObj = iconosActivity.find(icon => icon.type === activityType)
+
+  return iconObj ? iconObj.icon : 'tabler-default' // Ícono por defecto si no se encuentra
+}
+
+
+
 const getFirstWord = str => {
   return str.split(' ')[0] // Divide el string por espacios y devuelve la primera palabra
 }
@@ -234,7 +249,10 @@ const formatDate = dateString => {
                       color="secondary"
                       class="w-100 h-48"
                     >
-                      <VIcon icon="tabler-phone" />
+                      <VIcon
+                        size="20"
+                        :icon="getIconForActivity(item.type_activity)"
+                      />
                       <div class="mx-2">
                         {{ item.type_activity }} &nbsp • &nbsp {{ (item.name_opportunity) }}
                       </div>

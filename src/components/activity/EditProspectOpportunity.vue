@@ -39,7 +39,7 @@ const markProcedureAsDone = (procedureId, isChecked) => {
 
 <template>
   <!-- Sección de Perfil -->
-  <div class="d-flex align-bottom flex-sm-row flex-column justify-center  ">
+  <div class="d-flex align-bottom flex-sm-row flex-column  ">
     <div class="user-profile-info">
       <span style="font-size: 14px; font-weight: 500; ">
         Perfil
@@ -62,15 +62,17 @@ const markProcedureAsDone = (procedureId, isChecked) => {
             </RouterLink>
             <span class="text-sm text-disabled">{{ props.opportunity.customer.phone }}</span>
           </div>
-          <VBtn
-            color="secondary"
-            variant="tonal"
-            size="small"
-
-            @click="opencustomer"
-          >
-            Editar Perfil
-          </VBtn>
+          <div>
+            <VBtn
+              color="secondary"
+              variant="tonal"
+              size="small"
+  
+              @click="opencustomer"
+            >
+              Editar Perfil
+            </VBtn>
+          </div>
         </div>
       </div>
     </div>
@@ -106,6 +108,63 @@ const markProcedureAsDone = (procedureId, isChecked) => {
         </VChip>
       </div>
     </div>
+    
+    <div v-else>
+      <span>No hay procedimientos disponibles.</span>
+    </div>
+  </div>
+  <div>
+    <span style="font-size: 14px; font-weight: 500; ">
+      Cotizaciones
+    </span> 
+     
+    <div
+      v-if="props.opportunity.quotes && props.opportunity.quotes.length > 0"
+      class="d-flex flex-wrap gap-2 my-5"
+    >
+      <VTable
+        density="compact"
+        class="text-no-wrap "
+        style="font-size: 12px;"
+      >
+        <thead>
+          <tr>
+            <th>
+              Nombre
+            </th>
+            <th>
+              Fecha
+            </th>
+            <th>
+              Monto
+            </th>
+            <th />
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr
+            v-for="item in props.opportunity.quotes"
+            :key="item.id"
+          >
+            <td>
+              {{ item.social_reason }}
+            </td>
+            <td>
+              {{ new Date(item.created_at).toLocaleDateString() }}
+            </td>
+            <td>
+              {{ item.amount }}
+            </td>
+            <td>
+              <!-- Todo: ponerle rutas  para ver la cotizacion por id -->
+              <VIcon icon="tabler-eye" />
+            </td>
+          </tr>
+        </tbody>
+      </VTable>
+    </div>
+    
     <div v-else>
       <span>No hay procedimientos disponibles.</span>
     </div>
