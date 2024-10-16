@@ -1,31 +1,34 @@
+const userData= useCookie('userData').value
+const clientId = userData.cod_phone+userData.phone
+
 export const useChatStore = defineStore('chat', {
   state: () => ({
     contacts: [],
     chatsContacts: [],
     profileUser: undefined,
     activeChat: null,
+    isAuthenticated: false,
   }),
   actions: {
-    async fetchChats(clientId) {
+    async fetchChats() {
       // Actualiza las URLs para que se ajusten a tu API
-      const { data } = await useApi(createUrl(`/whatssap/chats/DiegoA`))
+      const { data } = await useApi(createUrl(`/whatssap/chats/${clientId}`))
       
       const chatsContacts = data.value
 
       // Asigna los datos obtenidos a los estados
       this.chatsContacts = chatsContacts.chats
-      this.profileUser = { id: 'DiegoA' } // Asigna el perfil según sea necesario
+      this.profileUser = { id: clientId } // Asigna el perfil según sea necesario
       console.log('Chats:', this.chatsContacts)
     },
 
-    async getChat(userId) {
-      // Ajusta la URL para que se ajuste a tu API
-      const res = await useApi(createUrl(`/whatssap/chats/DiegoA`))
+    async getChat(chat) {
+      console.log(chat)
 
-      // Encuentra el chat activo
-      const activeChat = res.value.find(chat => chat.contact.id === userId)
-
-      this.activeChat = activeChat
+      const { data } = await useApi(createUrl(`/whatssap/chat/${clientId}/${chat.user}@c.us`)) // Cambia la URL según sea necesario
+      const activeChat = data.value // Asegúrate de que este contenga todos los mensajes y detalles
+    
+      this.activeChat = activeChat || null
     },
 
     async sendMsg(message) {
@@ -74,6 +77,9 @@ export const useChatStore = defineStore('chat', {
       })
 
       contact.chat.lastMessage = msg
+    },
+    async verifyAuthentication(clientId){
+
     },
   },
 })

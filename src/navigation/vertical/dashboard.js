@@ -5,16 +5,20 @@ export default [
     to: 'dashboards-analytics',
     badgeContent: '3',
     badgeClass: 'bg-global-primary',
+    subject: 'ADMINISTRADOR',
+  },
+  {
+    title: 'Panel Asesor',
+    icon: { icon: 'tabler-smart-home' },
+    to: 'activity-list',
+    subject: 'ASESOR',
+
   },
   {
     title: 'Oportunidades',
     icon: { icon: 'tabler-smart-home' },
-    to: 'dashboards-analytics',
-  },
-  { heading: 'Analisis' },
-  {
-    title: 'Analiticas',
-    icon: { icon: 'tabler-smart-home' },
-    to: 'dashboards-analytics',
+    to: 'opportunities-my-contacts',
+    subject: ['ASESOR', 'ADMINISTRADOR'],
+
   },
 ]

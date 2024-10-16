@@ -20,7 +20,7 @@ const { resolveAvatarBadgeVariant } = useChat()
 const chat = computed(() => props.user !== null ? props.user : null)
 
 const isChatContactActive = computed(() => {
-  const isActive = store.activeChat?.contact.id === props.user.id
+  const isActive = store.activeChat?.user === props.user.id
   if (!props.isChatContact)
     return !store.activeChat?.chat && isActive
   

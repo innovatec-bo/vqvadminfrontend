@@ -1,19 +1,22 @@
 import { defineThemeConfig } from '@core'
 import { Skins } from '@core/enums'
-import { breakpointsVuetify } from '@vueuse/core'
+import { breakpointsVuetifyV2 } from '@vueuse/core'
 import { VIcon } from 'vuetify/components/VIcon'
 
 // ❗ Logo SVG must be imported with ?raw suffix
-import logo from '@images/logo.svg?raw'
+import logo from '@images/logos/canzza.svg'
 import { AppContentLayoutNav, ContentWidth, FooterType, NavbarType } from '@layouts/enums'
 
 export const { themeConfig, layoutConfig } = defineThemeConfig({
   app: {
-    title: 'CANZZA',
-    logo: h('div', { innerHTML: logo, style: 'line-height:0; color: rgb(var(--v-global-theme-primary))' }),
+    title: 'CANZZA - Vertical Homes',
+    logo: h('img', { src: logo, alt: 'Logo de Canzza', style: {
+      width: 'auto', 
+      height: 'auto',  
+    } }),
     contentWidth: ContentWidth.Boxed,
     contentLayoutNav: AppContentLayoutNav.Vertical,
-    overlayNavFromBreakpoint: breakpointsVuetify.md + 16,
+    overlayNavFromBreakpoint: breakpointsVuetifyV2.md + 16,
     i18n: {
       enable: true,
       defaultLocale: 'en',

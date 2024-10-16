@@ -1,0 +1,29 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = https://github.com/diegorojas31/NUNA-FRONT.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+	vscode-merge-base = origin/main
+[branch "Develop"]
+	remote = origin
+	merge = refs/heads/Develop
+	github-pr-base-branch = "diegorojas31#NUNA-FRONT#main"
+	vscode-merge-base = origin/main
+[branch "NPS-29"]
+	github-pr-base-branch = "diegorojas31#NUNA-FRONT#Develop"
+	vscode-merge-base = origin/Develop
+	remote = origin
+	merge = refs/heads/NPS-29
+[branch "NPS-33"]
+	github-pr-base-branch = "diegorojas31#NUNA-FRONT#NPS-29"
+	vscode-merge-base = origin/NPS-29
+	remote = origin
+	merge = refs/heads/NPS-33

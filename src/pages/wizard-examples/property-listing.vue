@@ -1,6 +1,5 @@
 <script setup>
 import PersonalDetails from '@/views/wizard-examples/property-listing/PersonalDetails.vue'
-import PriceDetails from '@/views/wizard-examples/property-listing/PriceDetails.vue'
 import PropertyArea from '@/views/wizard-examples/property-listing/PropertyArea.vue'
 import PropertyDetails from '@/views/wizard-examples/property-listing/PropertyDetails.vue'
 import PropertyFeatures from '@/views/wizard-examples/property-listing/PropertyFeatures.vue'
@@ -138,10 +137,6 @@ const onSubmit = () => {
 
             <VWindowItem>
               <PropertyArea v-model:form-data="propertyListingData.propertyArea" />
-            </VWindowItem>
-
-            <VWindowItem>
-              <PriceDetails v-model:form-data="propertyListingData.priceDetails" />
             </VWindowItem>
           </VWindow>
 

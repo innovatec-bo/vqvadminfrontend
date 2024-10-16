@@ -1,14 +1,19 @@
 export default [
-  { heading: 'Personas' },
-  {
-    title: 'Asesores',
-    icon: { icon: 'tabler-users' },
-    to: 'forms-form-layouts',
+  { heading: 'Personas',
+    subject: ['ASESOR', 'ADMINISTRADOR'],
   },
+
+  // {
+  //   title: 'Asesores',
+  //   icon: { icon: 'tabler-users' },
+  //   to: 'forms-form-layouts',
+  //   subject: 'ADMINISTRADOR',
+  // },
   {
     title: 'Clientes',
     icon: { icon: 'tabler-users-plus' },
-    to: 'forms-form-layouts',
+    to: 'customers-list-customers',
+    subject: ['ASESOR', 'ADMINISTRADOR'],
   },
 ]
   

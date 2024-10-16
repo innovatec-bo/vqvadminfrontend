@@ -1,24 +1,28 @@
 <script setup>
 import ChatComponent from '@/components/whatssap/chatComponent.vue'
+import { useWhatssap } from '@/composables/Whatssap/useWhatssap'
 import { connectSocket, getSocket } from '@/services/socketService'
 import QrView from '@/views/whatssap/QrView.vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 definePage({ meta: { layoutWrapperClasses: 'layout-content-height-fixed' } })
 
+const { isAuthenticated, errorMessage, loadingConnect, checkAuthStatus, initializeConnectToWhatsapp } = useWhatssap()
+
 // Estado de conexión del socket
 const isConnected = ref(false)
 
-const isAuthenticated= ref(true)
+
 
 // Código QR recibido desde el servidor
-const qrCode = ref('')
+const qrCode = ref(null)
 
 // Lista de mensajes recibidos
 const messages = ref([])
 
 // Conectar al WebSocket al montar el componente
 onMounted(() => {
+
   const socket = connectSocket()
 
   // Manejar la conexión
@@ -42,7 +46,14 @@ onMounted(() => {
     isAuthenticated.value = true
     console.log('Autenticado con WhatsApp')
   })
+  checkAuthStatus()
 })
+
+const requestQrCode = () => {
+  console.log('solicitar QR')
+  initializeConnectToWhatsapp()
+
+}
 
 // Desconectar el WebSocket al desmontar el componente
 onBeforeUnmount(() => {
@@ -70,9 +81,21 @@ onBeforeUnmount(() => {
       Conectado al WebSocket
     </VsAlert>
 
+    <!-- Botón para solicitar el QR si no está autenticado -->
+    <div v-if="!isAuthenticated && !qrCode">
+      <VBtn
+        :disabled="loadingConnect"
+        :loading="loadingConnect"
+        @click="requestQrCode"
+      >
+        Conectarme a Whatssap
+      </VBtn>
+    </div>
+
     <!-- Componentes hijos -->
     <QrView
       v-if="!isAuthenticated"
+
       :qr-code="qrCode"
       class="full-component"
     />

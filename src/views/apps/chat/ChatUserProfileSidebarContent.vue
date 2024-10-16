@@ -1,7 +1,8 @@
 <script setup>
+import { useWhatssap } from '@/composables/Whatssap/useWhatssap'
+import { useChatStore } from '@/views/apps/chat/useChatStore'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 import { useChat } from './useChat'
-import { useChatStore } from '@/views/apps/chat/useChatStore'
 
 const emit = defineEmits(['close'])
 
@@ -9,6 +10,7 @@ const emit = defineEmits(['close'])
 // composables
 const store = useChatStore()
 const { resolveAvatarBadgeVariant } = useChat()
+const { isAuthenticated, errorMessage, logoutWhatssapWeb } = useWhatssap()
 
 const userStatusRadioOptions = [
   {
@@ -159,6 +161,7 @@ const userStatusRadioOptions = [
       <VBtn
         color="primary"
         class="mt-11"
+        @click="logoutWhatssapWeb"
       >
         Logout
       </VBtn>

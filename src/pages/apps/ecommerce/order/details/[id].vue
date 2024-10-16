@@ -327,7 +327,7 @@ const orderData = [
                 <div class="text-body-1 font-weight-medium">
                   Shamus Tuttle
                 </div>
-                <span class="text-sm text-disabled">Customer ID: #47389</span>
+                <span class="text-sm text-disabled">  : #47389</span>
               </div>
             </div>
 
