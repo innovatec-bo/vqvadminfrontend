@@ -1,4 +1,4 @@
-import { allProperties, allPropertiesProject, deletePropertyById, getPropertiesForType, getPropertyById, registerProperty } from '@/services/Realty/propertyService'
+import { allProperties, allPropertiesProject, deletePropertyById, getPropertiesForType, getPropertyById, registerProperty, updateProperty } from '@/services/Realty/propertyService'
 import { showSuccessNotification } from '@/utils/notifications'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -71,9 +71,40 @@ export function useProperty() {
       router.push('/realty/property/list')
     } catch (err) {
       console.log(err)
-      if(err.response && err.response.status== 422){
+      if(err.response && err.response.status == 422){
         showWarningNotification('ERROR', 'FALTAN DATOS POR RELLENAR')
       }
+    } finally {
+      loadingProperty.value = false
+    }
+  }
+
+  const editProperty = async (propertyDataForm) => {
+    loadingProperty.value = true
+    error.value = null
+    try {
+      const propertyData = {
+        title: propertyDataForm.title,
+        code: propertyDataForm.code,
+        surface: propertyDataForm.surface,
+        base_price: propertyDataForm.base_price,
+        percentage_initial_fee: propertyDataForm.percentage_initial_fee,
+        property_type: propertyDataForm.property_type.value,
+        number_bathrooms: propertyDataForm.departament.number_bathrooms,
+        number_bedrooms: propertyDataForm.departament.number_bedrooms,
+        floor: propertyDataForm.departament.floor,
+        covered: propertyDataForm?.covered ? true : false,
+      }
+
+      const response = await updateProperty(propertyDataForm.id, propertyData);
+      showSuccessNotification('Actualización Exitosa', 'La propiedad ha sido actualizada correctamente.')
+    } catch (err) {
+      console.error(err)
+      if(err.response && err.response.status == 422){
+        showWarningNotification('Validación', 'Faltan datos por rellenar')
+        return
+      }
+      showErrorNotification('Error de Actualización', 'Hubo un problema al actualizar la propiedad.')
     } finally {
       loadingProperty.value = false
     }
@@ -144,6 +175,7 @@ export function useProperty() {
     loadingProperty,
     error,
     addProperty,
+    editProperty,
     getPropertyId,
     allProperty,
     allPropertybyProject,

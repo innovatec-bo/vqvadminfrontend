@@ -46,3 +46,7 @@ public/mockServiceWorker.js
 
 .eslintrc-auto-import.json
 auto-imports.d.ts
+components.d.ts
+pnpm-lock.yaml
+.vscode/settings.json
+src/utils/constants.js
