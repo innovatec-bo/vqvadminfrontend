@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client'
 
 // Cambia la URL por la del servidor NestJS
-const SOCKET_URL = 'http://localhost:3000'
+const SOCKET_URL = 'http://verticalhomesia.nuna.tech:3000'
 
 let socket
 
