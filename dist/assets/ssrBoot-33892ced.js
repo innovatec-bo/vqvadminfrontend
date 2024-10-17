@@ -1,1 +1,0 @@
-import{ar as t,H as e,a2 as s,at as n}from"./index-dee4a701.js";function i(){const o=t(!1);return e(()=>{window.requestAnimationFrame(()=>{o.value=!0})}),{ssrBootStyles:s(()=>o.value?void 0:{transition:"none !important"}),isBooted:n(o)}}export{i as u};
