@@ -2,16 +2,13 @@ import { URL_MICROSERVICIO } from '@/utils/constants'
 import { io } from 'socket.io-client'
 
 // Cambia la URL por la del servidor NestJS
-const SOCKET_URL = URL_MICROSERVICIO.startsWith('https')
-  ? URL_MICROSERVICIO.replace('https', 'wss')
-  : URL_MICROSERVICIO.replace('http', 'ws')
+const SOCKET_URL = URL_MICROSERVICIO
 
 let socket
 
 export const connectSocket = () => {
   socket = io(SOCKET_URL, {
     transports: ['websocket'],
-    secure: SOCKET_URL.startsWith('wss'),
     reconnection: true,
     cors: {
       origin: '*',
