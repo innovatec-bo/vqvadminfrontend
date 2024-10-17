@@ -23,9 +23,9 @@ const changeStatus = async () => {
   }
 }
 
-const markProcedureAsDone = (procedureId, isChecked) => {
+const markProcedureAsDone = async (procedureId, isChecked) => {
   console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
-  checkProcessForOpportunity(props.opportunity.id, procedureId, {
+  await checkProcessForOpportunity(props.opportunity.id, procedureId, {
     // eslint-disable-next-line camelcase
     is_check: !isChecked,
   })

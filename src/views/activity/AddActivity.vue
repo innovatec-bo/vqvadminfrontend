@@ -33,6 +33,7 @@ const emit = defineEmits([
   'refreshActivities',
 ])
 
+
 const historyDrawerVisible = ref(false)
 const checkLastActivity = ref(false)
 const columnRadio = ref('radio-1')
@@ -81,6 +82,7 @@ const closeNavigationDrawer = () => {
     assigned_to: null,
     status: 'COMPLETED',
   }
+  emit('refreshActivities') 
 }
 
 const onSubmit = async() => {
@@ -101,8 +103,9 @@ const onSubmit = async() => {
     status: action,
   })
   
-  emit('refreshActivities') 
   closeNavigationDrawer()
+
+  // emit('refreshActivities') 
 
 }
 
@@ -110,9 +113,9 @@ const openHistory =  () => {
   historyDrawerVisible.value = true
 }
 
-const complet = async()=>{
-  emit('refreshActivities') 
+const complet = async () =>{
   emit('update:isDrawerOpen', false) // Cerrar el drawer
+  emit('refreshActivities') 
 }
 
 const activitySwitch  = state =>{

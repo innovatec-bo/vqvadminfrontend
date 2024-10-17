@@ -1,26 +1,30 @@
 <template>
   <VCardText>
     <p>No hay actividades seleccionadas. Aquí tienes un resumen de las actividades:</p>
-    <VList>
+    <!--
+      <VList>
       <VListItem
-        v-for="(activity, index) in activities"
-        :key="index"
+      v-for="(activity, index) in activities"
+      :key="index"
       >
-        <VListItemTitle>{{ activity.title }}</VListItemTitle>
-        <VListItemSubtitle>
-          Fecha: {{ activity.date }} | Estado: {{ activity.status }}
-        </VListItemSubtitle>
+      <VListItemTitle>{{ activity.title }}</VListItemTitle>
+      <VListItemSubtitle>
+      Fecha: {{ activity.date }} | Estado: {{ activity.status }}
+      </VListItemSubtitle>
       </VListItem>
-    </VList>
+      </VList> 
+    -->
   </VCardText>
-  <VCardActions>
+  <!--
+    <VCardActions>
     <VBtn
-      color="primary"
-      @click="onRefresh"
+    color="primary"
+    @click="onRefresh"
     >
-      Actualizar Reporte
+    Actualizar Reporte
     </VBtn>
-  </VCardActions>
+    </VCardActions> 
+  -->
 </template>
 
 <script setup>
