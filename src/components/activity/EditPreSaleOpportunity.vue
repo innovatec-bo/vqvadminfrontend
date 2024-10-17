@@ -1,6 +1,7 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import { useProcess } from '@/composables/Process/useProcess'
+import { useQuote } from '@/composables/Quote/useQuote'
 import EditCustomerDialog from '../customer/EditCustomerDialog.vue'
 import PreSaleForm from '../sale/PreSaleForm.vue'
 
@@ -13,6 +14,7 @@ const props = defineProps({
 
 const emit = defineEmits(['updateStageId'])
 const { checkProcessForOpportunity } = useProcess()
+const { changeStatusQuotes } = useQuote()
 const opencustomerDialog = ref(false)
 const generateSaleDialog = ref(false)
 
@@ -33,6 +35,16 @@ const markProcedureAsDone = async (procedureId, isChecked) => {
   console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
   await checkProcessForOpportunity(props.opportunity.id, procedureId, {
     is_check: !isChecked,
+  })
+  emit('updateStageId', props.opportunity.id)
+}
+
+const statusQuote = async (quoteId, statusquote) => {
+  const newStatus = statusquote === 'APPROVED' ? 'NOT_APPROVED' : 'APPROVED'
+
+  console.log(`Procedimiento ${quoteId} marcado como: ${statusquote}`)
+  await  changeStatusQuotes(quoteId, {
+    status: newStatus,
   })
   emit('updateStageId', props.opportunity.id)
 }
@@ -159,9 +171,10 @@ const markProcedureAsDone = async (procedureId, isChecked) => {
               <!-- Todo: aprobar  -->
               <VRow>
                 <VCheckbox
-                  v-model="item.is_paid"
-                  :true-value="1"
-                  :false-value="0"
+                  v-model="item.status"
+                  true-value="APPROVED"
+                  false-value="NOT_APPROVED"
+                  @click="statusQuote(item.id, item.status)" 
                 />
               </VRow>
             </td>

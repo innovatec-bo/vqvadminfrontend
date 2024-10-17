@@ -24,8 +24,8 @@ const dialogVisibleUpdate = () => {
 }
 
 const saveProperty = async () => {
-    await editProperty(formProperty.value);
-    emit('propertyUpdated', formProperty.value)
+    const result = await editProperty(formProperty.value)
+    result.success && emit('propertyUpdated', formProperty.value)
     dialogVisibleUpdate()
 }
 
@@ -70,7 +70,6 @@ watch(() => props.property, (newProperty) => {
                     label="Tipo de propiedad"
                     placeholder="Seleccione un tipo"
                     :items="listpropertype"
-                    return-object
                     outlined
                   />
             </VCol>
