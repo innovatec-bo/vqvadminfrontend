@@ -47,19 +47,14 @@ const newActivity = ref({
   status: 'COMPLETED',
 })
 
-
-
 const { completedActivityAndRegister, getallTypeActivities, typeActivities, loadingActivity } = useActivity()
 const { getOpportunitybyId, opportunity } = useOpportunity()
-
 const activitiesData = ref(structuredClone(toRaw(props.activitiesData)))
-
 
 const handleStageIdUpdate = opportunityId => {
   console.log('esta consultando de nuevo despues de cambiar etapa ')
   getOpportunitybyId(opportunityId)
 }
-
 
 watch(props, () => {
   activitiesData.value = structuredClone(toRaw(props.activitiesData))
@@ -291,7 +286,12 @@ const handleDrawerModelValueUpdate = val => {
           </VWindow>
         </VCardText>
       </VCard>
-      <SellerReport v-else />
+      <VCard
+        v-else
+        title="Reporte de Actividades"
+      >
+        <SellerReport />
+      </VCard>
     </VCol>
 
     <!-- Second VCard (Customer History) -->

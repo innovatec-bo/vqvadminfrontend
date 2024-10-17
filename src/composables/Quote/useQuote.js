@@ -1,4 +1,4 @@
-import { registerQuote } from "@/services/Quote/quoteService"
+import { changeStatus, registerQuote } from "@/services/Quote/quoteService"
 
 export function useQuote() {
   const loadingQuote = ref(false)
@@ -21,11 +21,28 @@ export function useQuote() {
     }
   }
 
+  const changeStatusQuotes = async (id, data )=> {
+    loadingQuote.value = true
+    try{
+      const response = await changeStatus(id, data)
+
+      quote.value = response.data
+
+      console.log(response)
+      showSuccessNotification('ACTUALIZACION EXITOSA', 'Cotizacion Actualizada')
+    } catch (err) {
+      console.log(err)
+    } finally {
+      loadingQuote.value = false
+    }
+  }
+
   
-  return [
+  return {
+    changeStatusQuotes,
     loadingQuote,
     quote,
     quotes,
     generateQuote,
-  ]
+  }
 }

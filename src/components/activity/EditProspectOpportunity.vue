@@ -164,9 +164,8 @@ const markProcedureAsDone = (procedureId, isChecked) => {
         </tbody>
       </VTable>
     </div>
-    
     <div v-else>
-      <span>No hay procedimientos disponibles.</span>
+      <span>No hay cotizaciones disponibles.</span>
     </div>
   </div>
 
