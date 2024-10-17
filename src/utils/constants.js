@@ -6,9 +6,6 @@ export const COOKIE_MAX_AGE_1_YEAR = 365 * 24 * 60 * 60
 export const URL_BACKEND = import.meta.env.VITE_URL_BACKEND
 export const URL_MICROSERVICIO = import.meta.env.VITE_URL_MICROSERVICIO
 
-
-
-
 export const URL_ADMIN =  URL_BACKEND +'api/' 
 
 export const LAND = 'LAND'
