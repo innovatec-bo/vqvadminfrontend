@@ -49,8 +49,11 @@ const editActivity = item => {
   activity.value = { ...item }
 }
 
-const onRefreshActivities = () => {
-  onMounted()
+const onRefreshActivities = async () => {
+  await fetchActivitiesToday()
+  await fetchActivitiesPast()
+  await fetchActivitiesFuture()
+  isLoading.value = false // Finaliza la carga después de obtener las actividades
 }
 
 const orders = [

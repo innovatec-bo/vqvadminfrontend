@@ -12,8 +12,6 @@ const { isAuthenticated, errorMessage, loadingConnect, checkAuthStatus, initiali
 // Estado de conexión del socket
 const isConnected = ref(false)
 
-
-
 // Código QR recibido desde el servidor
 const qrCode = ref(null)
 

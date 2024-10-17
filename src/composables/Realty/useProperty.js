@@ -89,7 +89,7 @@ export function useProperty() {
         surface: propertyDataForm.surface,
         base_price: propertyDataForm.base_price,
         percentage_initial_fee: propertyDataForm.percentage_initial_fee,
-        property_type: propertyDataForm.property_type.value,
+        property_type: propertyDataForm.property_type,
         number_bathrooms: propertyDataForm.departament.number_bathrooms,
         number_bedrooms: propertyDataForm.departament.number_bedrooms,
         floor: propertyDataForm.departament.floor,
@@ -98,13 +98,14 @@ export function useProperty() {
 
       const response = await updateProperty(propertyDataForm.id, propertyData);
       showSuccessNotification('Actualización Exitosa', 'La propiedad ha sido actualizada correctamente.')
+      return { success: true, message: 'Actualización Exitosa' }
     } catch (err) {
-      console.error(err)
       if(err.response && err.response.status == 422){
-        showWarningNotification('Validación', 'Faltan datos por rellenar')
-        return
+        showWarningNotification('Validación fallida', 'Faltan datos por rellenar')
+        return { success: false, message: 'Validación fallida'}
       }
       showErrorNotification('Error de Actualización', 'Hubo un problema al actualizar la propiedad.')
+      return { success: false, message: 'Error de actualización' }
     } finally {
       loadingProperty.value = false
     }

@@ -39,10 +39,13 @@ const markProcedureAsDone = async (procedureId, isChecked) => {
   emit('updateStageId', props.opportunity.id)
 }
 
-const confirmPayment = paymentplanId => {
+const confirmPayment = async paymentplanId => {
+  
   console.log(paymentplanId)
-  confirmPaymentPlans( paymentplanId)
+  await confirmPaymentPlans( paymentplanId)
+  emit('updateStageId', props.opportunity.id)
 }
+
 
 const updateDeliveryDate = async opportunityId => {
   emit('updateStageId', opportunityId)
@@ -143,7 +146,7 @@ const updateDeliveryDate = async opportunityId => {
       <thead>
         <tr>
           <th>
-            Tipo
+            Propiedad
           </th>
           <th>
             Fecha
@@ -163,7 +166,7 @@ const updateDeliveryDate = async opportunityId => {
           :key="item.id"
         >
           <td>
-            {{ item.type }}
+            {{ item.property_title }}
           </td>
           <td>
             {{ new Date(item.date).toLocaleDateString() }}
@@ -177,6 +180,7 @@ const updateDeliveryDate = async opportunityId => {
                 v-model="item.is_paid"
                 :true-value="1"
                 :false-value="0"
+                :disabled="item.is_paid === 1"
                 @change="confirmPayment(item.id)"
               />
               <div 
@@ -207,7 +211,7 @@ const updateDeliveryDate = async opportunityId => {
       <thead>
         <tr>
           <th>
-            Tipo
+            Propiedad
           </th>
           <th>
             Fecha
@@ -227,7 +231,7 @@ const updateDeliveryDate = async opportunityId => {
           :key="item.id"
         >
           <td>
-            {{ item.type }}
+            {{ item.property_title }}
           </td>
           <td>
             {{ new Date(item.date).toLocaleDateString() }}
@@ -241,6 +245,7 @@ const updateDeliveryDate = async opportunityId => {
                 v-model="item.is_paid"
                 :true-value="1"
                 :false-value="0"
+                :disabled="item.is_paid === 1"
                 @change="confirmPayment(item.id)"
               />
               <div 
