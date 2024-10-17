@@ -25,10 +25,10 @@ export const allPropertiesProject = async (pagination, projectId) =>{
   })
 }
 
-export const updateProperty = async (propertyId, request)=> {
+export const updateProperty = async (propertyId, PropertyData)=> {
   return await $api(`/property/${propertyId}`, {
-    method: 'PUT',
-    body: request,
+    method: 'PATCH',
+    body: PropertyData,
   })
 }
 

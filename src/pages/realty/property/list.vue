@@ -3,6 +3,7 @@ import { useProperty } from '@/composables/Realty/useProperty'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import { debounce } from 'lodash'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
+import EditPropertyDialog from '@/components/realty/property/EditPropertyDialog.vue'
 
 const { allProperty, properties, property, totalProperties, removeProperty } = useProperty()
 
@@ -82,9 +83,16 @@ const viewProperty = async item => {
   await router.push({ name: 'owner-property-id', params: { id: item.id } })
 }
 
-const updateProperty = async item => {
+const handleUpdateProperty = async item => {
   isDialogEditPropertyVisible.value = true
-  property.value = item
+  property.value = { ...item };
+}
+
+const handlePropertyUpdated = updatedProperty => {
+  const index = properties.value.findIndex(p => p.id === updatedProperty.id)
+  if (index !== -1) {
+    properties.value[index] = { ...updatedProperty }
+  }
 }
 </script>
 
@@ -226,7 +234,7 @@ const updateProperty = async item => {
           <IconBtn>
             <VIcon
               icon="tabler-edit"
-              @click="updateProperty(item)"
+              @click="handleUpdateProperty(item)"
             />
           </IconBtn>
           <IconBtn @click="deleteProperty(item.id)">
@@ -236,9 +244,10 @@ const updateProperty = async item => {
       </VDataTableServer>
       <!-- SECTION -->
     </VCard>
-    <EditProperty
+    <EditPropertyDialog
       v-model:isDialogVisible="isDialogEditPropertyVisible"
       :property="property"
+      @propertyUpdated="handlePropertyUpdated"
     />
   </section>
 </template>
