@@ -2,7 +2,7 @@ import { createFetch } from '@vueuse/core'
 import { destr } from 'destr'
 
 export const useApi = createFetch({
-  baseUrl: 'http://localhost:3000',
+  baseUrl: 'http://verticalhomesia.nuna.tech:3000',
   fetchOptions: {
     headers: {
       Accept: 'application/json',
