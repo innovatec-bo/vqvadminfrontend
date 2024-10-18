@@ -10,6 +10,7 @@ export const connectSocket = () => {
   socket = io(SOCKET_URL, {
     transports: ['websocket'],
     reconnection: true,
+    secure: true,
     cors: {
       origin: '*',
       credentials: true,

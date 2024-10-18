@@ -391,6 +391,7 @@ declare module 'vue' {
     ReferAndEarnDialog: typeof import('./src/components/dialogs/ReferAndEarnDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SalePaymentPlan: typeof import('./src/components/sale/SalePaymentPlan.vue')['default']
     ScrollToTop: typeof import('./src/@core/components/ScrollToTop.vue')['default']
     SellerReport: typeof import('./src/components/report/SellerReport.vue')['default']
     ShareProjectDialog: typeof import('./src/components/dialogs/ShareProjectDialog.vue')['default']

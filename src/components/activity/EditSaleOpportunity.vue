@@ -19,7 +19,12 @@ const { confirmPaymentPlans } = usePaymentPlans()
 
 const confirmDelivery = ref(false)
 const openEditPaymentPlan = ref(false)
+
+const openSaleEditPaymentPlan = ref(false)
+
+// const salePaymentPlan = ref([])
 const paymentPlan = ref('')
+
 
 const openDeliveryForm = () => {
   confirmDelivery.value = true
@@ -30,6 +35,11 @@ const editPaymentPlan = item => {
   openEditPaymentPlan.value = true
   paymentPlan.value = { ...item }
 }
+
+// const editSalePaymentPlan = item => {
+//   openSaleEditPaymentPlan.value = true
+//   salePaymentPlan.value = item
+// }
 
 const markProcedureAsDone = async (procedureId, isChecked) => {
   console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
@@ -138,6 +148,16 @@ const updateDeliveryDate = async opportunityId => {
     <span style="font-size: 14px; font-weight: 500; ">
       Cuota Inicial
     </span> 
+    <!--
+      <div 
+      fill-dot
+      @click="editSalePaymentPlan(props.opportunity.sales.initial_payments)"
+      >
+      <VIcon
+      size="25"
+      icon="tabler-edit"
+      /> 
+    -->
     <VTable
       density="compact"
       class="text-no-wrap my-2"
@@ -169,7 +189,7 @@ const updateDeliveryDate = async opportunityId => {
             {{ item.property_title }}
           </td>
           <td>
-            {{ new Date(item.date).toLocaleDateString() }}
+            {{ item.date }}
           </td>
           <td>
             {{ item.amount }}
@@ -203,6 +223,8 @@ const updateDeliveryDate = async opportunityId => {
     <span style="font-size: 14px; font-weight: 500; ">
       Saldo
     </span> 
+    
+   
     <VTable
       density="compact"
       class="text-no-wrap my-2"
@@ -234,7 +256,7 @@ const updateDeliveryDate = async opportunityId => {
             {{ item.property_title }}
           </td>
           <td>
-            {{ new Date(item.date).toLocaleDateString() }}
+            {{ item.date }}
           </td>
           <td>
             {{ item.amount }}
@@ -318,7 +340,17 @@ const updateDeliveryDate = async opportunityId => {
   />
   <PaymentPlanEdit
     v-model:is-dialog-visible="openEditPaymentPlan"
-    :opportunity="paymentPlan"
+    :payment="paymentPlan"
+    :opportunity="props.opportunity"
     @update-delivery-date="updateDeliveryDate"
   />
+  
+  <!--
+    <SalePaymentPlan
+    v-model:is-dialog-visible="openSaleEditPaymentPlan"
+    :opportunity="props.opportunity"
+    :sales-payment="salePaymentPlan"
+    @update-delivery-date="updateDeliveryDate"
+    /> 
+  -->
 </template>

@@ -1,0 +1,1 @@
+const s=31536e3,a="https://phplaravel-1171375-4944906.cloudwaysapps.com/",p="https://nuna-properties-ia-production.up.railway.app/",t=a+"api/",o="LAND",A="DEPARTAMENT";export{s as C,A as D,o as L,t as U,p as a};
