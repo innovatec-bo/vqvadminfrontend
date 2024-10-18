@@ -46,3 +46,68 @@ export const showQuestionNotification = (title, message) => {
     showConfirmButton: true,
   })
 }
+
+export const showSuccessToast = (title, message) => {
+  Swal.fire({
+    icon: 'success',
+    title: title,
+    text: message,
+    showConfirmButton: false,
+    timer: 3000,
+    toast: true,
+    position: 'bottom-right',
+    timerProgressBar: true,
+  });
+}
+
+export const showErrorToast = (title, message) => {
+  Swal.fire({
+    icon: 'error',
+    title: title,
+    text: message,
+    showConfirmButton: false,
+    timer: 3000,
+    toast: true,
+    position: 'bottom-right',
+    timerProgressBar: true,
+  })
+}
+  
+export const showInfoToast = (title, message) => {
+  Swal.fire({
+    icon: 'info',
+    title: title,
+    text: message,
+    showConfirmButton: false,
+    timer: 3000,
+    toast: true,
+    position: 'bottom-right',
+    timerProgressBar: true,
+  })
+}
+  
+export const showWarningToast = (title, message) => {
+  Swal.fire({
+    icon: 'warning',
+    title: title,
+    text: message,
+    showConfirmButton: false,
+    timer: 3000,
+    toast: true,
+    position: 'bottom-right',
+    timerProgressBar: true,
+  })
+}
+  
+export const showQuestionToast = (title, message) => {
+  Swal.fire({
+    icon: 'question',
+    title: title,
+    text: message,
+    showConfirmButton: false,
+    timer: 3000,
+    toast: true,
+    position: 'bottom-right',
+    timerProgressBar: true,
+  })
+}
