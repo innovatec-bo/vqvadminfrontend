@@ -15,8 +15,8 @@ export function useWhatssap(){
     try{
       const response= await getClientStatus(clientId)
 
-      console.log(response)
-      if(response.status){
+      console.log('respuesta: ', response)
+      if(response.status === true ){
         isAuthenticated.value = true
       }else{
         isAuthenticated.value = false
