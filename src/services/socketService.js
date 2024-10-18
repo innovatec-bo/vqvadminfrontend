@@ -1,15 +1,18 @@
+import { URL_MICROSERVICIO } from '@/utils/constants'
 import { io } from 'socket.io-client'
 
 // Cambia la URL por la del servidor NestJS
-const SOCKET_URL = 'http://verticalhomesia.nuna.tech:3000'
+const SOCKET_URL = URL_MICROSERVICIO
 
 let socket
 
 export const connectSocket = () => {
   socket = io(SOCKET_URL, {
     transports: ['websocket'],
+    reconnection: true,
     cors: {
-      origin: '*', // Habilitar CORS si es necesario
+      origin: '*',
+      credentials: true,
     },
   })
 
