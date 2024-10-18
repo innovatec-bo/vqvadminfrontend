@@ -5,3 +5,10 @@ export const confirmPaymenPlanByid = async $id => {
     method: 'PATCH',
   })
 }
+
+export const update = async (id, data) => {
+  return await $api(`/sale/paymentPlans/${id}`, {
+    method: 'PATCH',
+    body: data,
+  })
+}
