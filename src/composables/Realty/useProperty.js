@@ -1,5 +1,5 @@
 import { allProperties, allPropertiesProject, deletePropertyById, getPropertiesForType, getPropertyById, registerProperty, updateProperty } from '@/services/Realty/propertyService'
-import { showSuccessNotification } from '@/utils/notifications'
+import { showErrorToast, showSuccessNotification, showSuccessToast, showWarningToast } from '@/utils/notifications'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -97,14 +97,14 @@ export function useProperty() {
       }
 
       const response = await updateProperty(propertyDataForm.id, propertyData);
-      showSuccessNotification('Actualización Exitosa', 'La propiedad ha sido actualizada correctamente.')
+      showSuccessToast('Actualización Exitosa', 'La propiedad ha sido actualizada correctamente.')
       return { success: true, message: 'Actualización Exitosa' }
     } catch (err) {
       if(err.response && err.response.status == 422){
-        showWarningNotification('Validación fallida', 'Faltan datos por rellenar')
+        showWarningToast('Validación fallida', 'Faltan datos por rellenar')
         return { success: false, message: 'Validación fallida'}
       }
-      showErrorNotification('Error de Actualización', 'Hubo un problema al actualizar la propiedad.')
+      showErrorToast('Error de Actualización', 'Hubo un problema al actualizar la propiedad.')
       return { success: false, message: 'Error de actualización' }
     } finally {
       loadingProperty.value = false
