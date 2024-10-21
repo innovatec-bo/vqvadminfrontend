@@ -152,10 +152,15 @@ declare global {
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
   const showErrorNotification: typeof import('./src/utils/notifications.js')['showErrorNotification']
+  const showErrorToast: typeof import('./src/utils/notifications.js')['showErrorToast']
   const showInfoNotification: typeof import('./src/utils/notifications.js')['showInfoNotification']
+  const showInfoToast: typeof import('./src/utils/notifications.js')['showInfoToast']
   const showQuestionNotification: typeof import('./src/utils/notifications.js')['showQuestionNotification']
+  const showQuestionToast: typeof import('./src/utils/notifications.js')['showQuestionToast']
   const showSuccessNotification: typeof import('./src/utils/notifications.js')['showSuccessNotification']
+  const showSuccessToast: typeof import('./src/utils/notifications.js')['showSuccessToast']
   const showWarningNotification: typeof import('./src/utils/notifications.js')['showWarningNotification']
+  const showWarningToast: typeof import('./src/utils/notifications.js')['showWarningToast']
   const storeToRefs: typeof import('pinia')['storeToRefs']
   const syncRef: typeof import('@vueuse/core')['syncRef']
   const syncRefs: typeof import('@vueuse/core')['syncRefs']
@@ -533,10 +538,15 @@ declare module 'vue' {
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
     readonly showErrorNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showErrorNotification']>
+    readonly showErrorToast: UnwrapRef<typeof import('./src/utils/notifications.js')['showErrorToast']>
     readonly showInfoNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showInfoNotification']>
+    readonly showInfoToast: UnwrapRef<typeof import('./src/utils/notifications.js')['showInfoToast']>
     readonly showQuestionNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showQuestionNotification']>
+    readonly showQuestionToast: UnwrapRef<typeof import('./src/utils/notifications.js')['showQuestionToast']>
     readonly showSuccessNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showSuccessNotification']>
+    readonly showSuccessToast: UnwrapRef<typeof import('./src/utils/notifications.js')['showSuccessToast']>
     readonly showWarningNotification: UnwrapRef<typeof import('./src/utils/notifications.js')['showWarningNotification']>
+    readonly showWarningToast: UnwrapRef<typeof import('./src/utils/notifications.js')['showWarningToast']>
     readonly storeToRefs: UnwrapRef<typeof import('pinia')['storeToRefs']>
     readonly syncRef: UnwrapRef<typeof import('@vueuse/core')['syncRef']>
     readonly syncRefs: UnwrapRef<typeof import('@vueuse/core')['syncRefs']>

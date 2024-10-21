@@ -380,6 +380,11 @@
     "watchThrottled": true,
     "watchTriggerable": true,
     "watchWithFilter": true,
-    "whenever": true
+    "whenever": true,
+    "showErrorToast": true,
+    "showInfoToast": true,
+    "showQuestionToast": true,
+    "showSuccessToast": true,
+    "showWarningToast": true
   }
 }
