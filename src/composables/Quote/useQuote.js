@@ -1,9 +1,13 @@
-import { changeStatus, registerQuote } from "@/services/Quote/quoteService"
+import { changeStatus, listQuotePaginate, registerQuote } from "@/services/Quote/quoteService"
+import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
+import { useRouter } from "vue-router"
 
 export function useQuote() {
   const loadingQuote = ref(false)
   const quote = ref(null)
   const quotes = ref([])
+  const router = useRouter()
+  const totalQuotes= ref(0)
 
   const generateQuote = async quoteData => {
     loadingQuote.value = true
@@ -11,11 +15,19 @@ export function useQuote() {
       const response = await registerQuote(quoteData)
 
       console.log(response)
-
       quote.value = response.data
-      
+      showSuccessNotification('Actualización Exitosa', 'La propiedad ha sido actualizada correctamente.')
+      router.push('/quote/listQuote')
+
     }catch (err){
-      console.error(err)
+      if(err.response && err.response.status == 422){
+        showWarningNotification('Validación fallida', 'Faltan datos por rellenar')
+        
+        return { success: false, message: 'Validación fallida' }
+      }
+      showErrorNotification('Error al Registrar', 'Hubo un problema al registrar la Cotizacion.')
+      
+      return { success: false, message: 'Error al Registrar' }
     }finally {
       loadingQuote.value = false
     }
@@ -37,12 +49,28 @@ export function useQuote() {
     }
   }
 
+  const allQuotePaginate = async paginated =>{
+    loadingQuote.value = true
+    try {
+      const response=await listQuotePaginate(paginated)
+
+      console.log(response)
+      quotes.value = response.data.data
+      totalQuotes.value = response.data.total
+    }catch (err){
+      console.log(err)
+    }finally{
+      loadingQuote.value = false
+    }
+  }
   
   return {
     changeStatusQuotes,
     loadingQuote,
     quote,
-    quotes,
+    quotes: computed(() => quotes.value),
+    totalQuotes: computed(()=> totalQuotes.value),
     generateQuote,
+    allQuotePaginate,
   }
 }

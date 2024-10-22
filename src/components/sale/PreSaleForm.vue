@@ -49,7 +49,7 @@ const salesData = ref({
   properties: [{
     property_id: null,
     price: null,
-    priceIt: null,
+    price_it: null,
     property_type: PropertyType.DEPARTAMENT.value,
     property_type_name: PropertyType.DEPARTAMENT.label,
   }],
@@ -111,10 +111,10 @@ watch(
       if (property.price) {
         const price = parseFloat(property.price) || 0 // Convertir a número
 
-        property.priceIt = price * 0.03 // 3% del precio para priceIt
+        property.price_it = price * 0.03 // 3% del precio para priceIt
         totalPrice += price // Sumar el precio al total
       } else {
-        property.priceIt = null
+        property.price_it = null
       }
     })
 
