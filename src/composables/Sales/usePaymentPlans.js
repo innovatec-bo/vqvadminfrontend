@@ -11,7 +11,7 @@ export function usePaymentPlans (){
     try{
       const response = await confirmPaymenPlanByid(id)
 
-      showSuccessNotification('Actualizacion Exitosa', 'Se confirmo el pago')
+      showSuccessToast('Actualizacion Exitosa', 'Se confirmo el pago')
     }catch (err){
       console.log(err)
     }
