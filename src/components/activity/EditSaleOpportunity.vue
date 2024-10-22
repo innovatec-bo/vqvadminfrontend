@@ -41,13 +41,18 @@ const editPaymentPlan = item => {
 //   salePaymentPlan.value = item
 // }
 
-const markProcedureAsDone = async (procedureId, isChecked) => {
-  console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
-  await checkProcessForOpportunity(props.opportunity.id, procedureId, {
-    is_check: !isChecked,
+const markProcedureAsDone = async procedure => {
+  console.log(`Procedimiento ${procedure.id} marcado como: ${procedure.pivot.is_check ? 'realizado' : 'no realizado'}`)
+
+  await checkProcessForOpportunity(props.opportunity.id, procedure.id, {
+    is_check: !procedure.pivot.is_check, 
   })
+
+  procedure.pivot.is_check = !procedure.pivot.is_check
+
   emit('updateStageId', props.opportunity.id)
 }
+
 
 const confirmPayment = async paymentplanId => {
   
@@ -305,7 +310,7 @@ const updateDeliveryDate = async opportunityId => {
           class="my-1"
           style="cursor: pointer;"
           fill-dot
-          @click="markProcedureAsDone(procedure.id, procedure.pivot.is_check)" 
+          @click="markProcedureAsDone(procedure)" 
         >
           <VIcon
             v-if="procedure.pivot.is_check"

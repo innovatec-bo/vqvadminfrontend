@@ -216,10 +216,9 @@ const handleDrawerModelValueUpdate = val => {
                   -->
                   <VCol>
                     <VBtn
-                      size="small"
-                      color="prymary"
-                      variant="tonal"
+                      color="primary"
                       class="mx-auto"
+                      size="small"
                       :loading="loadingActivity"
                       :disabled="loadingActivity"
                       @click="onSubmit"
@@ -227,10 +226,10 @@ const handleDrawerModelValueUpdate = val => {
                       Crear Actividad
                     </VBtn>
                     <VBtn
-                      size="small"
-                      color="error"
+                      color="primary"
+                      class="mx-1" 
                       variant="tonal"
-                      class="my-2 mx-2"
+                      size="small"
                     >
                       Dar de Baja
                     </VBtn>
