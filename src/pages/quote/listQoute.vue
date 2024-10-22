@@ -1,16 +1,13 @@
 <script setup>
-import { useCustomer } from '@/composables/Customer/useCustomer'
+import { useQuote } from '@/composables/Quote/useQuote'
 import ECommerceAddCustomerDrawer from '@/views/apps/ecommerce/ECommerceAddCustomerDrawer.vue'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
 const searchQuery = ref('')
 const isAddCustomerDrawerOpen = ref(false)
-const router = useRouter()
-
-const { allCustomerPaginate, totalCustomers, customers } = useCustomer()
+const { allQuotePaginate, totalQuotes, quotes, changeStatusQuotes } = useQuote()
 
 // Data table options
 const itemsPerPage = ref(10)
@@ -18,15 +15,14 @@ const page = ref(1)
 const sortBy = ref()
 const orderBy = ref()
 
-// Data table Headers
 const headers = [
   {
-    title: 'CI',
-    key: 'CI',
+    title: 'NIT',
+    key: 'nit',
   },
   {
     title: 'Nombre',
-    key: 'name',
+    key: 'social_reason',
   },
   {
     title: 'Celular',
@@ -37,8 +33,12 @@ const headers = [
     key: 'email',
   },
   {
-    title: 'Ultima Oportunidad',
-    key: 'lastOpportunity',
+    title: 'Estado',
+    key: 'status',
+  },
+  {
+    title: 'Total',
+    key: 'amount',
   },
   {
     title: 'Accion',
@@ -52,9 +52,18 @@ const updateOptions = options => {
   orderBy.value = options.sortBy[0]?.order
 }
 
+const statusQuote = async (quoteId, statusquote) => {
+  const newStatus = statusquote === 'APPROVED' ? 'NOT_APPROVED' : 'APPROVED'
+
+  console.log(`Procedimiento ${quoteId} marcado como: ${statusquote}`)
+  await  changeStatusQuotes(quoteId, {
+    status: newStatus,
+  })
+  onMounted()
+}
 
 onMounted(async () =>{
-  await allCustomerPaginate({
+  await allQuotePaginate({
     page: page.value,
     itemsPerPage: itemsPerPage.value,
   })
@@ -102,32 +111,31 @@ onMounted(async () =>{
       <VDataTableServer
         v-model:items-per-page="itemsPerPage"
         v-model:page="page"
-        :items="customers"
+        :items="quotes"
         :headers="headers"
-        :items-length="totalCustomers"
-        show-select
+        :items-length="totalQuotes"
         class="text-no-wrap"
         @update:options="updateOptions"
       >
-        <template #item.phone="{ item }">
+        <template #item.status="{ item }">
           <div class="d-flex gap-x-2">
-            <!-- Enlace a WhatsApp API -->
-            <a
-              :href="`https://api.whatsapp.com/send?phone=591${item.phone}`"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-body-1"
-            >
-              {{ item.cod_phone }} {{ item.phone }}
-            </a>
+            {{ item.status === 'APPROVED' ? 'Aprovado' : 'No Aprovado' }}
           </div>
         </template>
-
         <!-- Actions -->
+       
         <template #item.action="{ item }">
-          <IconBtn>
-            <VIcon icon="tabler-edit" />
-          </IconBtn>
+          <div class="d-flex items-center gap-x-2">
+            <IconBtn>
+              <VIcon icon="tabler-edit" />
+            </IconBtn>
+            <VCheckbox
+              v-model="item.status"
+              true-value="APPROVED"
+              false-value="NOT_APPROVED"
+              @click="statusQuote(item.id, item.status)" 
+            />
+          </div>
         </template>
 
 
@@ -136,13 +144,13 @@ onMounted(async () =>{
 
           <div class="d-flex align-center justify-sm-space-between justify-center flex-wrap gap-3 pa-5 pt-3">
             <p class="text-sm text-disabled mb-0">
-              {{ paginationMeta({ page, itemsPerPage }, totalCustomers) }}
+              {{ paginationMeta({ page, itemsPerPage }, totalQuotes) }}
             </p>
 
             <VPagination
               v-model="page"
-              :length="Math.ceil(totalCustomers / itemsPerPage)"
-              :total-visible="$vuetify.display.xs ? 1 : Math.min(Math.ceil(totalCustomers / itemsPerPage), 5)"
+              :length="Math.ceil(totalQuotes / itemsPerPage)"
+              :total-visible="$vuetify.display.xs ? 1 : Math.min(Math.ceil(totalQuotes / itemsPerPage), 5)"
             >
               <template #prev="slotProps">
                 <VBtn

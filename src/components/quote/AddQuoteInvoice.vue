@@ -17,15 +17,26 @@ const emit = defineEmits([
   'remove',
 ])
 
-
-// 👉 Add item function
 const addItem = newProduct => {
   emit('push', newProduct) // Emite el evento hacia el abuelo
 }
 
-
 const removeProduct = id => {
   emit('remove', id)
+}
+
+const items = ['10', '20', '30']
+const selectedPercentage =  ref('10')
+
+const calculatedAmount = totalAmount => {
+  // eslint-disable-next-line vue/no-mutating-props, camelcase
+  props.data.initial_fee = (totalAmount * selectedPercentage.value) / 100 
+
+  // eslint-disable-next-line vue/no-mutating-props
+  props.data.balance = totalAmount - props.data.initial_fee
+
+  // eslint-disable-next-line vue/no-mutating-props
+  return (totalAmount * selectedPercentage.value) / 100
 }
 </script>
 
@@ -42,42 +53,29 @@ const removeProduct = id => {
             class="me-3"
           />
           <!-- 👉 Title -->
-          <h6 class="font-weight-bold text-capitalize text-h4">
+          <h4 class="font-weight-bold text-capitalize text-h3">
             {{ themeConfig.app.title }}
-          </h6>
+          </h4>
         </div>
         <!-- 👉 Address -->
         <p class="mb-0">
-          Office 149, 450 South Brand Brooklyn
+          Formulario de Cotizacion 
         </p>
       </div>
 
       <!-- 👉 Right Content -->
       <div class="mt-4 ma-sm-4">
         <!-- 👉 Invoice Id -->
-        <h6 class="d-flex align-center font-weight-medium justify-sm-end text-xl mb-3">
-          <span
-            class="me-3 text-h4"
-            style="inline-size: 6rem;"
-          >Invoice</span>
-          <span>
-            <AppTextField
-              disabled
-              prefix="#"
-              density="compact"
-              style="inline-size: 9.5rem;"
-            />
-          </span>
-        </h6>
-
+        
         <!-- 👉 Issue Date -->
         <div class="d-flex align-center justify-sm-end mb-3">
           <span
             class="me-3"
             style="inline-size: 6rem;"
-          >Date Issued</span>
+          >Vigente hasta</span>
           <span style="inline-size: 9.5rem;">
             <AppDateTimePicker
+              v-model="props.data.expiration_date"
               density="compact"
               placeholder="YYYY-MM-DD"
               :config="{ position: 'auto right' }"
@@ -142,6 +140,21 @@ const removeProduct = id => {
           style="padding-block: 0;padding-inline: 8px;"
         >
           <AppTextField
+            v-model="props.data.email"
+            label="Correo:"
+            placeholder="email@gmail.com"
+            outlined
+            dense
+            class="custom-salesforce-input"
+          />
+        </VCol>
+
+        <VCol
+          cols="12"
+          sm="6"
+          style="padding-block: 0;padding-inline: 8px;"
+        >
+          <AppTextField
             v-model="props.data.address"
             label="Direccion:"
             placeholder="Av/ Equipetrol ...."
@@ -182,10 +195,9 @@ const removeProduct = id => {
       </VRow>
     </VCardText>
 
-
     <VDivider thickness="24" />
 
-    <!-- 👉 Add purchased products -->
+    <!-- Añadir departamento o parqueo -->
     <VCardText class="add-products-form">
       <VRow>
         <VCol
@@ -195,6 +207,7 @@ const removeProduct = id => {
           <InvoiceAddProperty
             :properties="props.data.properties"
             @add-property="addItem"
+            @remove-product="removeProduct"
           />  
         </VCol>
         <VCol
@@ -217,12 +230,22 @@ const removeProduct = id => {
         >
           <AppTextField
             v-model="props.data.amount"
-            label="Total en Contrato :"
+            label="Total:"
             placeholder="Placeholder Text"
             outlined
             dense
             class="custom-salesforce-input"
           />
+        </VCol>
+        <VDivider
+          thickness="4"
+          class="my-3"
+        />
+        <VCol
+          cols="12"
+          style="padding-block: 0;padding-inline: 8px;"
+        >
+          <span> TODO: Seben mandar los descuentos  porcentajes de descuentos o el texto para poder introducirlo aqui</span>
         </VCol>
       </VRow>
     </VCardText>
@@ -237,27 +260,18 @@ const removeProduct = id => {
           sm="6"
           style="padding-block: 0;padding-inline: 8px;"
         >
-          <InvoiceAddMoney />
-        </VCol>
-        <VCol
-          cols="12"
-          sm="6"
-          style="padding-block: 0;padding-inline: 8px;"
-        >
-          <InvoiceAddMoney />
-        </VCol>
-        <VCol
-          cols="12"
-          sm="6"
-          style="padding-block: 0;padding-inline: 8px;"
-        >
-          <AppTextField
-            v-model="props.data.contract_signing_date"
-            label="Firma de Contrato :"
-            placeholder="Placeholder Text"
-            outlined
-            dense
-            class="custom-salesforce-input"
+          <AppSelect
+            v-model="selectedPercentage"
+            label="% Cuota Inicial"
+            :items="items"
+            placeholder="% Cuota inicial"
+            class="mb-2"  
+          />
+          <InvoiceAddMoney 
+            :title="'Cuota Inicial: ' + calculatedAmount(props.data.amount) " 
+            :amount="calculatedAmount(props.data.amount)"
+            :differs="props.data.differs_initial_fee " 
+            :type="INITIAL_PAYMENT"
           />
         </VCol>
         <VCol
@@ -265,13 +279,38 @@ const removeProduct = id => {
           sm="6"
           style="padding-block: 0;padding-inline: 8px;"
         >
-          <AppTextField
-            label="Fecha de Deposito:"
-            placeholder="Placeholder Text"
-            outlined
-            dense
-            class="custom-salesforce-input"
+          <InvoiceAddMoney 
+            :title="'Saldo: ' + (props.data.amount - props.data.initial_fee) " 
+            :amount="props.data.amount - props.data.initial_fee"
+            :differs="props.data.differs_balance" 
+            :type="BALANCE"
           />
+        </VCol>
+        <VCol
+          cols="12"
+          sm="6"
+          class="mt-15"
+        >
+          <VDivider thickness="4" />
+          <div class="text-center my-1">
+            <span>
+              <strong>
+                Firma del Cliente 
+              </strong>
+            </span>
+          </div>
+        </VCol>
+        <VCol
+          cols="12"
+          sm="6"
+          class="mt-15"
+        >
+          <VDivider thickness="4" />
+          <div class="text-center my-1">
+            <span> <strong>
+              Firma Gerente Administrativo
+            </strong>  </span>
+          </div>
         </VCol>
         <VCol
           cols="12"
@@ -303,6 +342,14 @@ const removeProduct = id => {
       <div class="d-flex mx-sm-4">
         <span><strong>
           Todos los gastos administrativos, inscripción en derechos reales y honorarios profesionales para consolidar el derecho de propiedad a favor del comprador deben ser asumidos por el comprador.</strong></span>
+      </div>
+    </VCardText>
+    <VDivider />
+    <VCardText>
+      <div class="d-flex mx-sm-4">
+        <span><strong>
+          Este documento tiene validez únicamente hasta el <span style="text-decoration: underline;">{{ props.data.expiration_date }}</span>.
+        </strong></span>
       </div>
     </VCardText>
   </VCard>

@@ -1,28 +1,33 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 
-// Definir props para recibir información desde el componente padre
 const props = defineProps({
   title: {
-    type: String, // Puede ser "Cuota Inicial" o "Saldo Restante"
+    type: String,
+    default: '',
+  },
+  type: {
+    type: String,
     default: '',
   },
   amount: {
-    type: Number, // El total a diferir
+    type: Number,
     default: 0,
   },
   differs: {
-    type: Array, // Array para almacenar las cuotas o pagos
+    type: Array,
     default: () => [],
   },
 })
 
-// Inicializar los pagos basados en la prop differs
-const payments = ref([...props.differs])
+const payments = ref(props.differs)
 
 // Función para agregar un nuevo pago
 const addPayment = () => {
-  payments.value.push({ id: payments.value.length + 1, amount: '', date: '' })
+  payments.value.push({  amount: '', date: '' })
+
+  // eslint-disable-next-line vue/no-mutating-props
+  props.differs = payments.value
 }
 
 // Función para eliminar un pago
@@ -53,18 +58,9 @@ watch(currentTotal, newTotal => {
     border
     class="d-flex flex-column pa-5"
   >
-    <!-- Título dinámico (Cuota Inicial o Saldo Restante) -->
-    <h3>{{ props.title }}</h3>
-
-    <!-- Mostrar el monto total que se diferirá -->
-    <VTextField
-      v-model="props.amount"
-      label="Monto Total a Diferir"
-      type="number"
-      class="mb-4"
-    />
-
-    <!-- Inputs para los pagos -->
+    <h3 class="mb-2">
+      {{ props.title }}
+    </h3>
     <div
       v-for="(payment, index) in payments"
       :key="payment.id"

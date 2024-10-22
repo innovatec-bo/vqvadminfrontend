@@ -12,6 +12,8 @@ export function useProperty() {
   const router = useRouter()
   const property = ref(null)
   const properties = ref([])
+  const propertiesTypes = ref([])
+
   const totalProperties = ref(0)
 
   const addProperty = async propertyListingData => {
@@ -79,7 +81,7 @@ export function useProperty() {
     }
   }
 
-  const editProperty = async (propertyDataForm) => {
+  const editProperty = async propertyDataForm => {
     loadingProperty.value = true
     error.value = null
     try {
@@ -96,15 +98,19 @@ export function useProperty() {
         covered: propertyDataForm?.covered ? true : false,
       }
 
-      const response = await updateProperty(propertyDataForm.id, propertyData);
+      const response = await updateProperty(propertyDataForm.id, propertyData)
+
       showSuccessNotification('Actualización Exitosa', 'La propiedad ha sido actualizada correctamente.')
+      
       return { success: true, message: 'Actualización Exitosa' }
     } catch (err) {
       if(err.response && err.response.status == 422){
         showWarningNotification('Validación fallida', 'Faltan datos por rellenar')
-        return { success: false, message: 'Validación fallida'}
+        
+        return { success: false, message: 'Validación fallida' }
       }
       showErrorNotification('Error de Actualización', 'Hubo un problema al actualizar la propiedad.')
+      
       return { success: false, message: 'Error de actualización' }
     } finally {
       loadingProperty.value = false
@@ -162,6 +168,7 @@ export function useProperty() {
     try{
       const response = await getPropertiesForType(type)
 
+      propertiesTypes.value  = response.data
       console.log('propertyfortype ', response.data)
 
       return  response.data

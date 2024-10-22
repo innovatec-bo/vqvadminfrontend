@@ -13,3 +13,9 @@ export const changeStatus = async (id, data)=> {
     body: data,
   })
 }
+export const  listQuotePaginate = async pagination => {
+  return await $api('quote/list-paginated', {
+    method: 'GET',
+    params: pagination,
+  })
+}

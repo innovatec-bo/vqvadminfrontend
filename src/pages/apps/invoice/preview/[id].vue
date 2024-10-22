@@ -1,8 +1,8 @@
 <script setup>
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
 import InvoiceAddPaymentDrawer from '@/views/apps/invoice/InvoiceAddPaymentDrawer.vue'
 import InvoiceSendInvoiceDrawer from '@/views/apps/invoice/InvoiceSendInvoiceDrawer.vue'
+import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
+import { themeConfig } from '@themeConfig'
 
 const route = useRoute('apps-invoice-preview-id')
 const isAddPaymentSidebarVisible = ref(false)
@@ -365,10 +365,10 @@ const printInvoice = () => {
     </VRow>
 
     <!-- 👉 Add Payment Sidebar -->
-    <InvoiceAddPaymentDrawer v-model:isDrawerOpen="isAddPaymentSidebarVisible" />
+    <InvoiceAddPaymentDrawer v-model:is-drawer-open="isAddPaymentSidebarVisible" />
 
     <!-- 👉 Send Invoice Sidebar -->
-    <InvoiceSendInvoiceDrawer v-model:isDrawerOpen="isSendPaymentSidebarVisible" />
+    <InvoiceSendInvoiceDrawer v-model:is-drawer-open="isSendPaymentSidebarVisible" />
   </section>
 </template>
 
