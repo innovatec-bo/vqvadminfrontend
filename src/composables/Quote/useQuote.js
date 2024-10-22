@@ -16,7 +16,7 @@ export function useQuote() {
 
       console.log(response)
       quote.value = response.data
-      showSuccessNotification('Actualización Exitosa', 'La propiedad ha sido actualizada correctamente.')
+      showSuccessNotification('¡Cotización registrada exitosamente!', 'La cotización ha sido generada y registrada en el sistema. ¡Buen trabajo!')
       router.push('/quote/listQuote')
 
     }catch (err){
@@ -25,7 +25,7 @@ export function useQuote() {
         
         return { success: false, message: 'Validación fallida' }
       }
-      showErrorNotification('Error al Registrar', 'Hubo un problema al registrar la Cotizacion.')
+      showErrorNotification('Advertencia', 'Hubo un problema al registrar la Cotizacion. Contactese con Soporte.')
       
       return { success: false, message: 'Error al Registrar' }
     }finally {
@@ -41,7 +41,7 @@ export function useQuote() {
       quote.value = response.data
 
       console.log(response)
-      showSuccessNotification('ACTUALIZACION EXITOSA', 'Cotizacion Actualizada')
+      showSuccessNotification('¡El estado de la cotización ha cambiado! ', 'La cotización ha pasado a un nuevo estado')
     } catch (err) {
       console.log(err)
     } finally {

@@ -46,7 +46,7 @@ export function useCustomer(){
 
       console.log('Respuesta del servidor:', response)
 
-      showSuccessNotification('Registro Exitoso', 'Se acaba de registrar un nuevo cliente con Exito')
+      showSuccessNotification('Cliente agregado exitosamente', 'El cliente ha sido registrado en el sistema correctamente.')
 
       customer.value = response.data
       router.push('/customers/listCustomers')

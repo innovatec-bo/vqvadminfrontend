@@ -39,12 +39,12 @@ export function useProject() {
       const response =await registerProject(data)
 
       console.log('Respuesta del servidor:', response)
-      showSuccessNotification('CREACION EXITOSA', 'EL PROYECTO FUE REGISTRADO EXITOSAMENTE')
+      showSuccessNotification('El proyecto se agrego correctamente', 'Se acaba de registrar un nuevo proyecto al sistema de inventario.')
       router.push('/realty/project/list-projects')
     } catch (err) {
       console.log(err)
       if(err.response && err.response.status== 422){
-        showWarningNotification('ERROR', 'FALTAN DATOS POR RELLENAR')
+        showWarningNotification('Advertencia', 'Faltan Datos por Rellenar')
       }
     } finally {
       loadingProject.value = false
@@ -61,12 +61,12 @@ export function useProject() {
       const response =await updateProject(projectId, data)
 
       console.log('Respuesta del servidor:', response)
-      showSuccessNotification('ACTUALIZACION EXITOSA', 'EL PROYECTO FUE ACTUALIZADO EXITOSAMENTE')
+      showSuccessNotification('Se Actualizo correctamente el Proyecto', 'El proyecto fue actualizado correctamente en el sistema.')
       router.push('/realty/project/list-projects')
     } catch (err) {
       console.log(err)
       if(err.response && err.response.status== 422){
-        showWarningNotification('ERROR', 'FALTAN DATOS POR RELLENAR')
+        showWarningNotification('Advertencia', 'Faltan Datos por Rellenar')
       }
     } finally {
       loadingProject.value = false

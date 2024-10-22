@@ -26,12 +26,12 @@ export function usePaymentPlans (){
       const response =await update(id, data)
 
       paymentPlan.value= response.data
-      showSuccessNotification('ACTUALIZACION EXITOSA', '')
+      showSuccessNotification('¡Planes de pago actualizados exitosamente! ', 'Los planes de pago han sido modificados y guardados correctamente.')
       console.log(response)
     } catch (err) {
       console.log(err)
       if(err.response && err.response.status== 422){
-        showWarningNotification('ERROR', 'FALTAN DATOS POR RELLENAR')
+        showWarningNotification('Advertencia', 'Faltan datos por Completar')
       }
       error.value =  err.message
     } finally {

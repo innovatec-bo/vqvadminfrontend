@@ -22,7 +22,7 @@ export function useProcess(){
 
       const response = await updateCheckProcessByIdForOpportunity(opportunityId, processId, processData)
 
-      showSuccessToast('Marcado Exitoso', 'Se Actualizo el estado del proceso')
+      showSuccessToast('¡Proceso completado exitosamente!', 'El proceso ha sido llevado a cabo sin inconvenientes. ')
     }catch (err){
       console.log(err)
     }
