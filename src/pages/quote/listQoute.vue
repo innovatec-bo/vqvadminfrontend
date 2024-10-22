@@ -86,14 +86,15 @@ onMounted(async () =>{
             >
               Export
             </VBtn>
-            <VBtn prepend-icon="tabler-plus">
-              <RouterLink
-                :to="{ name: 'quote-add-quote' }"
-                class="text-white"
-              >
+            
+            <RouterLink
+              :to="{ name: 'quote-add-quote' }"
+              class="text-white"
+            >
+              <VBtn prepend-icon="tabler-plus">
                 Registrar Cotizacion
-              </RouterLink>
-            </VBtn>
+              </VBtn>
+            </RouterLink>
           </div>
         </div>
       </VCardText>

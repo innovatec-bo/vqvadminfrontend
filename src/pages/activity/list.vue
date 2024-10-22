@@ -228,7 +228,16 @@ const formatDate = dateString => {
                         v-if="!item.project_name"
                         cols="12"
                         md="5"
-                      />
+                      >
+                        <VListItemSubtitle class="text-left">
+                          <strong>
+                            Departamento
+                          </strong>
+                        </VListItemSubtitle>
+                        <VListItemTitle class="font-weight-medium text-left">
+                          <span>Indefinido</span>
+                        </VListItemTitle>
+                      </VCol>
                       <VCol
                         cols="12"
                         md="5"
