@@ -190,7 +190,7 @@ export function useActivity() {
     try{
       const response = await completedActivity(idActivity, data)
 
-      showSuccessNotification('Se Reagendo Nueva Actividad', 'Se Completo la Antigua actividad y se agrego una nueva')
+      showSuccessNotification('Nueva actividad registrada', 'Se completó la actividad anterior y se agregó una nueva.')
 
       console.log(response)
 
