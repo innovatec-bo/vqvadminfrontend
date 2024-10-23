@@ -17,7 +17,7 @@ export function useQuote() {
       console.log(response)
       quote.value = response.data
       showSuccessNotification('Actualización Exitosa', 'La propiedad ha sido actualizada correctamente.')
-      router.push('/quote/listQuote')
+      router.push('/quote/listQoute')
 
     }catch (err){
       if(err.response && err.response.status == 422){

@@ -3,7 +3,6 @@ import { showErrorToast, showSuccessNotification, showSuccessToast, showWarningT
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-
 export function useProperty() {
   const userData = useCookie('userData').value
 

@@ -1,6 +1,5 @@
 <!-- eslint-disable camelcase -->
 <script setup>
-import { useProperty } from '@/composables/Realty/useProperty'
 import { useSales } from '@/composables/Sales/useSales'
 import { PaymentMethod } from '@/enums/PaymentMethod'
 import { PropertyType } from '@/enums/PropertyType'
@@ -8,7 +7,7 @@ import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 import InvoiceAddMoney from '../quote/InvoiceAddMoney.vue'
-import InvoiceAddProperty from '../quote/InvoiceAddProperty.vue'
+import InvoiceAddPropertySale from './InvoiceAddPropertySale.vue'
 
 const props = defineProps({
   isDialogVisible: {
@@ -19,37 +18,41 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  typeStage: {
+    type: String,
+    required: true,
+  },
 })
 
 const emit = defineEmits(['update:isDialogVisible', 'registerSale'])
-
-const { properties, propertiesForType } = useProperty()
-const { generateSale, loadingSale } = useSales()
+const { generateSale, generateSaleChangeStage } = useSales()
+const isSubmitting = ref(false)
 
 const dialogVisibleUpdate = val => {
   emit('update:isDialogVisible', val)
 }
 
+const loadingSale = ref(false)
+
 const salesData = ref({
-  social_reason: '',
-  nit: null,
+  social_reason: props.opportunity?.customer.name?? '',
+  nit: '',
   address: '',
-  email: '',
-  phone: '',
-  workplace: '',
-  date_listing: null,
-  obersvations: '',
+  email: props.opportunity?.customer.email?? '',
+  phone: props.opportunity?.customer.phone?? '',
+  workplace: props.opportunity?.customer.workplace?? '',
   payment_method: null,
   contract_signing_date: null,
   amount: null,
   initial_fee: null,
+  observations: '',
   opportunity_id: props.opportunity?.id ?? null,
   stage_id: StagesOpportunity.SALE.value,
-  customer_id: null,
   properties: [{
     property_id: null,
     price: null,
     price_it: null,
+    price_contrato: null,
     property_type: PropertyType.DEPARTAMENT.value,
     property_type_name: PropertyType.DEPARTAMENT.label,
   }],
@@ -57,49 +60,86 @@ const salesData = ref({
   differs_balance: [],
 })
 
-const addItem = newProduct => {
-  salesData.value.properties.push(newProduct)
-}
+const items = ['10', '20', '30']
+const selectedPercentage =  ref('10')
 
-const removeItem = () => {
 
+const calculatedAmount = totalAmount => {
+  // eslint-disable-next-line vue/no-mutating-props, camelcase
+  salesData.value.initial_fee = (totalAmount * selectedPercentage.value) / 100
+
+  return (totalAmount * selectedPercentage.value) / 100
 }
 
 const calculateInitialFeeDifference = () => {
   const totalDiffersInitialFee = salesData.value.differs_initial_fee.reduce((sum, fee) => sum + (fee.amount || 0), 0)
-  
-  return salesData.value.initial_fee - totalDiffersInitialFee 
+
+  return salesData.value.initial_fee - totalDiffersInitialFee
 }
 
-// Función para calcular la diferencia en el saldo
 const calculateBalanceDifference = () => {
   const totalDiffersBalance = salesData.value.differs_balance.reduce((sum, balance) => sum + (balance.amount || 0), 0)
-  
+
   return  (salesData.value.amount - salesData.value.initial_fee) - totalDiffersBalance
 }
 
+const handleLogin = async () => {
+  isSubmitting.value= true
+  await generateSalePage()
+  isSubmitting.value = false
+}
+
+const onSubmit = () => {
+  salesData.value?.validate().then(({ valid: isValid }) => {
+    if (isValid) handleLogin()
+  })
+}
+
+const isFormValid = computed(() => {
+  return salesData.value.social_reason && 
+         salesData.value.nit &&
+         salesData.value.email &&
+         salesData.value.phone &&
+         salesData.value.amount &&
+         salesData.value.initial_fee
+})
+
+
 const generateSalePage = async () => {
-  const initialFeeDifference = calculateInitialFeeDifference()
-
-  if (initialFeeDifference !== 0) {
-    salesData.value.differs_initial_fee.push({
-      date: new Date().toISOString().slice(0, 19).replace('T', ' '),
-      amount: initialFeeDifference,
-    })
+  if (!isFormValid.value) {
+    alert('Por favor, completa todos los campos obligatorios.')
+    
+    return
   }
+  loadingSale.value = true
+  try {
+    const initialFeeDifference = calculateInitialFeeDifference()
+    const balanceDifference = calculateBalanceDifference()
+    if (salesData.value.differs_balance.length === 0){
+      salesData.value.differs_balance.push({
+        date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        amount: salesData.value.amount - salesData.value.initial_fee,
+      })
+    }
 
-  const balanceDifference = calculateBalanceDifference()
-  if (balanceDifference !== 0){
-    salesData.value.differs_balance.push({
-      date: new Date().toISOString().slice(0, 19).replace('T', ' '),
-      amount: balanceDifference,
-    })
+    console.log('data de la venta: ', salesData.value)
+
+    // if (props.typeStage === 'SALE') {
+    //   console.log('entro a venta')
+    await generateSaleChangeStage(salesData.value)
+
+    // } else if (props.typeStage === 'PRESALE') {
+    //   await generateSale(salesData.value)
+    // }
+
+    emit('update:isDialogVisible', false)
+    emit('registerSale', salesData.value.opportunity_id)
+  } catch (error) {
+    console.error('Error generando la venta:', error)
+  } finally {
+    loadingSale.value = false // Finaliza el estado de carga
   }
-  console.log('data de la venta: ', salesData.value)
-  await generateSale(salesData.value)
-  emit('update:isDialogVisible', false)
-
-  emit('registerSale', salesData.value.opportunity_id)
+  
 }
 
 watch(
@@ -112,16 +152,15 @@ watch(
         const price = parseFloat(property.price) || 0 // Convertir a número
 
         property.price_it = price * 0.03 // 3% del precio para priceIt
-        totalPrice += price // Sumar el precio al total
+        property.price_contrato = price + property.price_it
+        totalPrice += property.price_contrato
+
       } else {
         property.price_it = null
       }
     })
 
-    // Asignar el total de los precios a `amount`
     salesData.value.amount = totalPrice
-
-    // Calcular la cuota inicial como el 30% del total
     salesData.value.initial_fee = totalPrice * 0.30
   },
   { deep: true },
@@ -136,8 +175,13 @@ watch(
   >
     <!-- 👉 Dialog close btn -->
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
-
     <VCard>
+      <!--
+        <VForm
+        ref="salesData"
+        @submit="onSubmit"
+        > 
+      -->
       <!-- SECTION Header -->
       <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row">
         <!-- 👉 Left Content -->
@@ -160,30 +204,25 @@ watch(
         <div class="mt-4 ma-sm-4">
           <!-- 👉 Invoice Id -->
           <h6 class="d-flex align-center font-weight-medium justify-sm-end text-xl mb-3">
+            <!--
+              <VBtn
+              block
+              type="submit"
+              :disabled="loading"
+              :loading="loading"
+              >
+              Registrar Venta
+              </VBtn> 
+            -->
             <VBtn
               color="primary"
               :loading="loadingSale"
-              :disabled="loadingSale"
+              :disabled="!isFormValid || loadingSale"
               @click="generateSalePage"
             >
               Registrar Venta
             </VBtn>
           </h6>
-
-          <!-- 👉 Issue Date -->
-          <div class="d-flex align-center justify-sm-end mb-3">
-            <span
-              class="me-3"
-              style="inline-size: 6rem;"
-            >Date Issued</span>
-            <span style="inline-size: 9.5rem;">
-              <AppDateTimePicker
-                density="compact"
-                placeholder="YYYY-MM-DD"
-                :config="{ position: 'auto right' }"
-              />
-            </span>
-          </div>
         </div>
       </VCardText>
       <!-- !SECTION -->
@@ -198,6 +237,7 @@ watch(
           >
             <AppTextField
               v-model="salesData.social_reason"
+              :rules="[requiredValidator]"
               label="Razon social:"
               placeholder="Canzza"
               outlined
@@ -214,6 +254,7 @@ watch(
             <AppTextField
               v-model="salesData.nit"
               label="C.I./NIT:"
+              :rules="[requiredValidator]"
               placeholder="0000000"
               outlined
               dense
@@ -250,14 +291,30 @@ watch(
               class="custom-salesforce-input"
             />
           </VCol>
-
           <VCol
             cols="12"
             sm="6"
             style="padding-block: 0;padding-inline: 8px;"
           >
             <AppTextField
+              v-model="salesData.email"
+              label="Correo:"
+              :rules="[requiredValidator]"
+              placeholder="admin@gmail.com"
+              type="email"
+              outlined
+              dense
+              class="custom-salesforce-input"
+            />
+          </VCol>
+          <VCol
+            cols="12"
+            sm="3"
+            style="padding-block: 0;padding-inline: 8px;"
+          >
+            <AppTextField
               v-model="salesData.phone"
+              :rules="[requiredValidator]"
               label="Celular:"
               placeholder="77049267"
               outlined
@@ -268,7 +325,7 @@ watch(
 
           <VCol
             cols="12"
-            sm="6"
+            sm="3"
             style="padding-block: 0;padding-inline: 8px;"
           >
             <AppTextField
@@ -281,10 +338,7 @@ watch(
           </VCol>
         </VRow>
       </VCardText>
-
-
       <VDivider thickness="24" />
-
       <!-- 👉 Add purchased products -->
       <VCardText class="add-products-form">
         <VRow>
@@ -292,11 +346,7 @@ watch(
             cols="12"
             style="padding-block: 0;padding-inline: 8px;"
           >
-            <InvoiceAddProperty
-              :properties="salesData.properties"
-              @add-property="addItem"
-              @remove-property="removeItem"
-            />  
+            <InvoiceAddPropertySale :propertiesform="salesData.properties" />
           </VCol>
           <VCol
             cols="12"
@@ -311,25 +361,17 @@ watch(
               class="custom-salesforce-input"
             />
           </VCol>
-          <VCol
-            cols="12"
-            sm="6"
-            style="padding-block: 0;padding-inline: 8px;"
-          >
-            <AppTextField
-              v-model="salesData.amount"
-              label="Total en Contrato :"
-              placeholder="Placeholder Text"
-              outlined
-              dense
-              class="custom-salesforce-input"
-            />
-          </VCol>
+          <AppSelect
+            v-model="selectedPercentage"
+            :rules="[requiredValidator]"
+            label="% Cuota Inicial :"
+            :items="items"
+            placeholder="% Cuota inicial"
+            class="mb-2"
+          />
         </VRow>
       </VCardText>
-
       <VDivider thickness="24" />
-
       <!-- 👉 Total Amount -->
       <VCardText class="add-products-form">
         <VRow>
@@ -339,9 +381,10 @@ watch(
             style="padding-block: 0;padding-inline: 8px;"
           >
             <InvoiceAddMoney
-              title="Cuota Inicial"
-              :amount="salesData.initial_fee"
+              :title="'Cuota Inicial: ' + calculatedAmount(salesData.amount) "
+              :amount="calculatedAmount(salesData.amount) "
               :differs="salesData.differs_initial_fee"
+              :type="INITIAL_PAYMENT"
             />
           </VCol>
           <VCol
@@ -350,37 +393,37 @@ watch(
             style="padding-block: 0;padding-inline: 8px;"
           >
             <InvoiceAddMoney
-              title="Saldo"
+              :title="'Saldo: ' + (salesData.amount - salesData.initial_fee) "
               :amount="salesData.amount - salesData.initial_fee"
               :differs="salesData.differs_balance"
+              :type="BALANCE"
             />
+          </VCol>
+
+
+          <VCol
+            cols="12"
+            sm="6"
+            class="mt-12"
+          >
+            <VDivider thickness="4" />
+            <div class="text-center my-1">
+              <span>
+                Firma del Cliente
+              </span>
+            </div>
           </VCol>
           <VCol
             cols="12"
             sm="6"
-            style="padding-block: 0;padding-inline: 8px;"
+            class="mt-12"
           >
-            <AppTextField
-              v-model="salesData.contract_signing_date"
-              label="Firma de Contrato :"
-              placeholder="Placeholder Text"
-              outlined
-              dense
-              class="custom-salesforce-input"
-            />
-          </VCol>
-          <VCol
-            cols="12"
-            sm="6"
-            style="padding-block: 0;padding-inline: 8px;"
-          >
-            <AppTextField
-              label="Fecha de Deposito:"
-              placeholder="Placeholder Text"
-              outlined
-              dense
-              class="custom-salesforce-input"
-            />
+            <VDivider thickness="4" />
+            <div class="text-center my-1">
+              <span>
+                Firma Gerente Administrativo
+              </span>
+            </div>
           </VCol>
           <VCol
             cols="12"
@@ -397,9 +440,7 @@ watch(
           </VCol>
         </VRow>
       </VCardText>
-
       <VDivider thickness="24" />
-
       <VCardText>
         <div class="d-flex mx-sm-4">
           <span><strong>
@@ -414,6 +455,7 @@ watch(
             Todos los gastos administrativos, inscripción en derechos reales y honorarios profesionales para consolidar el derecho de propiedad a favor del comprador deben ser asumidos por el comprador.</strong></span>
         </div>
       </VCardText>
+      <!-- </VForm>  -->
     </VCard>
   </VDialog>
 </template>
