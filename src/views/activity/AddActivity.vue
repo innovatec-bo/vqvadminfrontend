@@ -192,12 +192,12 @@ const formatDate = dateString => {
                       </span>
                       <VRadio
                         label="Si"
-                        value="si"
+                        value="radio-1"
                         density="compact"
                       />
                       <VRadio
                         label="No"
-                        value="no"
+                        value="radio-2"
                         density="compact"
                       />
                     </VRadioGroup>
