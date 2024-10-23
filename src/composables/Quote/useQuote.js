@@ -1,9 +1,13 @@
-import { changeStatus, registerQuote } from "@/services/Quote/quoteService"
+import { changeStatus, listQuotePaginate, registerQuote } from "@/services/Quote/quoteService"
+import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
+import { useRouter } from "vue-router"
 
 export function useQuote() {
   const loadingQuote = ref(false)
   const quote = ref(null)
   const quotes = ref([])
+  const router = useRouter()
+  const totalQuotes= ref(0)
 
   const generateQuote = async quoteData => {
     loadingQuote.value = true
@@ -11,11 +15,19 @@ export function useQuote() {
       const response = await registerQuote(quoteData)
 
       console.log(response)
-
       quote.value = response.data
-      
+      showSuccessNotification('¡Cotización registrada exitosamente!', 'La cotización ha sido generada y registrada en el sistema. ¡Buen trabajo!')
+      router.push('/quote/listQuote')
+
     }catch (err){
-      console.error(err)
+      if(err.response && err.response.status == 422){
+        showWarningNotification('Validación fallida', 'Faltan datos por rellenar')
+        
+        return { success: false, message: 'Validación fallida' }
+      }
+      showErrorNotification('Advertencia', 'Hubo un problema al registrar la Cotizacion. Contactese con Soporte.')
+      
+      return { success: false, message: 'Error al Registrar' }
     }finally {
       loadingQuote.value = false
     }
@@ -29,7 +41,7 @@ export function useQuote() {
       quote.value = response.data
 
       console.log(response)
-      showSuccessNotification('ACTUALIZACION EXITOSA', 'Cotizacion Actualizada')
+      showSuccessNotification('¡El estado de la cotización ha cambiado! ', 'La cotización ha pasado a un nuevo estado')
     } catch (err) {
       console.log(err)
     } finally {
@@ -37,12 +49,28 @@ export function useQuote() {
     }
   }
 
+  const allQuotePaginate = async paginated =>{
+    loadingQuote.value = true
+    try {
+      const response=await listQuotePaginate(paginated)
+
+      console.log(response)
+      quotes.value = response.data.data
+      totalQuotes.value = response.data.total
+    }catch (err){
+      console.log(err)
+    }finally{
+      loadingQuote.value = false
+    }
+  }
   
   return {
     changeStatusQuotes,
     loadingQuote,
     quote,
-    quotes,
+    quotes: computed(() => quotes.value),
+    totalQuotes: computed(()=> totalQuotes.value),
     generateQuote,
+    allQuotePaginate,
   }
 }

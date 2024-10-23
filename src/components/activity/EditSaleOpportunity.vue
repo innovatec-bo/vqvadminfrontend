@@ -5,6 +5,7 @@ import { useProcess } from '@/composables/Process/useProcess'
 import { usePaymentPlans } from '@/composables/Sales/usePaymentPlans'
 import DeliveryForm from '../sale/DeliveryForm.vue'
 import PaymentPlanEdit from '../sale/PaymentPlanEdit.vue'
+import PreSaleForm from '../sale/PreSaleForm.vue'
 
 const props = defineProps({
   opportunity: {
@@ -19,15 +20,15 @@ const { confirmPaymentPlans } = usePaymentPlans()
 
 const confirmDelivery = ref(false)
 const openEditPaymentPlan = ref(false)
-
-const openSaleEditPaymentPlan = ref(false)
-
-// const salePaymentPlan = ref([])
+const generateSaleDialog = ref(false)
 const paymentPlan = ref('')
-
 
 const openDeliveryForm = () => {
   confirmDelivery.value = true
+}
+
+const openSaleForm = () => {
+  generateSaleDialog.value = true
 }
 
 const editPaymentPlan = item => {
@@ -36,26 +37,24 @@ const editPaymentPlan = item => {
   paymentPlan.value = { ...item }
 }
 
-// const editSalePaymentPlan = item => {
-//   openSaleEditPaymentPlan.value = true
-//   salePaymentPlan.value = item
-// }
+const registerSale = async opportunityId => {
+  emit('updateStageId', opportunityId)
+}
 
-const markProcedureAsDone = async (procedureId, isChecked) => {
-  console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
-  await checkProcessForOpportunity(props.opportunity.id, procedureId, {
-    is_check: !isChecked,
+const markProcedureAsDone = async procedure => {
+  console.log(`Procedimiento ${procedure.id} marcado como: ${procedure.pivot.is_check ? 'realizado' : 'no realizado'}`)
+  await checkProcessForOpportunity(props.opportunity.id, procedure.id, {
+    is_check: !procedure.pivot.is_check, 
   })
+  procedure.pivot.is_check = !procedure.pivot.is_check
   emit('updateStageId', props.opportunity.id)
 }
 
 const confirmPayment = async paymentplanId => {
-  
   console.log(paymentplanId)
   await confirmPaymentPlans( paymentplanId)
   emit('updateStageId', props.opportunity.id)
 }
-
 
 const updateDeliveryDate = async opportunityId => {
   emit('updateStageId', opportunityId)
@@ -144,21 +143,13 @@ const updateDeliveryDate = async opportunityId => {
 
   <!-- TODO: quitar los types -->
   <!-- cuota inicial  -->
-  <div>
+  <div class="mb-4">
     <span style="font-size: 14px; font-weight: 500; ">
       Cuota Inicial
     </span> 
-    <!--
-      <div 
-      fill-dot
-      @click="editSalePaymentPlan(props.opportunity.sales.initial_payments)"
-      >
-      <VIcon
-      size="25"
-      icon="tabler-edit"
-      /> 
-    -->
+   
     <VTable
+      v-if="props.opportunity.sales.initial_payments && props.opportunity.sales.initial_payments.length > 0"
       density="compact"
       class="text-no-wrap my-2"
       style="font-size: 12px;"
@@ -221,11 +212,10 @@ const updateDeliveryDate = async opportunityId => {
   <!-- saldo -->
   <div>
     <span style="font-size: 14px; font-weight: 500; ">
-      Saldo
+      Saldos
     </span> 
-    
-   
     <VTable
+      v-if="props.opportunity.sales.balance_payments && props.opportunity.sales.balance_payments.length > 0"
       density="compact"
       class="text-no-wrap my-2"
       style="font-size: 12px;"
@@ -305,7 +295,7 @@ const updateDeliveryDate = async opportunityId => {
           class="my-1"
           style="cursor: pointer;"
           fill-dot
-          @click="markProcedureAsDone(procedure.id, procedure.pivot.is_check)" 
+          @click="markProcedureAsDone(procedure)" 
         >
           <VIcon
             v-if="procedure.pivot.is_check"
@@ -322,10 +312,22 @@ const updateDeliveryDate = async opportunityId => {
   </div>
 
   <!-- Botón pasar estado -->
-  <VCardText class="d-flex justify-center mt-4">
+  <VCardText class="d-flex  mt-4">
+    <!--
+      <VBtn
+      color="primary"
+      variant="tonal"
+      class="mx-auto"
+      size="small"
+      @click="openSaleForm"
+      >
+      Generar Venta
+      </VBtn> 
+    -->
     <VBtn
       color="primary"
       class="mx-auto"
+      size="small"
      
       @click="openDeliveryForm"
     >
@@ -343,6 +345,12 @@ const updateDeliveryDate = async opportunityId => {
     :payment="paymentPlan"
     :opportunity="props.opportunity"
     @update-delivery-date="updateDeliveryDate"
+  />
+  <PreSaleForm
+    v-model:is-dialog-visible="generateSaleDialog"
+    :opportunity="props.opportunity"
+    :type-stage="SALE"
+    @register-sale="registerSale"
   />
   
   <!--

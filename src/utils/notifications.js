@@ -57,7 +57,7 @@ export const showSuccessToast = (title, message) => {
     toast: true,
     position: 'bottom-right',
     timerProgressBar: true,
-  });
+  })
 }
 
 export const showErrorToast = (title, message) => {

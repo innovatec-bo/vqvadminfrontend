@@ -380,6 +380,7 @@ declare module 'vue' {
     I18n: typeof import('./src/@core/components/I18n.vue')['default']
     InvoiceAddMoney: typeof import('./src/components/quote/InvoiceAddMoney.vue')['default']
     InvoiceAddProperty: typeof import('./src/components/quote/InvoiceAddProperty.vue')['default']
+    InvoiceAddPropertySale: typeof import('./src/components/sale/InvoiceAddPropertySale.vue')['default']
     Kanban: typeof import('./src/components/Kanban.vue')['default']
     MoreBtn: typeof import('./src/@core/components/MoreBtn.vue')['default']
     Notifications: typeof import('./src/@core/components/Notifications.vue')['default']

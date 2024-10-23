@@ -1,8 +1,8 @@
+/* eslint-disable camelcase */
 import { allProperties, allPropertiesProject, deletePropertyById, getPropertiesForType, getPropertyById, registerProperty, updateProperty } from '@/services/Realty/propertyService'
 import { showErrorToast, showSuccessNotification, showSuccessToast, showWarningToast } from '@/utils/notifications'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-
 
 export function useProperty() {
   const userData = useCookie('userData').value
@@ -12,6 +12,8 @@ export function useProperty() {
   const router = useRouter()
   const property = ref(null)
   const properties = ref([])
+  const propertiesTypes = ref([])
+
   const totalProperties = ref(0)
 
   const addProperty = async propertyListingData => {
@@ -66,20 +68,20 @@ export function useProperty() {
       const response = await registerProperty(propertyData)
 
       console.log('Respuesta del servidor:', response)
-      showSuccessNotification('CREACION EXITOSA', 'LA PROPIEDAD FUE REGISTRADA EXITOSAMENTE')
+      showSuccessNotification('Se Agrego una nueva Propiedad', 'La propiedad fue registrada exitosamente en el sistema de inventario.')
 
       router.push('/realty/property/list')
     } catch (err) {
       console.log(err)
       if(err.response && err.response.status == 422){
-        showWarningNotification('ERROR', 'FALTAN DATOS POR RELLENAR')
+        showWarningNotification('Advertencia', 'Faltan Datos por Rellenar')
       }
     } finally {
       loadingProperty.value = false
     }
   }
 
-  const editProperty = async (propertyDataForm) => {
+  const editProperty = async propertyDataForm => {
     loadingProperty.value = true
     error.value = null
     try {
@@ -96,15 +98,19 @@ export function useProperty() {
         covered: propertyDataForm?.covered ? true : false,
       }
 
-      const response = await updateProperty(propertyDataForm.id, propertyData);
-      showSuccessToast('Actualización Exitosa', 'La propiedad ha sido actualizada correctamente.')
+      const response = await updateProperty(propertyDataForm.id, propertyData)
+
+      showSuccessToast('¡Propiedad actualizada exitosamente!', 'Los detalles de la propiedad han sido editados y guardados correctamente.')
+      
       return { success: true, message: 'Actualización Exitosa' }
     } catch (err) {
       if(err.response && err.response.status == 422){
         showWarningToast('Validación fallida', 'Faltan datos por rellenar')
-        return { success: false, message: 'Validación fallida'}
+        
+        return { success: false, message: 'Validación fallida' }
       }
-      showErrorToast('Error de Actualización', 'Hubo un problema al actualizar la propiedad.')
+      showErrorToast('Advertencia', 'Hubo un problema al actualizar la propiedad.')
+      
       return { success: false, message: 'Error de actualización' }
     } finally {
       loadingProperty.value = false
@@ -142,7 +148,7 @@ export function useProperty() {
       const response = await deletePropertyById(id)
 
       console.log(response)
-      showSuccessNotification('ELIMINACION EXITOSA', 'LA PROPIEDAD FUE ELIMINADA EXITOSAMENTE')
+      showSuccessNotification('Elimino una Propidad Correctamente', 'Se Acaba de eliminar una propiedad con exito del sistema de inventario.')
     } catch (err) {
       console.log(err)
     }
@@ -162,6 +168,7 @@ export function useProperty() {
     try{
       const response = await getPropertiesForType(type)
 
+      propertiesTypes.value  = response.data
       console.log('propertyfortype ', response.data)
 
       return  response.data

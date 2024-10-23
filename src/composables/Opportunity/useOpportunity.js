@@ -74,7 +74,7 @@ export function useOpportunity (){
 
       opportunity.value = response.data // Actualizar el estado de la oportunidad
       console.log('Oportunidad actualizada: ', opportunity.value)
-      showSuccessNotification('Actualizacion Exitosa', 'Se Actualizaron los cambios de este cliente')
+      showSuccessNotification('Oportunidad actualizada correctamente', 'Los detalles de la oportunidad han sido modificados.')
     } catch (err) {
       error.value = err // Capturar el error
       console.error(err)
@@ -90,7 +90,7 @@ export function useOpportunity (){
 
       console.log('Oportunidad actualizada: ', response)
       opportunity.value = response.data
-      showSuccessNotification('Actualizacion Exitosa', 'Se actualizo el Estado de la Oportunidad')
+      showSuccessNotification('¡Oportunidad avanzó a una nueva etapa!', 'La oportunidad ha avanzado exitosamente a la siguiente fase.')
     }catch (err){
       console.log(err)
       if(err.response && err.response.status== 500){

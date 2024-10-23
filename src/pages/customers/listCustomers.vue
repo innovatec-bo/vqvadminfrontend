@@ -86,14 +86,15 @@ onMounted(async () =>{
             >
               Export
             </VBtn>
-            <VBtn prepend-icon="tabler-plus">
-              <RouterLink
-                :to="{ name: 'customers-add-customer' }"
-                class="text-white"
-              >
+           
+            <RouterLink
+              :to="{ name: 'customers-add-customer' }"
+              class="text-white"
+            >
+              <VBtn prepend-icon="tabler-plus">
                 Agregar Cliente
-              </RouterLink>
-            </VBtn>
+              </VBtn>
+            </RouterLink>
           </div>
         </div>
       </VCardText>

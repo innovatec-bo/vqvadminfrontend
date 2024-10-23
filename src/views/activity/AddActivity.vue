@@ -125,6 +125,35 @@ const activitySwitch  = state =>{
 const handleDrawerModelValueUpdate = val => {
   emit('update:isDrawerOpen', val)
 }
+
+const formatDate = dateString => {
+  const date = new Date(dateString)
+
+  const day = date.getDate() // Día del mes
+
+  const months = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre',
+  ]
+
+  const month = months[date.getMonth()] // Mes en formato humano
+
+  const hours = date.getHours().toString().padStart(2, '0') // Hora con dos dígitos
+  const minutes = date.getMinutes().toString().padStart(2, '0') // Minutos con dos dígitos
+
+  // Retorna la fecha en formato: 7 de marzo, 14:00
+  return `${day} de ${month}, ${hours}:${minutes}`
+}
 </script>
 
 <template>
@@ -143,34 +172,38 @@ const handleDrawerModelValueUpdate = val => {
               >
                 <VRow>
                   <VCol cols="12">
-                    <span style="font-size: 18px; font-weight: 500; ">
+                    <span style="font-size: 18px; font-weight: 500;">
                       Actividad
                     </span>
                   </VCol>
                   <VCol cols="12">
                     <div class="mb-2">
                       <span>
-                        {{ props.activitiesData.type_activity }} &nbsp • &nbsp
-                        {{ props.activitiesData.title }}
+                        {{ props.activitiesData.title }}  • {{ formatDate(props.activitiesData.scheduled_at) }}
                       </span>
                     </div>
                     <VRadioGroup
                       v-model="columnRadio"
-                      style="font-size: 10px; "
+                      style="font-size: 14px;"
+                      inline
                     >
+                      <span>
+                        ¿ Se Realizo ?
+                      </span>
                       <VRadio
-                        label="Completar Actividad"
-                        value="radio-1"
+                        label="Si"
+                        value="si"
                         density="compact"
                       />
                       <VRadio
-                        label="Cancelar Actividad"
-                        value="radio-2"
+                        label="No"
+                        value="no"
                         density="compact"
                       />
                     </VRadioGroup>
                     <VDivider class="mt-2" />
                   </VCol>
+
                 
                   <VCol cols="12">
                     <AppTextField
@@ -216,10 +249,9 @@ const handleDrawerModelValueUpdate = val => {
                   -->
                   <VCol>
                     <VBtn
-                      size="small"
-                      color="prymary"
-                      variant="tonal"
+                      color="primary"
                       class="mx-auto"
+                      size="small"
                       :loading="loadingActivity"
                       :disabled="loadingActivity"
                       @click="onSubmit"
@@ -227,10 +259,10 @@ const handleDrawerModelValueUpdate = val => {
                       Crear Actividad
                     </VBtn>
                     <VBtn
-                      size="small"
-                      color="error"
+                      color="primary"
+                      class="mx-1" 
                       variant="tonal"
-                      class="my-2 mx-2"
+                      size="small"
                     >
                       Dar de Baja
                     </VBtn>

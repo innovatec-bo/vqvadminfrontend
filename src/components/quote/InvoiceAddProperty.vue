@@ -33,16 +33,15 @@ const addPark = () =>{
   emit('addProperty', newProduct) 
 }
 
-const addDepartament = () => {
-  const newProduct = {
-    property_id: null,
-    price: null,
-    property_type: PropertyType.DEPARTAMENT.value,
-    property_type_name: PropertyType.DEPARTAMENT.label,
-  }
-
-  emit('addProperty', newProduct) // Emite el evento con el nuevo producto
+const removeProperty = index =>{
+  emit('removeProduct', index) 
 }
+
+// selectedProperty=() => {
+//   return this.property.property_type === PropertyType.DEPARTAMENT.value
+//     ? this.propertyDepartament.find(item => item.id === this.property.property_id)
+//     : this.propertyPark.find(item => item.id === this.property.property_id)
+// }
 
 onMounted(async () => {
   try {
@@ -67,7 +66,7 @@ onMounted(async () => {
     class="d-flex flex-row"
   >
     <!-- 👉 Left Form -->
-    <div class="pa-5 flex-grow-1">
+    <div class="pa-5 flex-grow-1 ">
       <VRow
         v-for="(property, index) in props.properties"
         :key="index"
@@ -88,49 +87,82 @@ onMounted(async () => {
             dense
             class="custom-salesforce-input"
           />
+          <span
+            v-if="property.property_id && property.property_type === PropertyType.DEPARTAMENT.value "
+            style="font-size:smaller ; padding-block: "
+          > 
+            <strong>
+              {{ propertyDepartament[property.property_id -1].departament.isfacade === 1? 'Con Fachada': 'Sin Fachada' }},
+            </strong>
+            {{ propertyDepartament[property.property_id -1].surface }}   <strong> m2,</strong>
+            {{ propertyDepartament[property.property_id -1].departament.number_bedrooms }} Habitacion(s),  
+          </span>
         </VCol>
 
         <VCol
           cols="12"
-          sm="4"
+          sm="2"
           style="padding-block: 0;padding-inline: 8px;"
         >
           <AppTextField
             v-model="property.price"
-            label="Precio:"
+            label="Precio"
+            placeholder="$"
+            outlined
+            dense
+            class="custom-salesforce-input"
+          />
+        </VCol>
+
+        <VCol
+          cols="12"
+          sm="2"
+          style="padding-block: 0;padding-inline: 8px;"
+        >
+          <AppTextField
+            v-model="property.price_it"
+            label="3% (IT):"
+            placeholder="%"
+            outlined
+            dense
+            class="custom-salesforce-input"
+          />
+        </VCol>
+        <VCol
+          cols="12"
+          sm="3"
+          style="padding-block: 0;padding-inline: 8px;"
+        >
+          <AppTextField
+            v-model="property.price_contrato"
+            label="Precio Contrato:"
             placeholder="Escribe el precio"
             outlined
             dense
             class="custom-salesforce-input"
           />
         </VCol>
-
         <VCol
           cols="12"
-          sm="4"
-          style="padding-block: 0;padding-inline: 8px;"
+          sm="1"
+          class="my-4"
         >
-          <AppTextField
-            v-model="property.priceIt"
-            label="3% (IT):"
-            placeholder="Porcentaje IT"
-            outlined
-            dense
-            class="custom-salesforce-input"
-          />
+          <VBtn
+            color="error"
+            size="small"
+            @click="removeProperty(index)"
+          >
+            <VIcon icon="tabler-square-x" />
+          </VBtn>
         </VCol>
+        <VCol
+          cols="12" 
+          style=" font-size: small;padding-block: 0;padding-inline: 4px"
+        />
       </VRow>
 
       <!-- Botón para agregar nueva propiedad -->
-      <div class="d-flex justify-end mt-4">
-        <VBtn
-          color="secondary"
-          class="me-2"
-          @click="addDepartament"
-        >
-          Agregar Departamento
-        </VBtn>
-
+      <div class="d-flex justify-end mt-3">
         <VBtn
           color="secondary"
           @click="addPark"

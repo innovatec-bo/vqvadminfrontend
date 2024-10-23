@@ -20,12 +20,12 @@ export function useActivity() {
       const response =await register(data)
 
       activity.value= response.data
-      showSuccessNotification('CREACION EXITOSA', response.data.message)
+      showSuccessNotification('Cita agendada correctamente', response.data.message)
     } catch (err) {
       //todo: mejorar los mensajes de error
       console.log(err)
       if(err.response && err.response.status== 422){
-        showWarningNotification('ERROR', 'FALTAN DATOS POR RELLENAR')
+        showWarningNotification('Advertencia', 'Faltan Datos por Rellenar')
       }
       error.value =  err.message
     } finally {
@@ -41,12 +41,12 @@ export function useActivity() {
 
       console.log(response)
       activity.value= response.data
-      showSuccessNotification('ACTUALIZACION EXITOSA', '')
+      showSuccessNotification('Actividad Actualizada correctamente', 'Se actualizo una actividad')
     } catch (err) {
       //todo: mejorar los mensajes de error
       console.log(err)
       if(err.response && err.response.status== 422){
-        showWarningNotification('ERROR', 'FALTAN DATOS POR RELLENAR')
+        showWarningNotification('Advertencia', 'Faltan Datos por Rellenar')
       }
       error.value =  err.message
     } finally {
@@ -92,7 +92,7 @@ export function useActivity() {
 
       console.log(response)
       activity.value= response.data
-      showSuccessNotification('ACTUALIZACION EXITOSA', 'Actividad Completada')
+      showSuccessNotification('Actividad Completada', '')
     } catch (err) {
       console.log(err)
       error.value =  err.message
