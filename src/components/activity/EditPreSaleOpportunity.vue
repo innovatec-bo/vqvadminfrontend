@@ -189,15 +189,19 @@ const statusQuote = async (quoteId, statusquote) => {
   </div>
   <!-- Botón Generar Cotización -->
   <VCardText class="d-flex justify-center mt-4">
-    <VBtn
-      color="primary"
-      class="mx-1" 
-      variant="tonal"
-      size="small"
-      @click="generateQuote"
+    <RouterLink
+      :to="{ name: 'quote-add-quote' }"
+      class="text-white"
     >
-      Agregar Cotizacion
-    </VBtn>
+      <VBtn
+        color="primary"
+        class="mx-1" 
+        variant="tonal"
+        size="small"
+      >
+        Generar Cotización
+      </VBtn>
+    </RouterLink>
     <VBtn
       color="primary"
       class="mx-auto"
@@ -217,6 +221,7 @@ const statusQuote = async (quoteId, statusquote) => {
   <PreSaleForm
     v-model:is-dialog-visible="generateSaleDialog"
     :opportunity="props.opportunity"
+    :type-stage="PRESALE"
     @register-sale="registerSale"
   />
 </template>

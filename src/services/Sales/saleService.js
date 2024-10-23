@@ -7,6 +7,13 @@ export const  createSale = async saleData =>{
   })
 }
 
+export const  createSaleChangeStage = async saleData =>{
+  return await $api('/sale/changeStage', {
+    method: 'POST',
+    body: saleData,
+  })
+}
+
 export const getSale = async id => {
   return await $api(`/sale/${id}`, {
     method: 'GET',
