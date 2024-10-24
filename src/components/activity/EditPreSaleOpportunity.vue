@@ -221,7 +221,7 @@ const statusQuote = async (quoteId, statusquote) => {
   <PreSaleForm
     v-model:is-dialog-visible="generateSaleDialog"
     :opportunity="props.opportunity"
-    :type-stage="PRESALE"
+    type-stage="PRESALE"
     @register-sale="registerSale"
   />
 </template>
