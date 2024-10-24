@@ -144,11 +144,16 @@ const statusQuote = async (quoteId, statusquote) => {
               Nombre
             </th>
             <th>
-              Fecha
+              Propiedad
             </th>
             <th>
-              Monto
+              Fecha
             </th>
+            <!--
+              <th>
+              Monto
+              </th> 
+            -->
             <th />
           </tr>
         </thead>
@@ -162,11 +167,16 @@ const statusQuote = async (quoteId, statusquote) => {
               {{ item.social_reason }}
             </td>
             <td>
-              {{ new Date(item.created_at).toLocaleDateString() }}
+              {{ item.properties[0].title }}
             </td>
             <td>
-              {{ item.amount }}
+              {{ new Date(item.created_at).toLocaleDateString() }}
             </td>
+            <!--
+              <td>
+              {{ item.amount }}
+              </td> 
+            -->
             <td>
               <!-- Todo: aprobar  -->
               <VRow>
@@ -175,6 +185,18 @@ const statusQuote = async (quoteId, statusquote) => {
                   true-value="APPROVED"
                   false-value="NOT_APPROVED"
                   @click="statusQuote(item.id, item.status)" 
+                >
+                  <VTooltip
+                    activator="parent"
+                    location="top"
+                  >
+                    Aprobar Cotizacion
+                  </VTooltip>
+                </VCheckbox>
+
+                <VIcon
+                  icon="tabler-eye"
+                  class="my-auto"
                 />
               </VRow>
             </td>

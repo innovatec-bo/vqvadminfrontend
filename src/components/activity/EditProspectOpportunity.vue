@@ -137,11 +137,16 @@ const markProcedureAsDone = async procedure => {
               Nombre
             </th>
             <th>
-              Fecha
+              Propiedad
             </th>
             <th>
-              Monto
+              Fecha
             </th>
+            <!--
+              <th>
+              Monto
+              </th> 
+            -->
             <th />
           </tr>
         </thead>
@@ -155,11 +160,16 @@ const markProcedureAsDone = async procedure => {
               {{ item.social_reason }}
             </td>
             <td>
-              {{ new Date(item.created_at).toLocaleDateString() }}
+              {{ item.properties[0].title }}
             </td>
             <td>
-              {{ item.amount }}
+              {{ new Date(item.created_at).toLocaleDateString() }}
             </td>
+            <!--
+              <td>
+              {{ item.amount }}
+              </td> 
+            -->
             <td>
               <!-- Todo: ponerle rutas  para ver la cotizacion por id -->
               <VIcon icon="tabler-eye" />

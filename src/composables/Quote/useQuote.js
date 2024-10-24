@@ -41,7 +41,7 @@ export function useQuote() {
       quote.value = response.data
 
       console.log(response)
-      showSuccessNotification('¡El estado de la cotización ha cambiado! ', 'La cotización ha pasado a un nuevo estado')
+      showSuccessToast('¡El estado de la cotización ha cambiado! ', 'La cotización ha pasado a un nuevo estado')
     } catch (err) {
       console.log(err)
     } finally {
