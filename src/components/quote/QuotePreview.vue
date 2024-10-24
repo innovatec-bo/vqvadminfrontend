@@ -6,12 +6,22 @@ import InvoiceSendInvoiceDrawer from '@/views/apps/invoice/InvoiceSendInvoiceDra
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 
-const route = useRoute('quote-id')
+const props = defineProps({
+  invoiceData: {
+    type: null,
+    default: {
+      id: 1,
+      invoiceNumber: '',
+      invoiceDate: '',
+      
+    },
+  },
+})
 
 const isAddPaymentSidebarVisible = ref(false)
 const isSendPaymentSidebarVisible = ref(false)
 
-console.log(route.params)
+console.log(PropertyType.DEPARTAMENT.label)
 
 const invoice = ref({
   id: 5036,
@@ -38,9 +48,7 @@ const invoice = ref({
       price: 75000,
       price_it: 5000,
       price_contrato: 80000,
-      facade: true,
-      floor: 2,
-      surface: 100,
+
       property_type: PropertyType.DEPARTAMENT.value,
       property_type_name: PropertyType.DEPARTAMENT.label,
     },
@@ -49,9 +57,7 @@ const invoice = ref({
       price: 80000,
       price_it: 6000,
       price_contrato: 86000,
-      facade: false,
-      floor: 1,
-      surface: 100,
+
       property_type: PropertyType.PARK.value,
       property_type_name: PropertyType.PARK.label,
     },
@@ -98,7 +104,7 @@ onMounted(() => {
             <div class="mt-4 ma-sm-4">
               <!-- 👉 Issue Date -->
               <p class="my-3">
-                <span>Fecha de emision: </span>
+                <span>Fecha: </span>
                 <span>{{ invoice.issuedDate }}</span>
               </p>
 
@@ -225,13 +231,13 @@ onMounted(() => {
                   {{ property.property_type_name }}
                 </td>
                 <td class="text-no-wrap">
-                  {{ property.surface }} m2
+                  300 m2
                 </td>
                 <td class="text-no-wrap">
-                  {{ property.floor }} Piso
+                  1 Piso
                 </td>
                 <td class="text-no-wrap">
-                  {{ property.facade ? 'Sí' : 'No' }}
+                  Fachada
                 </td>
                 <td class="text-center">
                   ${{ property.price }}
@@ -253,10 +259,11 @@ onMounted(() => {
             <div class="my-2 mx-sm-4 text-base">
               <div class="d-flex align-center mb-1">
                 <h6 class="text-base font-weight-medium me-1">
-                  Asesor Comercial:
+                  Salesperson:
                 </h6>
-                <span>Belen Fernandez</span>
+                <span>Alfie Solomons</span>
               </div>
+              <p>Thanks for your business</p>
             </div>
 
             <div class="my-2 mx-sm-4">
@@ -294,38 +301,8 @@ onMounted(() => {
             </div>
           </VCardText>
 
-          <VCardText class="add-products-form">
-            <VRow>
-              <VCol
-                cols="12"
-                sm="6"
-                class="mt-15"
-              >
-                <VDivider thickness="4" />
-                <div class="text-center my-1">
-                  <span>
-                    <strong>
-                      Firma del Cliente 
-                    </strong>
-                  </span>
-                </div>
-              </VCol>
-              <VCol
-                cols="12"
-                sm="6"
-                class="mt-15"
-              >
-                <VDivider thickness="4" />
-                <div class="text-center my-1">
-                  <span> <strong>
-                    Firma Gerente Administrativo
-                  </strong>  </span>
-                </div>
-              </VCol>
-            </VRow>
-          </VCardText>
-
           <VDivider />
+
           <VCardText>
             <div class="d-flex mx-sm-4">
               <span><strong>

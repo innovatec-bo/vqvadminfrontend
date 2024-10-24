@@ -9,6 +9,14 @@ export function useQuote() {
   const router = useRouter()
   const totalQuotes= ref(0)
 
+  const getQuotebyId = async id => {
+    try{
+      
+    }catch(error){
+      console.error(error)
+    }
+  }
+
   const generateQuote = async quoteData => {
     loadingQuote.value = true
     try {
@@ -66,6 +74,7 @@ export function useQuote() {
   
   return {
     changeStatusQuotes,
+    getQuotebyId,
     loadingQuote,
     quote,
     quotes: computed(() => quotes.value),

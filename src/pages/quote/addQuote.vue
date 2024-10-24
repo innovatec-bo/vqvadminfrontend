@@ -58,6 +58,7 @@ const removeProduct = id => {
 const generateCotization = async() =>{
   console.log(quoteData)
   await generateQuote(quoteData.value)
+  
  
 }
 
