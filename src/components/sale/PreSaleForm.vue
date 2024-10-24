@@ -18,7 +18,7 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  typeStage: {
+  stage: {
     type: String,
     required: true,
   },
@@ -124,13 +124,13 @@ const generateSalePage = async () => {
 
     console.log('data de la venta: ', salesData.value)
 
-    // if (props.typeStage === 'SALE') {
-    //   console.log('entro a venta')
-    await generateSaleChangeStage(salesData.value)
+    if (props.stage === 'SALE') {
+      console.log('entro a venta')
+    } else if (props.stage === 'PRESALE') {
+      await generateSale(salesData.value)
+    }
 
-    // } else if (props.typeStage === 'PRESALE') {
-    //   await generateSale(salesData.value)
-    // }
+    // await generateSaleChangeStage(salesData.value)
 
     emit('update:isDialogVisible', false)
     emit('registerSale', salesData.value.opportunity_id)

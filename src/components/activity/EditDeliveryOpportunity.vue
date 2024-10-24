@@ -35,41 +35,45 @@ const markProcedureAsDone = async (procedureId, isChecked) => {
 
 <template>
   <!-- Propiedades -->
-  <div class="mb-5">
-    <span style="font-size: 14px; font-weight: 500; ">
+  <div class="my-5">
+    <span style="font-size: 14px; font-weight: 500;">
       Propiedades
     </span> 
-    <div v-if="props.opportunity.sales.properties && props.opportunity.sales.properties.length > 0">
+    <div v-if="props.opportunity.sales.length > 0">
       <div
-        v-for="properti in props.opportunity.sales.properties"
-        :key="properti.id"
-        class="d-flex align-center justify-between"
+        v-for="sale in props.opportunity.sales"
+        :key="sale.id"
       >
-        <VAvatar
-          size="50"
-          rounded
+        <div
+          v-for="property in sale.properties"
+          :key="property.id"
+          class="d-flex align-center justify-between"
         >
-          <img
-            :src="poraIcon"
-            alt="Logo pora"
-            style="border-radius: 30%;"
+          <VAvatar
+            size="50"
+            rounded
           >
-        </VAvatar>
-        <VCol
-          cols="12"
-          md="7"
-        >
-          <VListItemTitle class="font-weight-medium">
-            {{ properti.project_title }} | {{ properti.title }} 
-          </VListItemTitle>
-          <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-            <span>$ {{ properti.pivot_price }}</span>
-          </VListItemSubtitle>
-        </VCol>
+            <img
+              :src="poraIcon"
+              alt="Logo pora"
+              style="border-radius: 30%;"
+            >
+          </VAvatar>
+          <VCol
+            cols="12"
+            md="7"
+          >
+            <VListItemTitle class="font-weight-medium">
+              {{ property.project_title }} | {{ property.title }}
+            </VListItemTitle>
+            <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+              <span>$ {{ property.pivot_price }}</span>
+            </VListItemSubtitle>
+          </VCol>
+        </div>
       </div>
     </div>
   </div>
-
   <!-- procesos  -->
   <div class="my-5">
     <span style="font-size: 14px; font-weight: 500; ">
