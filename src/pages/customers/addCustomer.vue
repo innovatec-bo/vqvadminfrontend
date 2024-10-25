@@ -1,13 +1,12 @@
 <script setup>
-import { useActivity } from '@/composables/Activity/useActivity'
+import TiptapEditor from '@/@core/components/TiptapEditor.vue'
 import { useCustomer } from '@/composables/Customer/useCustomer'
-import { onMounted } from 'vue'
+import { ref } from 'vue'
 
 const content = ref('')
-const { getallTypeActivities, typeActivities } = useActivity()
 const { addCustomer, loading, error, customer } = useCustomer()
 
-
+// Datos del formulario
 const customerForm = ref({
   name: null,
   countryCode: '+591',
@@ -17,15 +16,21 @@ const customerForm = ref({
   description: null,
 })
 
-const allTypeActivity = async () => {
-  await getallTypeActivities()
-}
+// Referencia para el formulario
+const formRef = ref(null)
 
+// Validaciones personalizadas
+const isRequired = value => !!value || 'Este campo es obligatorio.'
+const isMinLength = (value, length) => (value && value.length >= length) || `Debe tener al menos ${length} caracteres.`
+const isValidEmail = value => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || 'Debe ser un correo válido.'
+
+// Registro de cliente
 const registerCustomer = async () => {
-  await addCustomer(customerForm.value)
+  // Validar el formulario antes de enviar
+  if (formRef.value.validate()) {
+    await addCustomer(customerForm.value)
+  }
 }
-
-onMounted(allTypeActivity)
 </script>
 
 <template>
@@ -60,161 +65,94 @@ onMounted(allTypeActivity)
       </div>
     </div>
 
-    <VRow>
-      <VCol md="8">
-        <!-- 👉 Product Information -->
-        <VCard
-          class="mb-6"
-          title="Informacion del Cliente"
-        >
-          <VCardText>
-            <VRow>
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <AppTextField
-                  v-model="customerForm.name"
-                  :rules="[requiredValidator]"
-                  label="Nombre (Obligatorio)"
-                  placeholder="Diego Rojas"
-                />
-              </VCol>
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VRow>
-                  <VCol md="4">
-                    <AppSelect
-                      v-model="customerForm.countryCode"
-                      label="Cod Pais"
-                      :items="['+591']"
-                    />
-                  </VCol>
-                  <VCol md="8">
-                    <AppTextField
-                      v-model="customerForm.phone"
-                      type="number"
-                      :rules="[requiredValidator]"
-                      label="Celular"
-                      placeholder="76543210"
-                    />
-                  </VCol>
-                </VRow>
-              </VCol>
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <AppTextField
-                  v-model="customerForm.email"
-                  label="Correo (Opcional)"
-                  placeholder="alex@canzza.com"
-                />
-              </VCol>
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <AppTextField
-                  v-model="customerForm.ci"
-                  label="CI (Opcional)"
-                  placeholder="0123-4567"
-                />
-              </VCol>
-              <VCol>
-                <span class="mb-1">Descripcion (Opcional)</span>
-                <TiptapEditor
-                  v-model="customerForm.description"
-                  placeholder="Descripcion del Cliente "
-                  class="border rounded"
-                />
-              </VCol>
-            </VRow>
-          </VCardText>
-        </VCard>
-      </VCol>
-
-      <VCol
-        md="4"
-        cols="12"
-      >
-        <!-- 👉 Organize -->
-        <VCard title="Informacion Adicional">
-          <VCardText>
-            <div class="d-flex flex-column gap-y-4">
-              <AppSelect
-                placeholder="Seleccione un Estado (Obligatorio)"
-                label="Estado del Cliente"
-                :items="typeActivities.map(activity => activity.name)"
-              />
-              <AppSelect
-                placeholder="Metodo de Contacto (Opcional)"
-                label="Metodo de Contacto (Opcional)"
-                :items="['Men\'s Clothing', 'Women\'s Clothing', 'Kid\'s Clothing']"
-              />
-              <AppSelect
-                placeholder="Como nos Conocio (Opcional)"
-                label="Como nos Conocio (Opcional)"
-                :items="['Published', 'Inactive', 'Scheduled']"
-              />
-            </div>
-          </VCardText>
-        </VCard>
-      </VCol>
-    </VRow>
+    <!-- Formulario v-form -->
+    <VForm
+      ref="formRef"
+      v-slot="{ errors }"
+    >
+      <VRow>
+        <VCol>
+          <VCard
+            class="mb-6"
+            title="Información del Cliente"
+          >
+            <VCardText>
+              <VRow>
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <AppTextField
+                    v-model="customerForm.name"
+                    label="Nombre (Obligatorio)"
+                    placeholder="Diego Rojas"
+                    :rules="[isRequired, (v) => isMinLength(v, 3)]"
+                  />
+                </VCol>
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VRow>
+                    <VCol md="4">
+                      <AppSelect
+                        v-model="customerForm.countryCode"
+                        label="Cod País"
+                        :items="['+591']"
+                      />
+                    </VCol>
+                    <VCol md="8">
+                      <AppTextField
+                        v-model="customerForm.phone"
+                        type="number"
+                        label="Celular"
+                        placeholder="76543210"
+                        :rules="[isRequired, (v) => isMinLength(v, 8)]"
+                      />
+                    </VCol>
+                  </VRow>
+                </VCol>
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <AppTextField
+                    v-model="customerForm.email"
+                    label="Correo (Opcional)"
+                    placeholder="alex@canzza.com"
+                    :rules="[(v) => isValidEmail(v)]"
+                  />
+                </VCol>
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <AppTextField
+                    v-model="customerForm.ci"
+                    label="CI (Opcional)"
+                    placeholder="0123-4567"
+                  />
+                </VCol>
+                <VCol>
+                  <span class="mb-1">Descripción (Opcional)</span>
+                  <TiptapEditor
+                    v-model="customerForm.description"
+                    placeholder="Descripción del Cliente"
+                    class="border rounded"
+                  />
+                </VCol>
+              </VRow>
+            </VCardText>
+          </VCard>
+        </VCol>
+      </VRow>
+    </VForm>
   </div>
 </template>
 
 <style lang="scss" scoped>
-  .drop-zone {
-    border: 2px dashed rgba(var(--v-theme-on-surface), 0.12);
-    border-radius: 6px;
-  }
-</style>
-
-<style lang="scss">
-.inventory-card{
-  .v-radio-group,
-  .v-checkbox {
-    .v-selection-control {
-      align-items: start !important;
-
-      .v-selection-control__wrapper{
-        margin-block-start: -0.375rem !important;
-      }
-    }
-
-    .v-label.custom-input {
-      border: none !important;
-    }
-  }
-
-  .v-tabs.v-tabs-pill {
-    .v-slide-group-item--active.v-tab--selected.text-primary {
-      h6{
-        color: #fff !important
-      }
-    }
-  }
-
-}
-
-.ProseMirror{
-  p{
-    margin-block-end: 0;
-  }
-
-  padding: 0.5rem;
-  outline: none;
-
-  p.is-editor-empty:first-child::before {
-    block-size: 0;
-    color: #adb5bd;
-    content: attr(data-placeholder);
-    float: inline-start;
-    pointer-events: none;
-  }
+.drop-zone {
+  border: 2px dashed rgba(var(--v-theme-on-surface), 0.12);
+  border-radius: 6px;
 }
 </style>
