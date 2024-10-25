@@ -22,7 +22,6 @@ const props = defineProps({
 
 const payments = ref(props.differs)
 
-// Función para agregar un nuevo pago
 const addPayment = () => {
   payments.value.push({  amount: '', date: '' })
 
@@ -30,9 +29,12 @@ const addPayment = () => {
   props.differs = payments.value
 }
 
-// Función para eliminar un pago
 const removePayment = index => {
   payments.value.splice(index, 1)
+  
+  // eslint-disable-next-line vue/no-mutating-props
+  props.differs = payments.value
+
 }
 
 // Cálculo de la suma actual de los pagos
@@ -44,7 +46,6 @@ const currentTotal = computed(() => {
   }, 0)
 })
 
-// Verificar que la suma de los pagos no exceda el monto total (amount) establecido
 watch(currentTotal, newTotal => {
   if (newTotal > props.amount) {
     alert('El total de los pagos no puede exceder el monto total.')
@@ -59,34 +60,39 @@ watch(currentTotal, newTotal => {
     class="d-flex flex-column pa-5"
   >
     <h3 class="mb-2">
-      {{ props.title }}
+      {{ props.title }} :   {{ props.amount }}
     </h3>
     <div
       v-for="(payment, index) in payments"
       :key="payment.id"
-      class="d-flex align-center mb-4"
+      class="d-flex align-center "
     >
       <!-- Input para la cantidad -->
-      <VTextField
-        v-model="payment.amount"
-        label="Monto"
-        type="number"
-        class="mr-4"
-        outlined
-      />
+      <VCol cols="5">
+        <AppDateTimePicker
+          v-model="payment.date"
+          :rules="[requiredValidator]"
+          density="compact"                      
+          placeholder="YYYY-MM-DD"
+          outlined
+        />
+      </VCol>
+      <VCol cols="5">
+        <VTextField
+          v-model="payment.amount"
+          :rules="[requiredValidator]"
+          :error-messages="!payment.amount ? '*campo obligatorio' : ''"
+          label="Monto *"
+          type="number"
+          outlined
+          dense
+        />
+      </VCol>
 
-      <!-- Input para la fecha -->
-      <VTextField
-        v-model="payment.date"
-        label="Fecha de Pago"
-        type="date"
-        class="mr-3"
-        outlined
-      />
-
-      <!-- Botón para eliminar el pago -->
       <VBtn
         color="error"
+        outlined
+        class="mt-0"
         @click="removePayment(index)"
       >
         <VIcon icon="tabler-square-x" />
@@ -97,6 +103,10 @@ watch(currentTotal, newTotal => {
     <div class="mt-4">
       <strong>Suma Actual de Pagos: </strong> ${{ currentTotal.toFixed(2) }}
     </div>
+    <!-- Mostrar el monto restante -->
+    <div class="mt-4">
+      <strong>Monto Restante:</strong> ${{ (props.amount - currentTotal).toFixed(2) }}
+    </div>
 
     <!-- Botón para agregar más pagos -->
     <VBtn
@@ -104,7 +114,7 @@ watch(currentTotal, newTotal => {
       class="mt-4"
       @click="addPayment"
     >
-      Agregar Pago
+      Diferir {{ props.title }}
     </VBtn>
   </VCard>
 </template>

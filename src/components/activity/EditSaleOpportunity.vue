@@ -169,10 +169,10 @@ const updateDeliveryDate = async opportunityId => {
     </div>
   </div>
 
-  <!-- cuota inicial  -->
+  <!-- Anticipo -->
   <div class="mb-4">
     <span style="font-size: 14px; font-weight: 500; ">
-      Cuota Inicial
+      Anticipo
     </span> 
     <VTable
       v-if="props.opportunity.initial_payments && props.opportunity.initial_payments.length > 0"

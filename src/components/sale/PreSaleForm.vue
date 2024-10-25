@@ -26,7 +26,8 @@ const props = defineProps({
 
 const emit = defineEmits(['update:isDialogVisible', 'registerSale'])
 const { generateSale, generateSaleChangeStage } = useSales()
-const isSubmitting = ref(false)
+
+// const isSubmitting = ref(false)
 
 const dialogVisibleUpdate = val => {
   emit('update:isDialogVisible', val)
@@ -83,18 +84,6 @@ const calculateBalanceDifference = () => {
   return  (salesData.value.amount - salesData.value.initial_fee) - totalDiffersBalance
 }
 
-const handleLogin = async () => {
-  isSubmitting.value= true
-  await generateSalePage()
-  isSubmitting.value = false
-}
-
-const onSubmit = () => {
-  salesData.value?.validate().then(({ valid: isValid }) => {
-    if (isValid) handleLogin()
-  })
-}
-
 const isFormValid = computed(() => {
   return salesData.value.social_reason && 
          salesData.value.nit &&
@@ -123,14 +112,13 @@ const generateSalePage = async () => {
     }
 
     console.log('data de la venta: ', salesData.value)
-
+    
+    
     if (props.stage === 'SALE') {
-      console.log('entro a venta')
-    } else if (props.stage === 'PRESALE') {
       await generateSale(salesData.value)
+    } else if (props.stage === 'PRESALE') {
+      await generateSaleChangeStage(salesData.value)
     }
-
-    // await generateSaleChangeStage(salesData.value)
 
     emit('update:isDialogVisible', false)
     emit('registerSale', salesData.value.opportunity_id)
@@ -176,13 +164,6 @@ watch(
     <!-- 👉 Dialog close btn -->
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
     <VCard>
-      <!--
-        <VForm
-        ref="salesData"
-        @submit="onSubmit"
-        > 
-      -->
-      <!-- SECTION Header -->
       <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row">
         <!-- 👉 Left Content -->
         <div class="ma-sm-4">
@@ -204,16 +185,6 @@ watch(
         <div class="mt-4 ma-sm-4">
           <!-- 👉 Invoice Id -->
           <h6 class="d-flex align-center font-weight-medium justify-sm-end text-xl mb-3">
-            <!--
-              <VBtn
-              block
-              type="submit"
-              :disabled="loading"
-              :loading="loading"
-              >
-              Registrar Venta
-              </VBtn> 
-            -->
             <VBtn
               color="primary"
               :loading="loadingSale"
@@ -364,9 +335,9 @@ watch(
           <AppSelect
             v-model="selectedPercentage"
             :rules="[requiredValidator]"
-            label="% Cuota Inicial :"
+            label="% Anticipo :"
             :items="items"
-            placeholder="% Cuota inicial"
+            placeholder="% Anticipo"
             class="mb-2"
           />
         </VRow>
@@ -381,7 +352,7 @@ watch(
             style="padding-block: 0;padding-inline: 8px;"
           >
             <InvoiceAddMoney
-              :title="'Cuota Inicial: ' + calculatedAmount(salesData.amount) "
+              title="Anticipo "
               :amount="calculatedAmount(salesData.amount) "
               :differs="salesData.differs_initial_fee"
               :type="INITIAL_PAYMENT"
@@ -393,7 +364,7 @@ watch(
             style="padding-block: 0;padding-inline: 8px;"
           >
             <InvoiceAddMoney
-              :title="'Saldo: ' + (salesData.amount - salesData.initial_fee) "
+              title="Saldo "
               :amount="salesData.amount - salesData.initial_fee"
               :differs="salesData.differs_balance"
               :type="BALANCE"
