@@ -1,8 +1,6 @@
 <!-- eslint-disable camelcase -->
 <script setup>
-import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProperty } from '@/composables/Realty/useProperty'
-import { StagesOpportunity } from '@/enums/StagesOpportunity'
 
 const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
@@ -24,12 +22,13 @@ const dialogVisibleUpdate = () => {
 }
 
 const saveProperty = async () => {
-    const result = await editProperty(formProperty.value)
-    result.success && emit('propertyUpdated', formProperty.value)
-    dialogVisibleUpdate()
+  const result = await editProperty(formProperty.value)
+
+  result.success && emit('propertyUpdated', formProperty.value)
+  dialogVisibleUpdate()
 }
 
-watch(() => props.property, (newProperty) => {
+watch(() => props.property, newProperty => {
   formProperty.value = { ...newProperty }
 })
 </script>
@@ -65,13 +64,13 @@ watch(() => props.property, (newProperty) => {
               cols="12"
               md="6"
             >
-            <AppSelect
-                    v-model="formProperty.property_type"
-                    label="Tipo de propiedad"
-                    placeholder="Seleccione un tipo"
-                    :items="listpropertype"
-                    outlined
-                  />
+              <AppSelect
+                v-model="formProperty.property_type"
+                label="Tipo de propiedad"
+                placeholder="Seleccione un tipo"
+                :items="listpropertype"
+                outlined
+              />
             </VCol>
             <VCol
               cols="12"
@@ -90,7 +89,7 @@ watch(() => props.property, (newProperty) => {
             >
               <AppTextField
                 v-model="formProperty.percentage_initial_fee"
-                label="% Cuota inicial"
+                label="% Anticipo"
                 placeholder="..."
                 outlined
               />
@@ -118,7 +117,7 @@ watch(() => props.property, (newProperty) => {
               cols="12"
               md="6"
             >
-            <AppTextField
+              <AppTextField
                 v-model="formProperty.surface"
                 label="Superficie"
                 placeholder="..."

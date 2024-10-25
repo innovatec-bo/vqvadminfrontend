@@ -17,7 +17,7 @@ const emit = defineEmits([
   'addProperty',
 ])
 
-const { properties: propertyApi, propertiesForType } = useProperty()
+const { propertiesForType } = useProperty()
 
 const propertyPark = ref([])
 const propertyDepartament = ref([])
@@ -37,16 +37,37 @@ const removeProperty = index =>{
   emit('removeProduct', index) 
 }
 
-// selectedProperty=() => {
-//   return this.property.property_type === PropertyType.DEPARTAMENT.value
-//     ? this.propertyDepartament.find(item => item.id === this.property.property_id)
-//     : this.propertyPark.find(item => item.id === this.property.property_id)
-// }
+const updatePrice = property => {
+  console.log("entra a update price")
+  if (property.property_type === PropertyType.DEPARTAMENT.value) {
+    const selectedDepartament = propertyDepartament.value.find(p => p.id === property.property_id)
+    if (selectedDepartament) {
+      property.price = selectedDepartament.base_price 
+    }
+  } else if (property.property_type === PropertyType.PARK.value) {
+    const selectedPark = propertyPark.value.find(p => p.id === property.property_id)
+    if (selectedPark) {
+      property.price = selectedPark.base_price 
+    }
+  }
+}
+
+watch(
+  () => props.properties.map(p => p.property_id),
+  (newValues, oldValues) => {
+    newValues.forEach((propertyId, index) => {
+      const property = props.properties[index]
+      if (propertyId !== oldValues[index]) {
+        updatePrice(property) 
+      }
+    })
+  },
+)
 
 onMounted(async () => {
   try {
     const departament = await propertiesForType(PropertyType.DEPARTAMENT.value)
- 
+
     propertyDepartament.value = departament
 
     const park = await propertiesForType(PropertyType.PARK.value)
@@ -78,6 +99,8 @@ onMounted(async () => {
         >
           <AppSelect
             v-model="property.property_id"
+            :rules="[requiredValidator]"
+
             :label="property.property_type_name"
             placeholder="Selecciona una propiedad"
             :items="property.property_type === PropertyType.DEPARTAMENT.value ? propertyDepartament : propertyPark"
@@ -106,7 +129,8 @@ onMounted(async () => {
         >
           <AppTextField
             v-model="property.price"
-            label="Precio"
+            :rules="[requiredValidator]"
+            label="Precio *"
             placeholder="$"
             outlined
             dense
@@ -121,7 +145,8 @@ onMounted(async () => {
         >
           <AppTextField
             v-model="property.price_it"
-            label="3% (IT):"
+            :rules="[requiredValidator]"
+            label="3% (IT) *"
             placeholder="%"
             outlined
             dense
@@ -135,7 +160,8 @@ onMounted(async () => {
         >
           <AppTextField
             v-model="property.price_contrato"
-            label="Precio Contrato:"
+            :rules="[requiredValidator]"
+            label="Precio Contrato *"
             placeholder="Escribe el precio"
             outlined
             dense
