@@ -172,7 +172,11 @@ const markProcedureAsDone = async procedure => {
             -->
             <td>
               <!-- Todo: ponerle rutas  para ver la cotizacion por id -->
-              <VIcon icon="tabler-eye" />
+              <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">
+                <IconBtn>
+                  <VIcon icon="tabler-eye" />
+                </IconBtn>
+              </RouterLink>
             </td>
           </tr>
         </tbody>

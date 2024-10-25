@@ -194,10 +194,11 @@ const statusQuote = async (quoteId, statusquote) => {
                   </VTooltip>
                 </VCheckbox>
 
-                <VIcon
-                  icon="tabler-eye"
-                  class="my-auto"
-                />
+                <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">
+                  <IconBtn>
+                    <VIcon icon="tabler-eye" />
+                  </IconBtn>
+                </RouterLink>
               </VRow>
             </td>
           </tr>

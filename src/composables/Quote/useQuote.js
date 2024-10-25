@@ -1,4 +1,4 @@
-import { changeStatus, listQuotePaginate, registerQuote } from "@/services/Quote/quoteService"
+import { changeStatus, getQuote, listQuotePaginate, registerQuote } from "@/services/Quote/quoteService"
 import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
 import { useRouter } from "vue-router"
 
@@ -11,6 +11,10 @@ export function useQuote() {
 
   const getQuotebyId = async id => {
     try{
+      const response = await getQuote(id)
+
+      quote.value = response.data
+      console.log(quote.value)
       
     }catch(error){
       console.error(error)
@@ -25,7 +29,7 @@ export function useQuote() {
       console.log(response)
       quote.value = response.data
       showSuccessNotification('¡Cotización registrada exitosamente!', 'La cotización ha sido generada y registrada en el sistema. ¡Buen trabajo!')
-      router.push('/quote/listQuote')
+      router.push(`/quote/${quote.value.id}`)
 
     }catch (err){
       if(err.response && err.response.status == 422){

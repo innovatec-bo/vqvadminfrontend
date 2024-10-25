@@ -1,71 +1,93 @@
 <!-- eslint-disable camelcase -->
 <script setup>
-import { PropertyType } from '@/enums/PropertyType'
+import { useQuote } from '@/composables/Quote/useQuote'
 import InvoiceAddPaymentDrawer from '@/views/apps/invoice/InvoiceAddPaymentDrawer.vue'
 import InvoiceSendInvoiceDrawer from '@/views/apps/invoice/InvoiceSendInvoiceDrawer.vue'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { onBeforeMount, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
-const route = useRoute('quote-id')
+const route = useRoute()
+const { getQuotebyId, quote } = useQuote()
 
 const isAddPaymentSidebarVisible = ref(false)
 const isSendPaymentSidebarVisible = ref(false)
 
-console.log(route.params)
-
 const invoice = ref({
-  id: 5036,
+  id: null,
   issuedDate: '20-10-2023',
-  expiration_date: '25-11-2023',
+  expiration_date: null,
   customer: {
-    social_reason: 'Diego Rojas Rios',
-    phone: '77049267',
-    nit: '12570076',
-    address: 'Av/ España 5 anillo doble vía',
-    workplace: '(687) 660-2473',
-    email: 'diego.rojas@example.com',
+    social_reason: null,
+    phone: null,
+    nit: null,
+    address: null,
+    workplace: null,
+    email: null,
   },
-  observations: 'El cliente solicita la entrega antes de fin de mes.',
-  payment_method: 'Tarjeta de crédito',
-  contract_signing_date: '22-10-2023',
-  amount: 150000,
-  initial_fee: 30000,
-  balance: 120000,
-  opportunity_id: 7895,
+  observations: null,
+  payment_method: null,
+  contract_signing_date: null,
+  amount: null,
+  initial_fee: null,
+  balance: null,
+  opportunity_id: null,
   properties: [
     {
-      property_id: 101,
-      price: 75000,
-      price_it: 5000,
-      price_contrato: 80000,
-      facade: true,
-      floor: 2,
-      surface: 100,
-      property_type: PropertyType.DEPARTAMENT.value,
-      property_type_name: PropertyType.DEPARTAMENT.label,
-    },
-    {
-      property_id: 102,
-      price: 80000,
-      price_it: 6000,
-      price_contrato: 86000,
-      facade: false,
-      floor: 1,
-      surface: 100,
-      property_type: PropertyType.PARK.value,
-      property_type_name: PropertyType.PARK.label,
+      id: null,
+      pivot_price: null,
+      pivot_price_it: null,
+      pivot_price_contrato: null,
+      isfacade: false,
+      code: null,
+      surface: null,
+      property_type: null,
+      title: '',
     },
   ],
 })
+
+const loadQuote = async () => {
+  try {
+    await getQuotebyId(route.params.id)
+    invoice.value = {
+      id: quote.value.id,
+      issuedDate: quote.value.created_at,
+      expiration_date: quote.value.expiration_date,
+      customer: {
+        social_reason: quote.value.social_reason,
+        phone: quote.value.phone,
+        nit: quote.value.nit,
+        address: quote.value.address,
+        workplace: quote.value.workplace,
+        email: quote.value.email,
+      },
+      observations: quote.value.observations,
+      payment_method: 'Tarjeta de crédito',
+      contract_signing_date: '22-10-2023',
+      amount: quote.value.amount,
+      initial_fee: quote.value.initial_fee,
+      balance: quote.value.balance,
+      opportunity_id: quote.value.opportunity_id,
+      properties: quote.value.properties,
+    }
+
+    // setTimeout(() => {
+    //   printInvoice()
+    // }, 5000)
+  } catch (error) {
+    console.error('Error al obtener la cotización:', error)
+  }
+}
 
 const printInvoice = () => {
   window.print()
 }
 
-onMounted(() => {
-  printInvoice()
-})
+onBeforeMount(loadQuote)
 </script>
+
 
 <template>
   <section v-if="invoice">
@@ -219,28 +241,28 @@ onMounted(() => {
             <tbody>
               <tr
                 v-for="property in invoice.properties"
-                :key="property.property_id"
+                :key="property.id"
               >
                 <td class="text-no-wrap">
-                  {{ property.property_type_name }}
+                  {{ property.title }}
                 </td>
                 <td class="text-no-wrap">
                   {{ property.surface }} m2
                 </td>
                 <td class="text-no-wrap">
-                  {{ property.floor }} Piso
+                  {{ property.code }} Piso
                 </td>
                 <td class="text-no-wrap">
-                  {{ property.facade ? 'Sí' : 'No' }}
+                  {{ property.isfacade ? 'Sí' : 'No' }}
                 </td>
                 <td class="text-center">
-                  ${{ property.price }}
+                  ${{ property.pivot_price }}
                 </td>
                 <td class="text-center">
-                  ${{ property.price_it }}
+                  ${{ property.pivot_price_it }}
                 </td>
                 <td class="text-center">
-                  ${{ property.price_contrato }}
+                  ${{ property.pivot_price_contrato }}
                 </td>
               </tr>
             </tbody>
@@ -318,7 +340,7 @@ onMounted(() => {
                 <VDivider thickness="4" />
                 <div class="text-center my-1">
                   <span> <strong>
-                    Firma Gerente Administrativo
+                    Firma Asesor Comercial
                   </strong>  </span>
                 </div>
               </VCol>
@@ -344,7 +366,7 @@ onMounted(() => {
           <VCardText>
             <div class="d-flex mx-sm-4">
               <span><strong>
-                Este documento tiene validez únicamente hasta el <span style="text-decoration: underline;">31/10/2024</span>.
+                Este documento tiene validez únicamente hasta el <span style="text-decoration: underline;">{{ invoice.expiration_date }}</span>.
               </strong></span>
             </div>
           </VCardText>

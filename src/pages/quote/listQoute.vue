@@ -127,9 +127,11 @@ onMounted(async () =>{
        
         <template #item.action="{ item }">
           <div class="d-flex items-center gap-x-2">
-            <IconBtn>
-              <VIcon icon="tabler-edit" />
-            </IconBtn>
+            <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">
+              <IconBtn>
+                <VIcon icon="tabler-eye" />
+              </IconBtn>
+            </RouterLink>
             <VCheckbox
               v-model="item.status"
               true-value="APPROVED"

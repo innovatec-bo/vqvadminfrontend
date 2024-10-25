@@ -7,7 +7,7 @@ import { PropertyType } from '@/enums/PropertyType'
 import InvoiceSendInvoiceDrawer from '@/views/apps/invoice/InvoiceSendInvoiceDrawer.vue'
 import { onMounted } from 'vue'
 
-const { generateQuote } = useQuote()
+const { generateQuote, loadingQuote } = useQuote()
 const { allCustomerPaginate,  customers } = useCustomer()
 
 const quoteData = ref({
@@ -134,6 +134,8 @@ watch(
           <VBtn
             block
             class="mb-2"
+            :loading="loadingQuote"
+            :disabled="loadingQuote"
             @click="generateCotization"
           >
             Guardar  Cotizacion
