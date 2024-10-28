@@ -19,3 +19,10 @@ export const  listQuotePaginate = async pagination => {
     params: pagination,
   })
 }
+
+
+export const getQuote = async id => {
+  return await $api(`/quote/${id}`, {
+    method: 'GET',
+  })
+}

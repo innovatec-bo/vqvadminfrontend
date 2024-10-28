@@ -18,24 +18,26 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  typeStage: {
+  stage: {
     type: String,
     required: true,
   },
+
 })
 
 const emit = defineEmits(['update:isDialogVisible', 'registerSale'])
 const { generateSale, generateSaleChangeStage } = useSales()
-const isSubmitting = ref(false)
+const loadingSale = ref(false)
+const items = ['10', '20', '30']
+const selectedPercentage =  ref('10')
 
 const dialogVisibleUpdate = val => {
   emit('update:isDialogVisible', val)
 }
 
-const loadingSale = ref(false)
-
 const salesData = ref({
   social_reason: props.opportunity?.customer.name?? '',
+  creation_date: new Date().toISOString().split('T')[0],
   nit: '',
   address: '',
   email: props.opportunity?.customer.email?? '',
@@ -48,6 +50,7 @@ const salesData = ref({
   observations: '',
   opportunity_id: props.opportunity?.id ?? null,
   stage_id: StagesOpportunity.SALE.value,
+  balance: null,
   properties: [{
     property_id: null,
     price: null,
@@ -58,54 +61,107 @@ const salesData = ref({
   }],
   differs_initial_fee: [],
   differs_balance: [],
+  quote_id: null,
 })
-
-const items = ['10', '20', '30']
-const selectedPercentage =  ref('10')
-
 
 const calculatedAmount = totalAmount => {
   // eslint-disable-next-line vue/no-mutating-props, camelcase
   salesData.value.initial_fee = (totalAmount * selectedPercentage.value) / 100
+  salesData.value.balance = totalAmount - salesData.value.initial_fee
 
   return (totalAmount * selectedPercentage.value) / 100
 }
 
-const calculateInitialFeeDifference = () => {
-  const totalDiffersInitialFee = salesData.value.differs_initial_fee.reduce((sum, fee) => sum + (fee.amount || 0), 0)
-
-  return salesData.value.initial_fee - totalDiffersInitialFee
-}
-
-const calculateBalanceDifference = () => {
-  const totalDiffersBalance = salesData.value.differs_balance.reduce((sum, balance) => sum + (balance.amount || 0), 0)
-
-  return  (salesData.value.amount - salesData.value.initial_fee) - totalDiffersBalance
-}
-
-const handleLogin = async () => {
-  isSubmitting.value= true
-  await generateSalePage()
-  isSubmitting.value = false
-}
-
-const onSubmit = () => {
-  salesData.value?.validate().then(({ valid: isValid }) => {
-    if (isValid) handleLogin()
-  })
-}
-
-const isFormValid = computed(() => {
+const isGeneralFormValid = computed(() => {
   return salesData.value.social_reason && 
          salesData.value.nit &&
          salesData.value.email &&
          salesData.value.phone &&
          salesData.value.amount &&
-         salesData.value.initial_fee
+         salesData.value.creation_date &&
+         salesData.value.payment_method &&
+         salesData.value.balance 
 })
 
+const arePropertiesValid = computed(() => {
+  return salesData.value.properties.every(property => 
+    property.property_id !== null &&
+    property.price !== null &&
+    property.price_it !== null &&
+    property.price_contrato !== null,
+  )
+})
+
+const isDiffersInitialFeeValid = computed(() => {
+  if (salesData.value.differs_initial_fee.length === 0) return true
+
+  return salesData.value.differs_initial_fee.every(item => 
+    item.amount !== null,
+  )
+})
+
+const isDiffersBalanceValid = computed(() => {
+  if (salesData.value.differs_balance.length === 0) return true
+
+  return salesData.value.differs_balance.every(item => 
+    item.amount !== null,
+  )
+})
+
+const isInitialFeeValid = computed(() => {
+  if (salesData.value.differs_initial_fee.length === 0) {
+    return true
+  }
+
+  const totalDiffersInitialFee = salesData.value.differs_initial_fee.reduce((sum, item) => {
+    return sum + (parseFloat(item.amount) || 0) 
+  }, 0)
+
+  const totalFee = parseFloat(totalDiffersInitialFee)
+  const initialFee = parseFloat(salesData.value.initial_fee)
+
+  console.log(totalFee)
+  console.log(initialFee)
+
+  return totalFee === initialFee // Comparar con initial_fee
+})
+
+const isBalanceValid = computed(() => {
+  if (salesData.value.differs_balance.length === 0) {
+    return true
+  }
+
+  const totalDiffersBalance = salesData.value.differs_balance.reduce((sum, item) => {
+    return sum + (parseFloat(item.amount) || 0) 
+  }, 0)
+
+  const totalFee = parseFloat(totalDiffersBalance)
+  const balance = parseFloat(salesData.value.balance)
+  
+  console.log(totalFee)
+  console.log(balance)
+  
+  return totalFee === balance // Comparar con initial_fee
+})
+
+const isFormValid = computed(() => {
+  return isGeneralFormValid.value && 
+   arePropertiesValid.value && isDiffersInitialFeeValid.value && isDiffersBalanceValid.value 
+})
 
 const generateSalePage = async () => {
+  if (!isInitialFeeValid.value) {
+    // showWarningToast('Validación fallida', 'La suma de las diferencias de la cuota inicial no son correctas')
+    alert('Por favor, diferencias de la cuota inicial ')
+    
+    return
+  }
+  if (!isBalanceValid.value) {
+    // showWarningToast('Validación fallida', 'La suma de las diferencias del balance no son correctas')
+    alert('Por favor, diferencias del balance ')
+    
+    return
+  }
   if (!isFormValid.value) {
     alert('Por favor, completa todos los campos obligatorios.')
     
@@ -113,8 +169,6 @@ const generateSalePage = async () => {
   }
   loadingSale.value = true
   try {
-    const initialFeeDifference = calculateInitialFeeDifference()
-    const balanceDifference = calculateBalanceDifference()
     if (salesData.value.differs_balance.length === 0){
       salesData.value.differs_balance.push({
         date: new Date().toISOString().slice(0, 19).replace('T', ' '),
@@ -122,31 +176,33 @@ const generateSalePage = async () => {
       })
     }
 
+    if (salesData.value.differs_initial_fee.length === 0){
+      salesData.value.differs_initial_fee.push({
+        date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        amount: salesData.value.initial_fee,
+      })
+    }
+
     console.log('data de la venta: ', salesData.value)
-
-    // if (props.typeStage === 'SALE') {
-    //   console.log('entro a venta')
-    await generateSaleChangeStage(salesData.value)
-
-    // } else if (props.typeStage === 'PRESALE') {
-    //   await generateSale(salesData.value)
-    // }
-
+    if (props.stage === 'SALE') {
+      await generateSale(salesData.value)
+      console.log('entro a venta')
+    } else if (props.stage === 'PRESALE') {
+      await generateSaleChangeStage(salesData.value)
+    }
     emit('update:isDialogVisible', false)
     emit('registerSale', salesData.value.opportunity_id)
   } catch (error) {
     console.error('Error generando la venta:', error)
   } finally {
-    loadingSale.value = false // Finaliza el estado de carga
+    loadingSale.value = false 
   }
-  
 }
 
 watch(
   () => salesData.value.properties,
   newProperties => {
     let totalPrice = 0 // Variable para sumar los precios
-
     newProperties.forEach(property => {
       if (property.price) {
         const price = parseFloat(property.price) || 0 // Convertir a número
@@ -165,69 +221,81 @@ watch(
   },
   { deep: true },
 )
+
+watch(
+  () => salesData.value.quote_id,
+  newQuoteId => {
+    const selectedCustomer = props.opportunity.quotes.find(quote => quote.id == newQuoteId)
+    if (selectedCustomer) {
+      salesData.value.social_reason = selectedCustomer.social_reason
+      salesData.value.email = selectedCustomer.email
+      salesData.value.phone = selectedCustomer.phone
+      salesData.value.nit = selectedCustomer.nit
+      salesData.value.address = selectedCustomer.address
+      salesData.value.opportunity_id = selectedCustomer.opportunity_id
+      salesData.value.workplace = selectedCustomer.workplace
+      salesData.value.observations = selectedCustomer.observations
+      if (selectedCustomer.property_id !== null) {
+        salesData.value.properties[0].property_id = selectedCustomer.properties[0]?.id
+        salesData.value.properties[0].price = selectedCustomer.properties[0]?.pivot_price
+      }
+    }
+    salesData.value.quote_id = newQuoteId
+  },
+)
 </script>
 
 <template>
   <VDialog
     :model-value="props.isDialogVisible"
-    max-width="800"
+    max-width="1000"
     @update:model-value="dialogVisibleUpdate"
   >
     <!-- 👉 Dialog close btn -->
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
     <VCard>
-      <!--
-        <VForm
-        ref="salesData"
-        @submit="onSubmit"
-        > 
-      -->
-      <!-- SECTION Header -->
       <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row">
-        <!-- 👉 Left Content -->
         <div class="ma-sm-4">
           <div class="d-flex align-center mb-6">
-            <!-- 👉 Logo -->
             <VNodeRenderer
               :nodes="themeConfig.app.logo"
               class="me-3"
             />
-            <!-- 👉 Title -->
             <h6 class="font-weight-bold text-capitalize text-h4">
               {{ themeConfig.app.title }}
             </h6>
           </div>
           <H3>Formulario de Venta</H3>
         </div>
-
-        <!-- 👉 Right Content -->
         <div class="mt-4 ma-sm-4">
-          <!-- 👉 Invoice Id -->
-          <h6 class="d-flex align-center font-weight-medium justify-sm-end text-xl mb-3">
-            <!--
-              <VBtn
-              block
-              type="submit"
-              :disabled="loading"
-              :loading="loading"
-              >
-              Registrar Venta
-              </VBtn> 
-            -->
-            <VBtn
-              color="primary"
-              :loading="loadingSale"
-              :disabled="!isFormValid || loadingSale"
-              @click="generateSalePage"
-            >
-              Registrar Venta
-            </VBtn>
-          </h6>
+          <div class="d-flex align-center justify-sm-end mb-3">
+            <AppAutocomplete
+              v-model="salesData.quote_id"
+              :rules="[requiredValidator]"
+              label="Cotizaciones Aprobadas *"
+              placeholder="Selecciona una"
+              :items="props.opportunity.quotes
+                .filter(quote => quote.status === 'APPROVED') // Filtrar solo aprobados
+                .map(quote => ({
+                  title: quote.properties[0]?.title || quote.social_reason, // Mostrar el título de la primera propiedad
+                  value: quote.id
+                }))"
+              outlined
+            />
+          </div>  
+          <div class="d-flex align-center justify-sm-end mb-3">
+            <VTextField
+              v-model="salesData.creation_date"
+              label="emision"
+              type="date"
+                
+              outlined
+              :rules="[requiredValidator]"
+            />
+          </div>       
         </div>
       </VCardText>
-      <!-- !SECTION -->
-      <VDivider thickness="24" />
-
+      <VDivider thickness="12" />
       <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row gap-y-5 gap-4">
         <VRow>
           <VCol
@@ -238,14 +306,13 @@ watch(
             <AppTextField
               v-model="salesData.social_reason"
               :rules="[requiredValidator]"
-              label="Razon social:"
+              label="Razon social *"
               placeholder="Canzza"
               outlined
               dense
               class="custom-salesforce-input"
             />
           </VCol>
-
           <VCol
             cols="12"
             sm="4"
@@ -253,7 +320,7 @@ watch(
           >
             <AppTextField
               v-model="salesData.nit"
-              label="C.I./NIT:"
+              label="C.I./NIT *"
               :rules="[requiredValidator]"
               placeholder="0000000"
               outlined
@@ -261,7 +328,6 @@ watch(
               class="custom-salesforce-input"
             />
           </VCol>
-
           <VCol
             cols="12"
             sm="6"
@@ -269,14 +335,13 @@ watch(
           >
             <AppTextField
               v-model="salesData.workplace"
-              label="Lugar de Trabajo:"
+              label="Lugar de Trabajo"
               placeholder="Placeholder Text"
               outlined
               dense
               class="custom-salesforce-input"
             />
           </VCol>
-
           <VCol
             cols="12"
             sm="6"
@@ -284,7 +349,7 @@ watch(
           >
             <AppTextField
               v-model="salesData.address"
-              label="Direccion:"
+              label="Direccion"
               placeholder="Av/ Equipetrol ...."
               outlined
               dense
@@ -298,7 +363,7 @@ watch(
           >
             <AppTextField
               v-model="salesData.email"
-              label="Correo:"
+              label="Correo *"
               :rules="[requiredValidator]"
               placeholder="admin@gmail.com"
               type="email"
@@ -315,21 +380,20 @@ watch(
             <AppTextField
               v-model="salesData.phone"
               :rules="[requiredValidator]"
-              label="Celular:"
+              label="Celular *"
               placeholder="77049267"
               outlined
               dense
               class="custom-salesforce-input"
             />
           </VCol>
-
           <VCol
             cols="12"
             sm="3"
             style="padding-block: 0;padding-inline: 8px;"
           >
             <AppTextField
-              label="Telefono Fijo:"
+              label="Telefono Fijo "
               placeholder="33557292"
               outlined
               dense
@@ -338,8 +402,7 @@ watch(
           </VCol>
         </VRow>
       </VCardText>
-      <VDivider thickness="24" />
-      <!-- 👉 Add purchased products -->
+      <VDivider thickness="12" />
       <VCardText class="add-products-form">
         <VRow>
           <VCol
@@ -355,7 +418,9 @@ watch(
           >
             <AppSelect
               v-model="salesData.payment_method"
-              label="Tipo de Pago :"
+              :rules="[requiredValidator]"
+
+              label="Tipo de Pago *"
               placeholder="Seleccione "
               :items="Object.values(PaymentMethod)"
               class="custom-salesforce-input"
@@ -364,14 +429,14 @@ watch(
           <AppSelect
             v-model="selectedPercentage"
             :rules="[requiredValidator]"
-            label="% Cuota Inicial :"
+            label="% Anticipo *"
             :items="items"
-            placeholder="% Cuota inicial"
+            placeholder="% Anticipo"
             class="mb-2"
           />
         </VRow>
       </VCardText>
-      <VDivider thickness="24" />
+      <VDivider thickness="12" />
       <!-- 👉 Total Amount -->
       <VCardText class="add-products-form">
         <VRow>
@@ -381,7 +446,7 @@ watch(
             style="padding-block: 0;padding-inline: 8px;"
           >
             <InvoiceAddMoney
-              :title="'Cuota Inicial: ' + calculatedAmount(salesData.amount) "
+              title="Anticipo "
               :amount="calculatedAmount(salesData.amount) "
               :differs="salesData.differs_initial_fee"
               :type="INITIAL_PAYMENT"
@@ -393,37 +458,11 @@ watch(
             style="padding-block: 0;padding-inline: 8px;"
           >
             <InvoiceAddMoney
-              :title="'Saldo: ' + (salesData.amount - salesData.initial_fee) "
+              title="Saldo "
               :amount="salesData.amount - salesData.initial_fee"
               :differs="salesData.differs_balance"
               :type="BALANCE"
             />
-          </VCol>
-
-
-          <VCol
-            cols="12"
-            sm="6"
-            class="mt-12"
-          >
-            <VDivider thickness="4" />
-            <div class="text-center my-1">
-              <span>
-                Firma del Cliente
-              </span>
-            </div>
-          </VCol>
-          <VCol
-            cols="12"
-            sm="6"
-            class="mt-12"
-          >
-            <VDivider thickness="4" />
-            <div class="text-center my-1">
-              <span>
-                Firma Gerente Administrativo
-              </span>
-            </div>
           </VCol>
           <VCol
             cols="12"
@@ -438,24 +477,22 @@ watch(
               row-height="20"
             />
           </VCol>
+          <VCol
+            cols="12"
+            class="my-5"
+            style="padding-block: 0;padding-inline: 8px;"
+          >
+            <VBtn
+              color="primary"
+              :loading="loadingSale"
+              :disabled="!isFormValid || loadingSale"
+              @click="generateSalePage"
+            >
+              Registrar Venta
+            </VBtn>
+          </VCol>
         </VRow>
       </VCardText>
-      <VDivider thickness="24" />
-      <VCardText>
-        <div class="d-flex mx-sm-4">
-          <span><strong>
-            El comprador deberá realizar todos los pagos acordados, en las cuentas indicadas de Canzza Desarrolladora Inmobiliaria Srl. y entregar el respectivo comprobante de depósito.
-          </strong></span>
-        </div>
-      </VCardText>
-      <VDivider />
-      <VCardText>
-        <div class="d-flex mx-sm-4">
-          <span><strong>
-            Todos los gastos administrativos, inscripción en derechos reales y honorarios profesionales para consolidar el derecho de propiedad a favor del comprador deben ser asumidos por el comprador.</strong></span>
-        </div>
-      </VCardText>
-      <!-- </VForm>  -->
     </VCard>
   </VDialog>
 </template>

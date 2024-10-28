@@ -1,4 +1,4 @@
-import { createSale, createSaleChangeStage } from "@/services/Sales/saleService"
+import { createSale, createSaleChangeStage, getSale } from "@/services/Sales/saleService"
 import { showSuccessNotification } from "@/utils/notifications"
 
 export function useSales (){
@@ -54,6 +54,22 @@ export function useSales (){
     }
   }
 
+  
+  const getSalebyId = async id => {
+    loadingSale.value = true
+    try{
+      const response = await getSale(id)
+
+      sale.value = response.data
+      
+    }catch (error){
+      console.log(error)
+    }finally{
+      loadingSale.value = false
+    }
+  }
+
+  
   return{
     loadingSale,
     sales,
@@ -61,5 +77,6 @@ export function useSales (){
     sale,
     generateSale,
     generateSaleChangeStage,
+    getSalebyId,
   }
 } 

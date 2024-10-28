@@ -161,6 +161,7 @@ declare module 'vue-router/auto/routes' {
     'realty-property-list': RouteRecordInfo<'realty-property-list', '/realty/property/list', Record<never, never>, Record<never, never>>,
     'realty-property-register': RouteRecordInfo<'realty-property-register', '/realty/property/register', Record<never, never>, Record<never, never>>,
     'register': RouteRecordInfo<'register', '/register', Record<never, never>, Record<never, never>>,
+    'sale-id': RouteRecordInfo<'sale-id', '/sale/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'tables-data-table': RouteRecordInfo<'tables-data-table', '/tables/data-table', Record<never, never>, Record<never, never>>,
     'tables-simple-table': RouteRecordInfo<'tables-simple-table', '/tables/simple-table', Record<never, never>, Record<never, never>>,
     'whatssap-ia-whatssap': RouteRecordInfo<'whatssap-ia-whatssap', '/whatssap/iaWhatssap', Record<never, never>, Record<never, never>>,

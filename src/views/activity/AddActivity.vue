@@ -126,6 +126,11 @@ const handleDrawerModelValueUpdate = val => {
   emit('update:isDrawerOpen', val)
 }
 
+const updateNewProperty = () => {
+  console.log('Se escucho el evento en AddActivity')
+  emit('refreshActivities') 
+}
+
 const formatDate = dateString => {
   const date = new Date(dateString)
 
@@ -297,11 +302,13 @@ const formatDate = dateString => {
                   v-if="opportunity.stage_id === 2"
                   :opportunity="opportunity"
                   @update-stage-id="handleStageIdUpdate"
+                  @update:new-property="updateNewProperty" 
                 />
                 <EditPreSaleOpportunity
                   v-if="opportunity.stage_id === 3"
                   :opportunity="opportunity"
                   @update-stage-id="handleStageIdUpdate"
+                  @update:new-property="updateNewProperty" 
                 />
                 <EditSaleOpportunity
                   v-if="opportunity.stage_id === 4"

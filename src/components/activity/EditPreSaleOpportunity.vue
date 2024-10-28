@@ -12,7 +12,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['updateStageId'])
+const emit = defineEmits(['updateStageId', 'update:newProperty'])
 const { checkProcessForOpportunity } = useProcess()
 const { changeStatusQuotes } = useQuote()
 const opencustomerDialog = ref(false)
@@ -20,6 +20,11 @@ const generateSaleDialog = ref(false)
 
 const opencustomer = () =>{
   opencustomerDialog.value = true
+}
+
+const updateNewProperty = () => {
+  console.log('Se escucho el evento en EditProspectOpportunity')
+  emit('update:newProperty')
 }
 
 const openSaleForm = () => {
@@ -144,11 +149,16 @@ const statusQuote = async (quoteId, statusquote) => {
               Nombre
             </th>
             <th>
-              Fecha
+              Propiedad
             </th>
             <th>
-              Monto
+              Fecha
             </th>
+            <!--
+              <th>
+              Monto
+              </th> 
+            -->
             <th />
           </tr>
         </thead>
@@ -162,10 +172,10 @@ const statusQuote = async (quoteId, statusquote) => {
               {{ item.social_reason }}
             </td>
             <td>
-              {{ new Date(item.created_at).toLocaleDateString() }}
+              {{ item.properties[0].title }}
             </td>
             <td>
-              {{ item.amount }}
+              {{ new Date(item.creation_date).toLocaleDateString() }}
             </td>
             <td>
               <!-- Todo: aprobar  -->
@@ -175,7 +185,20 @@ const statusQuote = async (quoteId, statusquote) => {
                   true-value="APPROVED"
                   false-value="NOT_APPROVED"
                   @click="statusQuote(item.id, item.status)" 
-                />
+                >
+                  <VTooltip
+                    activator="parent"
+                    location="top"
+                  >
+                    Aprobar Cotizacion
+                  </VTooltip>
+                </VCheckbox>
+
+                <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">
+                  <IconBtn>
+                    <VIcon icon="tabler-eye" />
+                  </IconBtn>
+                </RouterLink>
               </VRow>
             </td>
           </tr>
@@ -211,17 +234,15 @@ const statusQuote = async (quoteId, statusquote) => {
       Generar Venta
     </VBtn>
   </VCardText>
-
-
-  <!-- Cards -->
   <EditCustomerDialog
     v-model:is-dialog-visible="opencustomerDialog"
     :opportunity-kanban="props.opportunity"
+    @update:new-property="updateNewProperty" 
   />
   <PreSaleForm
     v-model:is-dialog-visible="generateSaleDialog"
     :opportunity="props.opportunity"
-    :type-stage="PRESALE"
+    stage="PRESALE"
     @register-sale="registerSale"
   />
 </template>

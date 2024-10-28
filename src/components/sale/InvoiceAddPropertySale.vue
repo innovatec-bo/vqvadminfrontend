@@ -14,17 +14,14 @@ const emit = defineEmits([
   'totalAmount',
 ])
 
-const { allProperty, properties } = useProperty()
+const { propertiesAvailbles, properties } = useProperty()
 
 const itemsPerPage = ref(100)
 const page = ref(1)
 
 onMounted(async () => {
   try {
-    allProperty({
-      itemsPerPage: itemsPerPage.value,
-      page: page.value,
-    })
+    propertiesAvailbles()
     
   } catch (error) {
     console.error('Error al obtener las propiedades:', error)
@@ -53,7 +50,7 @@ onMounted(async () => {
             v-model="property.property_id"
             :label="property.property_type_name"
             :rules="[requiredValidator]"
-            placeholder="Selecciona una propiedad"
+            placeholder="Selecciona una propiedad *"
             :items="properties"
             item-title="title"
             item-value="id"
@@ -71,7 +68,7 @@ onMounted(async () => {
           <AppTextField
             v-model="property.price"
             :rules="[requiredValidator]"
-            label="Precio"
+            label="Precio *"
             placeholder="$"
             outlined
             dense
@@ -87,7 +84,7 @@ onMounted(async () => {
           <AppTextField
             v-model="property.price_it"
             :rules="[requiredValidator]"
-            label="3% (IT):"
+            label="3% (IT) *"
             placeholder="%"
             outlined
             dense
@@ -103,7 +100,7 @@ onMounted(async () => {
           <AppTextField
             v-model="property.price_contrato"
             :rules="[requiredValidator]"
-            label="Precio Contrato:"
+            label="Precio Contrato *"
             placeholder="Escribe el precio"
             outlined
             dense

@@ -1,11 +1,13 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import poraIcon from '@/assets/icons/poraIcon.png'
+import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProcess } from '@/composables/Process/useProcess'
 import { usePaymentPlans } from '@/composables/Sales/usePaymentPlans'
 import DeliveryForm from '../sale/DeliveryForm.vue'
 import PaymentPlanEdit from '../sale/PaymentPlanEdit.vue'
 import PreSaleForm from '../sale/PreSaleForm.vue'
+import SalePaymentPlan from '../sale/SalePaymentPlan.vue'
 
 const props = defineProps({
   opportunity: {
@@ -17,11 +19,26 @@ const props = defineProps({
 const emit = defineEmits(['updateStageId'])
 const { checkProcessForOpportunity } = useProcess()
 const { confirmPaymentPlans } = usePaymentPlans()
+const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()
+
 
 const confirmDelivery = ref(false)
 const openEditPaymentPlan = ref(false)
 const generateSaleDialog = ref(false)
 const paymentPlan = ref('')
+
+
+const totalAmount = computed(() => {
+  return props.opportunity.sales.reduce((sum, sale) => sum + sale.amount, 0)
+})
+
+const totalInitialFee = computed(() => {
+  return props.opportunity.sales.reduce((sum, sale) => sum + sale.initial_fee, 0)
+})
+
+const totalBalance = computed(() => {
+  return totalAmount.value - totalInitialFee.value
+})
 
 const openDeliveryForm = () => {
   confirmDelivery.value = true
@@ -56,6 +73,12 @@ const confirmPayment = async paymentplanId => {
   emit('updateStageId', props.opportunity.id)
 }
 
+const changeStage = async opportunityId => {
+  await changeStatusByOpportunity(opportunityId, 5, {})
+
+  emit('updateStageId', opportunityId)
+}
+
 const updateDeliveryDate = async opportunityId => {
   emit('updateStageId', opportunityId)
 }
@@ -75,7 +98,7 @@ const updateDeliveryDate = async opportunityId => {
               Saldo
             </VListItemTitle>
             <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span class="text-h6">$ {{ props.opportunity.sales.amount -props.opportunity.sales.initial_fee }}</span>
+              <span class="text-h6">$ {{ totalBalance.toFixed(2) }}</span>
             </VListItemSubtitle>
           </VCol>
           <VCol
@@ -86,7 +109,7 @@ const updateDeliveryDate = async opportunityId => {
               Anticipo
             </VListItemTitle>
             <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span class="text-h6">$ {{ props.opportunity.sales.initial_fee }}</span>
+              <span class="text-h6">$ {{ totalInitialFee.toFixed(2) }}</span>
             </VListItemSubtitle>
           </VCol>
           <VCol
@@ -97,7 +120,7 @@ const updateDeliveryDate = async opportunityId => {
               Precio Final
             </VListItemTitle>
             <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span class="text-h6">${{ props.opportunity.sales.amount }}</span>
+              <span class="text-h6">$ {{ totalAmount.toFixed(2) }}</span>
             </VListItemSubtitle>
           </VCol>
         </VRow>
@@ -107,49 +130,52 @@ const updateDeliveryDate = async opportunityId => {
 
   <!-- Propiedades -->
   <div class="my-5">
-    <span style="font-size: 14px; font-weight: 500; ">
+    <span style="font-size: 14px; font-weight: 500;">
       Propiedades
     </span> 
-    <div v-if="props.opportunity.sales.properties && props.opportunity.sales.properties.length > 0">
+    <div v-if="props.opportunity.sales.length > 0">
       <div
-        v-for="properti in props.opportunity.sales.properties"
-        :key="properti.id"
-        class="d-flex align-center justify-between"
+        v-for="sale in props.opportunity.sales"
+        :key="sale.id"
       >
-        <VAvatar
-          size="50"
-          rounded
+        <div
+          v-for="property in sale.properties"
+          :key="property.id"
+          class="d-flex align-center justify-between"
         >
-          <img
-            :src="poraIcon"
-            alt="Logo pora"
-            style="border-radius: 30%;"
+          <VAvatar
+            size="50"
+            rounded
           >
-        </VAvatar>
-        <VCol
-          cols="12"
-          md="7"
-        >
-          <VListItemTitle class="font-weight-medium">
-            {{ properti.project_title }} | {{ properti.title }} 
-          </VListItemTitle>
-          <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-            <span>$ {{ properti.pivot_price }}</span>
-          </VListItemSubtitle>
-        </VCol>
+            <img
+              :src="poraIcon"
+              alt="Logo pora"
+              style="border-radius: 30%;"
+            >
+          </VAvatar>
+          <VCol
+            cols="12"
+            md="7"
+          >
+            <VListItemTitle class="font-weight-medium">
+              {{ property.project_title }} | {{ property.title }}
+            </VListItemTitle>
+            <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+              <span>$ {{ property.pivot_price }}</span>
+            </VListItemSubtitle>
+          </VCol>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- TODO: quitar los types -->
-  <!-- cuota inicial  -->
+  <!-- Anticipo -->
   <div class="mb-4">
     <span style="font-size: 14px; font-weight: 500; ">
-      Cuota Inicial
+      Anticipo
     </span> 
-   
     <VTable
-      v-if="props.opportunity.sales.initial_payments && props.opportunity.sales.initial_payments.length > 0"
+      v-if="props.opportunity.initial_payments && props.opportunity.initial_payments.length > 0"
       density="compact"
       class="text-no-wrap my-2"
       style="font-size: 12px;"
@@ -173,7 +199,7 @@ const updateDeliveryDate = async opportunityId => {
 
       <tbody>
         <tr
-          v-for="item in props.opportunity.sales.initial_payments"
+          v-for="item in props.opportunity.initial_payments"
           :key="item.id"
         >
           <td>
@@ -209,13 +235,14 @@ const updateDeliveryDate = async opportunityId => {
       </tbody>
     </VTable>
   </div>
+
   <!-- saldo -->
   <div>
     <span style="font-size: 14px; font-weight: 500; ">
       Saldos
     </span> 
     <VTable
-      v-if="props.opportunity.sales.balance_payments && props.opportunity.sales.balance_payments.length > 0"
+      v-if="props.opportunity.balance_payments && props.opportunity.balance_payments.length > 0"
       density="compact"
       class="text-no-wrap my-2"
       style="font-size: 12px;"
@@ -239,7 +266,7 @@ const updateDeliveryDate = async opportunityId => {
 
       <tbody>
         <tr
-          v-for="item in props.opportunity.sales.balance_payments"
+          v-for="item in props.opportunity.balance_payments"
           :key="item.id"
         >
           <td>
@@ -259,7 +286,14 @@ const updateDeliveryDate = async opportunityId => {
                 :false-value="0"
                 :disabled="item.is_paid === 1"
                 @change="confirmPayment(item.id)"
-              />
+              > 
+                <VTooltip
+                  activator="parent"
+                  location="top"
+                >
+                  Confirmar Pago
+                </VTooltip>
+              </VCheckbox> 
               <div 
                 fill-dot
                 @click="editPaymentPlan(item)"
@@ -275,6 +309,7 @@ const updateDeliveryDate = async opportunityId => {
       </tbody>
     </VTable>
   </div>
+
   <!-- procesos  -->
   <div class="my-5">
     <span style="font-size: 14px; font-weight: 500; ">
@@ -313,23 +348,22 @@ const updateDeliveryDate = async opportunityId => {
 
   <!-- Botón pasar estado -->
   <VCardText class="d-flex  mt-4">
-    <!--
-      <VBtn
+    <VBtn
       color="primary"
       variant="tonal"
       class="mx-auto"
       size="small"
       @click="openSaleForm"
-      >
+    >
       Generar Venta
-      </VBtn> 
-    -->
+    </VBtn> 
+   
     <VBtn
       color="primary"
       class="mx-auto"
       size="small"
      
-      @click="openDeliveryForm"
+      @click="changeStage(props.opportunity.id)"
     >
       Siguiente Etapa
     </VBtn>
@@ -349,16 +383,13 @@ const updateDeliveryDate = async opportunityId => {
   <PreSaleForm
     v-model:is-dialog-visible="generateSaleDialog"
     :opportunity="props.opportunity"
-    :type-stage="SALE"
+    stage="SALE"
     @register-sale="registerSale"
   />
-  
-  <!--
-    <SalePaymentPlan
+  <SalePaymentPlan
     v-model:is-dialog-visible="openSaleEditPaymentPlan"
     :opportunity="props.opportunity"
     :sales-payment="salePaymentPlan"
     @update-delivery-date="updateDeliveryDate"
-    /> 
-  -->
+  />
 </template>

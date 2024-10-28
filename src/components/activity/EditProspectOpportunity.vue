@@ -12,7 +12,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['updateStageId'])
+const emit = defineEmits(['updateStageId', 'update:newProperty'])
 const { checkProcessForOpportunity } = useProcess()
 
 const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()
@@ -20,6 +20,11 @@ const opencustomerDialog = ref(false)
 
 const opencustomer = () =>{
   opencustomerDialog.value = true
+}
+
+const updateNewProperty = () => {
+  console.log('Se escucho el evento en EditProspectOpportunity')
+  emit('update:newProperty')
 }
 
 const generatePreSale = async opportunityId => {
@@ -137,11 +142,16 @@ const markProcedureAsDone = async procedure => {
               Nombre
             </th>
             <th>
-              Fecha
+              Propiedad
             </th>
             <th>
-              Monto
+              Fecha
             </th>
+            <!--
+              <th>
+              Monto
+              </th> 
+            -->
             <th />
           </tr>
         </thead>
@@ -155,14 +165,23 @@ const markProcedureAsDone = async procedure => {
               {{ item.social_reason }}
             </td>
             <td>
+              {{ item.properties[0].title }}
+            </td>
+            <td>
               {{ new Date(item.created_at).toLocaleDateString() }}
             </td>
-            <td>
+            <!--
+              <td>
               {{ item.amount }}
-            </td>
+              </td> 
+            -->
             <td>
               <!-- Todo: ponerle rutas  para ver la cotizacion por id -->
-              <VIcon icon="tabler-eye" />
+              <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">
+                <IconBtn>
+                  <VIcon icon="tabler-eye" />
+                </IconBtn>
+              </RouterLink>
             </td>
           </tr>
         </tbody>
@@ -202,6 +221,7 @@ const markProcedureAsDone = async procedure => {
   <EditCustomerDialog
     v-model:is-dialog-visible="opencustomerDialog"
     :opportunity-kanban="props.opportunity"
+    @update:new-property="updateNewProperty" 
   />
 </template>
 

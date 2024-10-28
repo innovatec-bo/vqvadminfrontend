@@ -389,6 +389,7 @@ declare module 'vue' {
     PreSaleForm: typeof import('./src/components/sale/PreSaleForm.vue')['default']
     PricingPlanDialog: typeof import('./src/components/dialogs/PricingPlanDialog.vue')['default']
     ProjectEditDialog: typeof import('./src/components/dialogs/project/ProjectEditDialog.vue')['default']
+    QuotePreview: typeof import('./src/components/quote/QuotePreview.vue')['default']
     ReferAndEarnDialog: typeof import('./src/components/dialogs/ReferAndEarnDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

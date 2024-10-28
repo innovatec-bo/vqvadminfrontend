@@ -9,7 +9,7 @@ const props = defineProps({
   opportunityKanban: { type: Object, required: true },
 })
 
-const emit = defineEmits(['update:isDialogVisible'])
+const emit = defineEmits(['update:isDialogVisible', 'update:newProperty'])
 
 const stageOptions = Object.values(StagesOpportunity).map(stage => ({
   title: stage.label,
@@ -17,7 +17,7 @@ const stageOptions = Object.values(StagesOpportunity).map(stage => ({
 }))
 
 // Obtener funciones y variables de `useProperty`
-const { allProperty, properties } = useProperty()
+const { propertiesAvailbles, properties } = useProperty()
 
 const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity } = useOpportunity()
 
@@ -42,7 +42,12 @@ const saveData = async () => {
     },
   }
 
+
   await changeOpportunity(opportunity.value.id, data)
+  if(opportunity.value.property_id){
+    console.log('Cambio y geenero el Emit Principal')
+    emit('update:newProperty', opportunity.value.property_id)
+  }
   emit('update:isDialogVisible', false)
 }
 
@@ -53,7 +58,7 @@ const fetchOpportunityData = async () => {
 }
 
 const fetchProperties = async () => {
-  await allProperty({ page: 1, itemsPerPage: 100 }) 
+  await propertiesAvailbles() 
 }
 
 watch(() => props.isDialogVisible, async newValue => {
@@ -175,7 +180,7 @@ watch(() => props.isDialogVisible, async newValue => {
                 :disabled="loadingOpportunity"
                 :loading="loadingOpportunity"
               >
-                Guardar 
+                Guardar
               </VBtn>
               <VBtn
                 color="secondary"
