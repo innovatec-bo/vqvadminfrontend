@@ -8,14 +8,14 @@ export default [
     subject: 'ADMINISTRADOR',
   },
   {
-    title: 'Panel Asesor',
+    title: 'Lista de Actividades',
     icon: { icon: 'tabler-smart-home' },
     to: 'activity-list',
     subject: 'ASESOR',
 
   },
   {
-    title: 'Oportunidades',
+    title: 'Kanban',
     icon: { icon: 'tabler-smart-home' },
     to: 'opportunities-my-contacts',
     subject: ['ASESOR', 'ADMINISTRADOR'],
