@@ -176,6 +176,13 @@ const generateSalePage = async () => {
       })
     }
 
+    if (salesData.value.differs_initial_fee.length === 0){
+      salesData.value.differs_initial_fee.push({
+        date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        amount: salesData.value.initial_fee,
+      })
+    }
+
     console.log('data de la venta: ', salesData.value)
     if (props.stage === 'SALE') {
       await generateSale(salesData.value)
@@ -230,8 +237,7 @@ watch(
       salesData.value.observations = selectedCustomer.observations
       if (selectedCustomer.property_id !== null) {
         salesData.value.properties[0].property_id = selectedCustomer.properties[0]?.id
-
-        // salesData.value.properties[0].price = selectedCustomer.properties[0]?.price
+        salesData.value.properties[0].price = selectedCustomer.properties[0]?.pivot_price
       }
     }
     salesData.value.quote_id = newQuoteId
