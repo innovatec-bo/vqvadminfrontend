@@ -1,8 +1,10 @@
 <script setup>
 import { useActivity } from '@/composables/Activity/useActivity'
 import AddActivity from '@/views/activity/AddActivity.vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
-const currentActiveTab = ref('New')
+const searchQuery = ref('') // Cambiar a string vacío
+const currentActiveTab = ref('Anteriores')
 const filters = ref(['Todos', 'PORA']) // Opciones de filtro
 const selectedFilter = ref('Todos') // Filtro seleccionado
 
@@ -12,26 +14,30 @@ const {
   getallActivitiesByFechaFuture,
   activities,
   activitiesPast,
-  activitiesFuture } = useActivity()
+  activitiesFuture,
+} = useActivity()
 
 const activity = ref('')
 const userData = useCookie('userData').value
 const isLoading = ref(true) // Variable de estado de carga
+const activitiesFilters = ref([])
+const activitiesPastFilters = ref([])
+const activitiesFutureFilters = ref([])
 
 // Funciones para obtener actividades
 const fetchActivitiesToday = async () => {
   await getallActivitiesByAsesorFecha(userData.id)
-  console.log('Actividades de hoy:', activities)
+  activitiesFilters.value = activities.value
 }
 
 const fetchActivitiesPast = async () => {
   await getallActivitiesByFechaPast(userData.id)
-  console.log('Actividades pasadas:', activitiesPast)
+  activitiesPastFilters.value = activitiesPast.value
 }
 
 const fetchActivitiesFuture = async () => {
   await getallActivitiesByFechaFuture(userData.id)
-  console.log('Actividades futuras:', activitiesFuture)
+  activitiesFutureFilters.value = activitiesFuture.value
 }
 
 // Cargar todas las actividades al montar el componente
@@ -50,17 +56,19 @@ const editActivity = item => {
 }
 
 const onRefreshActivities = async () => {
+  isLoading.value = true
   await fetchActivitiesToday()
   await fetchActivitiesPast()
   await fetchActivitiesFuture()
-  isLoading.value = false // Finaliza la carga después de obtener las actividades
+  isLoading.value = false
+  currentActiveTab.value = 'Anteriores'
 }
 
-const orders = [
-  { tabName: 'Hoy', icon: 'tabler-edit', actividades: activities, badge: activities.value.length },
-  { tabName: 'Anteriores', icon: 'tabler-calendar', actividades: activitiesPast, badge: activitiesPast.value.length },
-  { tabName: 'Futuros', icon: 'tabler-calendar', actividades: activitiesFuture, badge: activitiesFuture.value.length },
-]
+const orders = computed(() => [
+  { tabName: 'Anteriores', icon: 'tabler-calendar', actividades: activitiesPastFilters, badge: activitiesPastFilters.value.length },
+  { tabName: 'Hoy', icon: 'tabler-edit', actividades: activitiesFilters, badge: activitiesFilters.value.length },
+  { tabName: 'Futuros', icon: 'tabler-calendar', actividades: activitiesFutureFilters, badge: activitiesFutureFilters.value.length },
+])
 
 const iconosActivity = [
   { type: 'Visita', icon: 'tabler-current-location' },
@@ -71,11 +79,9 @@ const iconosActivity = [
 
 const getIconForActivity = activityType => {
   const iconObj = iconosActivity.find(icon => icon.type === activityType)
-
+  
   return iconObj ? iconObj.icon : 'tabler-default' // Ícono por defecto si no se encuentra
 }
-
-
 
 const getFirstWord = str => {
   return str.split(' ')[0] // Divide el string por espacios y devuelve la primera palabra
@@ -83,7 +89,6 @@ const getFirstWord = str => {
 
 const formatDate = dateString => {
   const date = new Date(dateString)
-
   const day = date.getDate() // Día del mes
 
   const months = [
@@ -102,14 +107,34 @@ const formatDate = dateString => {
   ]
 
   const month = months[date.getMonth()] // Mes en formato humano
-
   const hours = date.getHours().toString().padStart(2, '0') // Hora con dos dígitos
   const minutes = date.getMinutes().toString().padStart(2, '0') // Minutos con dos dígitos
 
   // Retorna la fecha en formato: 7 de marzo, 14:00
   return `${day} de ${month}, ${hours}:${minutes}`
 }
+
+// Observador para filtrar actividades
+watch(searchQuery, newValue => {
+  const filterActivities = activitiesList => {
+    return activitiesList.filter(activity =>
+      activity.name_opportunity.toLowerCase().includes(newValue.toLowerCase()),
+    )
+  }
+
+  if (newValue.length > 2) {
+    activitiesFilters.value = filterActivities(activities.value)
+    activitiesPastFilters.value = filterActivities(activitiesPast.value)
+    activitiesFutureFilters.value = filterActivities(activitiesFuture.value)
+  } else {
+    // Restablecer actividades a su estado original
+    activitiesFilters.value = activities.value
+    activitiesPastFilters.value = activitiesPast.value
+    activitiesFutureFilters.value = activitiesFuture.value
+  }
+})
 </script>
+
 
 <template>
   <VRow
@@ -121,10 +146,26 @@ const formatDate = dateString => {
       md="4"
       style="display: flex; flex-direction: column;"
     >
-      <VCard
-        title="Lista de Actividades"
-        class="flex-grow-1"
-      >
+      <VCard class="flex-grow-1">
+        <VCardTitle class="d-flex justify-between align-center flex-wrap">
+          <div class="title-search-container">
+            <h4 class="title-responsive">
+              Mis Actividades
+            </h4>
+            <VTextField
+              v-model="searchQuery"
+              placeholder="Buscar actividad..."
+              class="search-field"
+              hide-details
+              dense
+              solo-inverted
+              prepend-inner-icon="tabler-search"
+            />
+          </div>
+        </VCardTitle>
+
+
+
         <VTabs
           v-model="currentActiveTab"
           grow
@@ -309,6 +350,37 @@ const formatDate = dateString => {
 
 
 <style scoped>
+.title-search-container {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Espacio entre el título y el campo de búsqueda */
+}
+
+.title-responsive {
+  font-size: 1em; /* Tamaño del título en pantallas grandes */
+}
+
+.search-field {
+  max-inline-size: 300px;
+  min-inline-size: 150px;
+}
+
+@media (max-width: 768px) {
+  /* Cambia la dirección a vertical en pantallas pequeñas */
+  .title-search-container {
+    flex-direction: column;
+    align-items: flex-start; /* Alinea el campo de búsqueda a la izquierda */
+  }
+
+  .title-responsive {
+    font-size: 1.2em; /* Tamaño del título en pantallas pequeñas */
+  }
+
+  .search-field {
+    inline-size: 100%; /* El campo de búsqueda ocupa todo el ancho en pantallas pequeñas */
+  }
+}
+
 .toolbar {
   display: flex;
   align-items: center;

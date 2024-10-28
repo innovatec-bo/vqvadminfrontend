@@ -129,6 +129,7 @@ export function useActivity() {
       const response = await getByAsesorFecha(asesorid, pagination)
 
       activities.value = response.data
+      console.log('Actividades de hoy:', activities.value)
     } catch(err){
       //todo: mejorar los mensajes de error
 
@@ -145,6 +146,7 @@ export function useActivity() {
       const response = await getByAsesorFechaFuture(asesorid)
 
       activitiesFuture.value = response.data
+      console.log('Actividades futuras:', activitiesFuture.value)
     } catch(err){
       //todo: mejorar los mensajes de error
       error.value =  err.message
@@ -160,6 +162,7 @@ export function useActivity() {
       const response = await getByAsesorFechaPast(asesorid)
 
       activitiesPast.value = response.data
+      console.log('Actividades pasadas:', activitiesPast.value)
     } catch(err){
       //todo: mejorar los mensajes de error
       error.value =  err.message
