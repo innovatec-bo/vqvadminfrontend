@@ -168,7 +168,7 @@ const markProcedureAsDone = async procedure => {
               {{ item.properties[0].title }}
             </td>
             <td>
-              {{ new Date(item.created_at).toLocaleDateString() }}
+              {{ item.created_at }}
             </td>
             <!--
               <td>

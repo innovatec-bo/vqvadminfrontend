@@ -61,7 +61,6 @@ const onRefreshActivities = async () => {
   await fetchActivitiesPast()
   await fetchActivitiesFuture()
   isLoading.value = false
-  currentActiveTab.value = 'Anteriores'
 }
 
 const orders = computed(() => [
