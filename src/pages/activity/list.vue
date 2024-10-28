@@ -117,9 +117,12 @@ const formatDate = dateString => {
 // Observador para filtrar actividades
 watch(searchQuery, newValue => {
   const filterActivities = activitiesList => {
-    return activitiesList.filter(activity =>
-      activity.name_opportunity.toLowerCase().includes(newValue.toLowerCase()),
-    )
+    return activitiesList.filter(activity => {
+      const nameMatch = activity.name_opportunity.toLowerCase().includes(newValue.toLowerCase())
+      const phoneMatch = activity.phone_opportunity.toLowerCase().includes(newValue.toLowerCase())
+      
+      return nameMatch || phoneMatch
+    })
   }
 
   if (newValue.length > 2) {
