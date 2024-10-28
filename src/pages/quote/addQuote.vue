@@ -197,12 +197,12 @@ watch(
         </VCol>
         <VCardText>
           <VBtn
-            :loading="loadingSale"
+            :loading="loadingQuote"
             :disabled="!isFormValid || loadingQuote"
             class="mb-2"
             @click="generateCotization"
           >
-            Guardar  Cotizacion
+            Guardar Cotizacion
           </VBtn>
         </VCardText>
       </VCard>
