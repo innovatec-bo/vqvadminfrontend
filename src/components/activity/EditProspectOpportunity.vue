@@ -12,7 +12,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['updateStageId'])
+const emit = defineEmits(['updateStageId', 'update:newProperty'])
 const { checkProcessForOpportunity } = useProcess()
 
 const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()
@@ -20,6 +20,11 @@ const opencustomerDialog = ref(false)
 
 const opencustomer = () =>{
   opencustomerDialog.value = true
+}
+
+const updateNewProperty = () => {
+  console.log('Se escucho el evento en EditProspectOpportunity')
+  emit('update:newProperty')
 }
 
 const generatePreSale = async opportunityId => {
@@ -216,6 +221,7 @@ const markProcedureAsDone = async procedure => {
   <EditCustomerDialog
     v-model:is-dialog-visible="opencustomerDialog"
     :opportunity-kanban="props.opportunity"
+    @update:new-property="updateNewProperty" 
   />
 </template>
 

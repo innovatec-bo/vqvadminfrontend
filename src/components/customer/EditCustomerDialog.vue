@@ -9,7 +9,7 @@ const props = defineProps({
   opportunityKanban: { type: Object, required: true },
 })
 
-const emit = defineEmits(['update:isDialogVisible'])
+const emit = defineEmits(['update:isDialogVisible', 'update:newProperty'])
 
 const stageOptions = Object.values(StagesOpportunity).map(stage => ({
   title: stage.label,
@@ -42,7 +42,12 @@ const saveData = async () => {
     },
   }
 
+
   await changeOpportunity(opportunity.value.id, data)
+  if(opportunity.value.property_id){
+    console.log('Cambio y geenero el Emit Principal')
+    emit('update:newProperty', opportunity.value.property_id)
+  }
   emit('update:isDialogVisible', false)
 }
 
