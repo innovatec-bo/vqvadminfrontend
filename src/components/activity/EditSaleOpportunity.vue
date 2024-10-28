@@ -98,7 +98,7 @@ const updateDeliveryDate = async opportunityId => {
               Saldo
             </VListItemTitle>
             <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span class="text-h6">$ {{ totalBalance }}</span>
+              <span class="text-h6">$ {{ totalBalance.toFixed(2) }}</span>
             </VListItemSubtitle>
           </VCol>
           <VCol
@@ -109,7 +109,7 @@ const updateDeliveryDate = async opportunityId => {
               Anticipo
             </VListItemTitle>
             <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span class="text-h6">$ {{ totalInitialFee }}</span>
+              <span class="text-h6">$ {{ totalInitialFee.toFixed(2) }}</span>
             </VListItemSubtitle>
           </VCol>
           <VCol
@@ -120,7 +120,7 @@ const updateDeliveryDate = async opportunityId => {
               Precio Final
             </VListItemTitle>
             <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span class="text-h6">$ {{ totalAmount }}</span>
+              <span class="text-h6">$ {{ totalAmount.toFixed(2) }}</span>
             </VListItemSubtitle>
           </VCol>
         </VRow>
