@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { allProperties, allPropertiesProject, deletePropertyById, getPropertiesForType, getPropertyById, registerProperty, updateProperty } from '@/services/Realty/propertyService'
+import { allProperties, allPropertiesProject, deletePropertyById, getPropertiesAvailable, getPropertiesForType, getPropertyById, registerProperty, updateProperty } from '@/services/Realty/propertyService'
 import { showErrorToast, showSuccessNotification, showSuccessToast, showWarningToast } from '@/utils/notifications'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -179,6 +179,20 @@ export function useProperty() {
   }
 
   
+  const propertiesAvailbles = async type =>{
+    try{
+      const response = await getPropertiesAvailable(type)
+
+      properties.value  = response.data
+      console.log('propertyfortype ', response.data)
+
+      return  response.data
+
+    }catch (err){
+      console.log(err)
+    }
+  }
+  
   return {
     loadingProperty,
     error,
@@ -189,6 +203,7 @@ export function useProperty() {
     allPropertybyProject,
     propertiesForType,
     removeProperty,
+    propertiesAvailbles,
     properties: computed(() => properties.value),
     property,
     totalProperties: computed(() => totalProperties.value),

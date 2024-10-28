@@ -17,7 +17,7 @@ const stageOptions = Object.values(StagesOpportunity).map(stage => ({
 }))
 
 // Obtener funciones y variables de `useProperty`
-const { allProperty, properties } = useProperty()
+const { propertiesAvailbles, properties } = useProperty()
 
 const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity } = useOpportunity()
 
@@ -58,7 +58,7 @@ const fetchOpportunityData = async () => {
 }
 
 const fetchProperties = async () => {
-  await allProperty({ page: 1, itemsPerPage: 100 }) 
+  await propertiesAvailbles() 
 }
 
 watch(() => props.isDialogVisible, async newValue => {
@@ -180,7 +180,7 @@ watch(() => props.isDialogVisible, async newValue => {
                 :disabled="loadingOpportunity"
                 :loading="loadingOpportunity"
               >
-                Guardar 
+                Guardar
               </VBtn>
               <VBtn
                 color="secondary"
