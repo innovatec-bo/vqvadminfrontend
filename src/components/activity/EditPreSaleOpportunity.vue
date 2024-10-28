@@ -175,13 +175,8 @@ const statusQuote = async (quoteId, statusquote) => {
               {{ item.properties[0].title }}
             </td>
             <td>
-              {{ new Date(item.created_at).toLocaleDateString() }}
+              {{ new Date(item.creation_date).toLocaleDateString() }}
             </td>
-            <!--
-              <td>
-              {{ item.amount }}
-              </td> 
-            -->
             <td>
               <!-- Todo: aprobar  -->
               <VRow>
@@ -239,9 +234,6 @@ const statusQuote = async (quoteId, statusquote) => {
       Generar Venta
     </VBtn>
   </VCardText>
-
-
-  <!-- Cards -->
   <EditCustomerDialog
     v-model:is-dialog-visible="opencustomerDialog"
     :opportunity-kanban="props.opportunity"

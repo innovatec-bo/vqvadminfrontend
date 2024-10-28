@@ -69,12 +69,12 @@ watch(currentTotal, newTotal => {
     >
       <!-- Input para la cantidad -->
       <VCol cols="5">
-        <AppDateTimePicker
+        <VTextField
           v-model="payment.date"
-          :rules="[requiredValidator]"
-          density="compact"                      
-          placeholder="YYYY-MM-DD"
+          label="Fecha"
+          type="date"
           outlined
+          :rules="[requiredValidator]"
         />
       </VCol>
       <VCol cols="5">
@@ -107,7 +107,6 @@ watch(currentTotal, newTotal => {
     <div class="mt-4">
       <strong>Monto Restante:</strong> ${{ (props.amount - currentTotal).toFixed(2) }}
     </div>
-
     <!-- Botón para agregar más pagos -->
     <VBtn
       color="secondary"
