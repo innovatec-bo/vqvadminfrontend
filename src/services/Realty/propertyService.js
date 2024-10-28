@@ -44,5 +44,10 @@ export const getPropertiesForType = async type => {
   })
 }
 
+export const getPropertiesAvailable = async () => {
+  return await $api(`/available/properties`, {
+    method: 'GET',
+  })
+}
 
 

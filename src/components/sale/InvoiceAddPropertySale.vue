@@ -14,17 +14,14 @@ const emit = defineEmits([
   'totalAmount',
 ])
 
-const { allProperty, properties } = useProperty()
+const { propertiesAvailbles, properties } = useProperty()
 
 const itemsPerPage = ref(100)
 const page = ref(1)
 
 onMounted(async () => {
   try {
-    allProperty({
-      itemsPerPage: itemsPerPage.value,
-      page: page.value,
-    })
+    propertiesAvailbles()
     
   } catch (error) {
     console.error('Error al obtener las propiedades:', error)
