@@ -33,7 +33,6 @@ const emit = defineEmits([
   'refreshActivities',
 ])
 
-
 const historyDrawerVisible = ref(false)
 const checkLastActivity = ref(false)
 const columnRadio = ref('radio-1')
@@ -190,19 +189,23 @@ const formatDate = dateString => {
                     <VRadioGroup
                       v-model="columnRadio"
                       style="font-size: 14px;"
+                    
                       inline
                     >
-                      <span>
+                      <span class="my-1">
                         ¿ Se Realizo ?
-                      </span>
+                      </span> 
                       <VRadio
                         label="Si"
                         value="radio-1"
                         density="compact"
+                        class="mx-2"
                       />
                       <VRadio
                         label="No"
                         value="radio-2"
+                        class="mx-2"
+
                         density="compact"
                       />
                     </VRadioGroup>
@@ -242,16 +245,7 @@ const formatDate = dateString => {
                       :rules="[requiredValidator]"
                     />
                   </VCol>
-                  <!--
-                    <VBtn
-                    size="small"
-                    color="secondary"
-                    class="my-2 mx-2"
-                    @click="closeNavigationDrawer"
-                    >
-                    Cancelar
-                    </VBtn> 
-                  -->
+               
                   <VCol>
                     <VBtn
                       color="primary"
