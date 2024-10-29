@@ -27,6 +27,7 @@ const isValidEmail = value => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
 // Registro de cliente
 const registerCustomer = async () => {
   // Validar el formulario antes de enviar
+  console.log(customerForm.value)
   if (formRef.value.validate()) {
     await addCustomer(customerForm.value)
   }
