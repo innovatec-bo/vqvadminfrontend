@@ -49,6 +49,11 @@ const openSaleForm = () => {
 }
 
 const editPaymentPlan = item => {
+  if ( item.is_paid === 1){
+    showWarningToast('Advertencia', 'No se puede editar un pago ya realizado.')
+    
+    return 
+  }
   console.log('entro aqui')
   openEditPaymentPlan.value = true
   paymentPlan.value = { ...item }
@@ -221,7 +226,9 @@ const updateDeliveryDate = async opportunityId => {
                 @change="confirmPayment(item.id)"
               />
               <div 
+                v-if="item.is_paid === 0"
                 fill-dot
+
                 @click="editPaymentPlan(item)"
               >
                 <VIcon
@@ -295,7 +302,9 @@ const updateDeliveryDate = async opportunityId => {
                 </VTooltip>
               </VCheckbox> 
               <div 
+                v-if="item.is_paid === 0"
                 fill-dot
+               
                 @click="editPaymentPlan(item)"
               >
                 <VIcon

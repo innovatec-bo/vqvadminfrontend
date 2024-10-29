@@ -22,7 +22,7 @@ const orderBy = ref()
 const headers = [
   {
     title: 'CI',
-    key: 'CI',
+    key: 'ci',
   },
   {
     title: 'Nombre',
@@ -78,7 +78,6 @@ onMounted(async () =>{
               density="compact"
               :items="[5, 10, 20, 50, 100]"
             />
-
             <VBtn
               prepend-icon="tabler-screen-share"
               variant="tonal"
@@ -127,7 +126,7 @@ onMounted(async () =>{
         <!-- Actions -->
         <template #item.action="{ item }">
           <IconBtn>
-            <VIcon icon="tabler-edit" />
+            <!-- <VIcon icon="tabler-edit" /> -->
           </IconBtn>
         </template>
 

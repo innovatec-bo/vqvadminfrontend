@@ -19,6 +19,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:isDialogVisible', 'updateDeliveryDate'])
 const { updatePaymentPlans } = usePaymentPlans()
+const loadingPayment = ref(false)
 
 const dialogVisibleUpdate = val => {
   emit('update:isDialogVisible', val)
@@ -26,13 +27,12 @@ const dialogVisibleUpdate = val => {
 
 const projectData = ref(structuredClone(toRaw(props.payment)))
 const opportunityData = ref(structuredClone(toRaw(props.opportunity)))
+const payments = ref([])   
 
 watch(props, () => {
   projectData.value = structuredClone(toRaw(props.payment))
   opportunityData.value =structuredClone(toRaw(props.opportunity))
 })
-
-const payments = ref([])
 
 const addPayment = () => {
   payments.value.push({  amount: '', date: '', type: projectData.value.type })
@@ -50,21 +50,57 @@ const currentTotal = computed(() => {
   }, 0)
 })
 
+const isDiffersValid = computed(() => {
+  return payments.value.length > 0 && // Asegura que hay pagos agregados
+    payments.value.every(item => 
+      item.amount && item.date && item.type, // Verifica que cada campo tenga un valor
+    )
+})
+
+const isInitialFeeValid = computed(() => {
+  if (payments.value.length === 0) return true
+
+  const totalDiffersInitialFee = payments.value.reduce((sum, item) => {
+    return sum + (parseFloat(item.amount) || 0) 
+  }, 0)
+
+  const totalFee = parseFloat(totalDiffersInitialFee)
+  const initialFee = parseFloat(projectData.value.amount)
+  
+  return totalFee === initialFee // Comparar con initial_fee
+})
+
+const isFormValid = computed(() => {
+  if (payments.value.length === 0) return true
+  
+  return isDiffersValid.value && isInitialFeeValid.value
+})
 
 const onFormSubmit = async () => {
+  if (!isInitialFeeValid.value) {
+    showWarningToast('Validación fallida', 'La suma de las diferencias no es correcta')
+    
+    return
+  }
+  if (!isFormValid.value) {
+    alert('Por favor, completa todos los campos obligatorios.')
+    
+    return
+  }
+  loadingPayment.value = true
+
   try {
     await updatePaymentPlans(projectData.value.id, {
       date: projectData.value.date,
       differData: payments.value,
     })
-
   } catch (err) {
     console.error('Error updating customer:', err)
   }finally{
     emit('updateDeliveryDate', opportunityData.value.id)
     emit('update:isDialogVisible', false)
     payments.value = []
-
+    loadingPayment.value = false
   }
 }
 
@@ -119,7 +155,7 @@ const resetForm = () => {
             <!-- Input para la cantidad -->
             <VTextField
               v-model="payment.amount"
-              label="Monto"
+              label="Monto *"
               type="number"
               class="mr-4"
               outlined
@@ -129,7 +165,7 @@ const resetForm = () => {
             <!-- Input para la fecha -->
             <VTextField
               v-model="payment.date"
-              label="Fecha de Pago"
+              label="Fecha de Pago *"
               type="date"
               class="mr-3"
               outlined
@@ -164,7 +200,11 @@ const resetForm = () => {
           cols="12"
           class="d-flex flex-wrap justify-center gap-4"
         >
-          <VBtn @click="onFormSubmit">
+          <VBtn 
+            :loading="loadingPayment"
+            :disabled="!isFormValid || loadingPayment"
+            @click="onFormSubmit"
+          >
             Guardar
           </VBtn>
           <VBtn
