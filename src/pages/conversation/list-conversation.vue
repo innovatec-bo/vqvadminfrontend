@@ -1,10 +1,10 @@
 <script setup>
+import { useConversation } from '@/composables/Customer/useConversation'
 import ECommerceAddCustomerDrawer from '@/views/apps/ecommerce/ECommerceAddCustomerDrawer.vue'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { useConversation } from '@/composables/Customer/useConversation'
 
 const searchQuery = ref('')
 const isAddCustomerDrawerOpen = ref(false)
@@ -40,6 +40,7 @@ const headers = [
     title: 'Accion',
     key: 'action',
   },
+  
 ]
 
 const updateOptions = options => {
@@ -54,6 +55,51 @@ const toggleStatus = async item => {
     newStatus.value = 1
   }
   await updateConversationStatus(item.id, newStatus.value)
+}
+
+
+const formatDate = dateString => {
+  const date = new Date(dateString)
+  const day = date.getDate() // Día del mes
+
+  const months = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre',
+  ]
+
+  const month = months[date.getMonth()] // Mes en formato humano
+  const hours = date.getHours().toString().padStart(2, '0') // Hora con dos dígitos
+  const minutes = date.getMinutes().toString().padStart(2, '0') // Minutos con dos dígitos
+
+  // Retorna la fecha en formato: 7 de marzo, 14:00
+  return `${day} de ${month}, ${hours}:${minutes}`
+}
+
+const getStatusColor = lastMessage => {
+  const now = new Date()
+  const lastMessageDate = new Date(lastMessage)
+  const hoursDiff = (now - lastMessageDate) / (1000 * 60 * 60) // diferencia en horas
+
+  console.log(hoursDiff)
+  if (hoursDiff >=12) {
+    return 'black'
+  } else if (hoursDiff >=6) {
+    return 'red'
+  } else if (hoursDiff >= 3) {
+    return 'yellow'
+  } else {
+    return 'green' // puedes ajustar el rango de verde si es necesario
+  }
 }
 
 onMounted(async () =>{
@@ -92,7 +138,6 @@ onMounted(async () =>{
         :items="conversations"
         :headers="headers"
         :items-length="totalConversations"
-        show-select
         class="text-no-wrap"
         @update:options="updateOptions"
       >
@@ -109,9 +154,27 @@ onMounted(async () =>{
             </a>
           </div>
         </template>
+        <template #item.last_message="{ item }">
+          <VRow class="gap-2 align-center">
+            <div
+              :style="{
+                backgroundColor: getStatusColor(item.last_message),
+                width: '15px',
+                height: '15px',
+                borderRadius: '50%',
+                marginRight: '4px',
+              }"
+            />
+            <span>
+              {{ formatDate(item.last_message) }}
+            </span>
+          </VRow>
+        </template>
+
 
         <template #item.ia_status="{ item }">
           <span>
+            
             {{ item.ia_status ? 'Activado' : 'No activado' }}
           </span>
         </template>
@@ -129,8 +192,6 @@ onMounted(async () =>{
             @update:model-value="() => toggleStatus(item)"
           />
         </template>
-
-
         <template #bottom>
           <VDivider />
 
