@@ -76,7 +76,7 @@ const saveData = async () => {
   console.log('antes del save:', opportunity)
 
   const data = {
-    id: opportunity.value.id, // Acceder con .value
+    id: opportunity.value.id,
     stage_id: opportunity.value.stage_id,
     description: opportunity.value.description,
     property_id: opportunity.value.property_id,
@@ -108,14 +108,14 @@ watch(() => props.isDialogVisible, async newValue => {
     allTypeActivity()
     newActivity.value.opportunity_id = props.opportunityKanban?.id ?? null
     newActivity.value.assigned_to = props.opportunityKanban?.user_id ?? null
-    await fetchProperties() // Cargar las propiedades aquí
+    await fetchProperties() 
   }
 })
 </script>
 
 <template>
   <VDialog
-    max-width="850"
+    max-width="1000"
     :model-value="props.isDialogVisible"
     persistent
     :close-on-esc="false"
@@ -141,15 +141,10 @@ watch(() => props.isDialogVisible, async newValue => {
           :value="tabItems[0]"
           style="max-block-size: 90vh; overflow-y: auto;"
         >
-          <VCard>
-            <VCardTitle class="text-h4 font-weight-semibold mb-4">
-              Información del Cliente y Oportunidad
-            </VCardTitle>
-
+          <VCard title="Información del Cliente y Oportunidad">
             <VCardText>
               <VForm @submit.prevent="saveData">
                 <VRow>
-                  <!-- Sección de Información del Cliente -->
                   <VCol
                     cols="12"
                     md="6"

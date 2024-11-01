@@ -38,6 +38,8 @@ const quoteData = ref({
   differs_balance: [],
 })
 
+// const requiredValidator = value => !!value || 'Este campo es requerido'
+
 const isGeneralFormValid  = computed(() => {
   return quoteData.value.social_reason && 
          quoteData.value.nit &&
@@ -97,16 +99,16 @@ const removeProduct = id => {
 }
 
 const generateCotization = async() =>{
-
-  if (!isInitialFeeValid.value) {
-    showWarningToast('Validación fallida', 'La suma de las diferencias de la cuota inicial no son correctas')
-    
-    return // Terminar la ejecución si la validación falla
-  }
+  
   if (!isFormValid.value) {
-    alert('Por favor, completa todos los campos obligatorios.')
+    showWarningToast('Validación fallida', 'Completa todos los campos obligatorios.')
     
     return
+  }
+  if (!isInitialFeeValid.value) {
+    showWarningToast('Validación fallida', 'La suma de las diferencias del anticipo no son correctas')
+    
+    return 
   }
   loadingQuote.value = true
   try{

@@ -49,6 +49,11 @@ const openSaleForm = () => {
 }
 
 const editPaymentPlan = item => {
+  if ( item.is_paid === 1){
+    showWarningToast('Advertencia', 'No se puede editar un pago ya realizado.')
+    
+    return 
+  }
   console.log('entro aqui')
   openEditPaymentPlan.value = true
   paymentPlan.value = { ...item }
@@ -98,7 +103,7 @@ const updateDeliveryDate = async opportunityId => {
               Saldo
             </VListItemTitle>
             <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span class="text-h6">$ {{ totalBalance.toFixed(2) }}</span>
+              <span class="text-h6">{{ formatCurrency(totalBalance) }}</span>
             </VListItemSubtitle>
           </VCol>
           <VCol
@@ -109,7 +114,7 @@ const updateDeliveryDate = async opportunityId => {
               Anticipo
             </VListItemTitle>
             <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span class="text-h6">$ {{ totalInitialFee.toFixed(2) }}</span>
+              <span class="text-h6">{{ formatCurrency(totalInitialFee) }}</span>
             </VListItemSubtitle>
           </VCol>
           <VCol
@@ -120,7 +125,7 @@ const updateDeliveryDate = async opportunityId => {
               Precio Final
             </VListItemTitle>
             <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span class="text-h6">$ {{ totalAmount.toFixed(2) }}</span>
+              <span class="text-h6">{{ formatCurrency(totalAmount) }} </span>
             </VListItemSubtitle>
           </VCol>
         </VRow>
@@ -221,7 +226,9 @@ const updateDeliveryDate = async opportunityId => {
                 @change="confirmPayment(item.id)"
               />
               <div 
+                v-if="item.is_paid === 0"
                 fill-dot
+
                 @click="editPaymentPlan(item)"
               >
                 <VIcon
@@ -295,7 +302,9 @@ const updateDeliveryDate = async opportunityId => {
                 </VTooltip>
               </VCheckbox> 
               <div 
+                v-if="item.is_paid === 0"
                 fill-dot
+               
                 @click="editPaymentPlan(item)"
               >
                 <VIcon

@@ -32,9 +32,8 @@ export function useCustomer(){
         phone: data.phone,
 
         // thread: thread.id,
-
-        // email: data.email,
-        // ci: data.ci,
+        email: data.email,
+        ci: data.ci,
         // eslint-disable-next-line camelcase
         cod_phone: data.countryCode.replace(/\+/g, ''),
         description: data.description,

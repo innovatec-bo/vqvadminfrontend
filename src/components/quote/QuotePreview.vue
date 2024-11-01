@@ -96,7 +96,7 @@ onMounted(() => {
               </div>
 
               <strong class="mb-0">
-                Formulario de Cotizacion 
+                Formulario de Cotización 
               </strong>
             </div>
 
@@ -273,7 +273,7 @@ onMounted(() => {
                     <td class="text-end">
                       <div class="me-5">
                         <p class="mb-2">
-                          Cuota Inicial:
+                          Anticipo:
                         </p>
                         <p class="mb-2">
                           SubTotal:
