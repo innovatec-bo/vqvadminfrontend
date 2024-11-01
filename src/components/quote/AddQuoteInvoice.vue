@@ -25,8 +25,8 @@ const removeProduct = id => {
   emit('remove', id)
 }
 
-const items = ['10', '20', '30']
-const selectedPercentage =  ref('10')
+const items = ['30', '50', '80', '100']
+const selectedPercentage =  ref('30')
 
 const calculatedAmount = totalAmount => {
   // eslint-disable-next-line vue/no-mutating-props, camelcase
@@ -64,7 +64,7 @@ const calculatedAmount = totalAmount => {
           <span
             class="me-3"
             style="inline-size: 6rem;"
-          >Emision</span>
+          >Emisión</span>
           <span style="inline-size: 9.5rem;">
             <AppDateTimePicker
              
@@ -168,7 +168,7 @@ const calculatedAmount = totalAmount => {
         >
           <AppTextField
             v-model="props.data.address"
-            label="Direccion"
+            label="Dirección"
             placeholder="Av/ Equipetrol ...."
             outlined
             dense
@@ -198,7 +198,7 @@ const calculatedAmount = totalAmount => {
           style="padding-block: 0;padding-inline: 8px;"
         >
           <AppTextField
-            label="Telefono Fijo"
+            label="Teléfono Fijo"
             placeholder="33557292"
             outlined
             dense
@@ -273,9 +273,9 @@ const calculatedAmount = totalAmount => {
           style="padding-block: 0;padding-inline: 8px;"
         >
           <div class=" text-center my-4"> 
-            <h4> Saldo: </h4>
+            <h4> Saldo por pagar: </h4>
             <span>
-              {{ props.data.amount - props.data.initial_fee }}
+              {{ formatCurrency(props.data.amount - props.data.initial_fee ) }}
             </span>
           </div>
         </VCol>
