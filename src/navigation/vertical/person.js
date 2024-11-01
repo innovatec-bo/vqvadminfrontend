@@ -15,5 +15,11 @@ export default [
     to: 'customers-list-customers',
     subject: ['ASESOR', 'ADMINISTRADOR'],
   },
+  {
+    title: 'Conversaciones IA',
+    icon: { icon: 'tabler-brand-reddit' },
+    to: 'conversation-list-conversation',
+    subject: ['ASESOR', 'ADMINISTRADOR'],
+  },
 ]
   

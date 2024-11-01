@@ -3,10 +3,10 @@ import { useActivity } from '@/composables/Activity/useActivity'
 import AddActivity from '@/views/activity/AddActivity.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 
-const searchQuery = ref('') // Cambiar a string vacío
+const searchQuery = ref('') 
 const currentActiveTab = ref('Anteriores')
-const filters = ref(['Todos', 'PORA']) // Opciones de filtro
-const selectedFilter = ref('Todos') // Filtro seleccionado
+const filters = ref(['Todos', 'PORA'])
+const selectedFilter = ref('Todos')  
 
 const {
   getallActivitiesByAsesorFecha,
@@ -61,7 +61,6 @@ const onRefreshActivities = async () => {
   await fetchActivitiesPast()
   await fetchActivitiesFuture()
   isLoading.value = false
-  currentActiveTab.value = 'Anteriores'
 }
 
 const orders = computed(() => [
@@ -79,7 +78,7 @@ const iconosActivity = [
 
 const getIconForActivity = activityType => {
   const iconObj = iconosActivity.find(icon => icon.type === activityType)
-  
+
   return iconObj ? iconObj.icon : 'tabler-default' // Ícono por defecto si no se encuentra
 }
 
@@ -120,7 +119,7 @@ watch(searchQuery, newValue => {
     return activitiesList.filter(activity => {
       const nameMatch = activity.name_opportunity.toLowerCase().includes(newValue.toLowerCase())
       const phoneMatch = activity.phone_opportunity.toLowerCase().includes(newValue.toLowerCase())
-      
+
       return nameMatch || phoneMatch
     })
   }
@@ -166,9 +165,6 @@ watch(searchQuery, newValue => {
             />
           </div>
         </VCardTitle>
-
-
-
         <VTabs
           v-model="currentActiveTab"
           grow
@@ -299,7 +295,6 @@ watch(searchQuery, newValue => {
                     </VRow>
                   </VListItem>
                   <VListItem class="">
-                    <!-- todo: conseguir icono por actividad -->
                     <VChip
                       label
                       color="secondary"
@@ -356,7 +351,7 @@ watch(searchQuery, newValue => {
 .title-search-container {
   display: flex;
   align-items: center;
-  gap: 16px; /* Espacio entre el título y el campo de búsqueda */
+  gap: 15px; /* Espacio entre el título y el campo de búsqueda */
 }
 
 .title-responsive {
@@ -384,20 +379,6 @@ watch(searchQuery, newValue => {
   }
 }
 
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-}
-
-.breadcrumbs {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
-
-  /* Color del texto de breadcrumbs */
-  font-size: 1rem;
-}
-
 .filter-controls {
   display: flex;
   align-items: center;
@@ -411,10 +392,12 @@ watch(searchQuery, newValue => {
 .filters button {
   border: none;
   border-radius: 5px;
-  background-color: rgba(var(--v-theme-primary), 0.1);
+
+  /* background-color: rgba(var(--v-theme-primary), 0.1); */
 
   /* Color del botón con opacidad */
-  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+
+  /* color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity)); */
 
   /* Color del texto del botón */
   cursor: pointer;
@@ -426,36 +409,8 @@ watch(searchQuery, newValue => {
 
   /* Color de botón activo */
   color: rgb(var(--v-theme-surface));
-
-  /* Texto del botón activo */
 }
 
-.date-picker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.date-picker label {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
-
-  /* Color del texto */
-  font-size: 0.9rem;
-}
-
-.date-picker input[type="date"] {
-  padding: 10px;
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-
-  /* Borde del selector de fecha */
-  border-radius: 5px;
-  background-color: rgb(var(--v-theme-surface));
-
-  /* Fondo del input */
-  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
-
-  /* Color del texto del input */
-}
 
 @keyframes bounce {
   0%, 100% {

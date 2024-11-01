@@ -1,6 +1,7 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import { useQuote } from '@/composables/Quote/useQuote'
+import { formatCurrency } from '@/utils/currencyFormatter'
 import InvoiceAddPaymentDrawer from '@/views/apps/invoice/InvoiceAddPaymentDrawer.vue'
 import InvoiceSendInvoiceDrawer from '@/views/apps/invoice/InvoiceSendInvoiceDrawer.vue'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
@@ -72,10 +73,6 @@ const loadQuote = async () => {
       opportunity_id: quote.value.opportunity_id,
       properties: quote.value.properties,
     }
-
-    // setTimeout(() => {
-    //   printInvoice()
-    // }, 5000)
   } catch (error) {
     console.error('Error al obtener la cotización:', error)
   }
@@ -87,7 +84,6 @@ const printInvoice = () => {
 
 onBeforeMount(loadQuote)
 </script>
-
 
 <template>
   <section v-if="invoice">
@@ -104,7 +100,6 @@ onBeforeMount(loadQuote)
                   :nodes="themeConfig.app.logo"
                   class="me-3"
                 />
-
                 <!-- 👉 Title -->
                 <h6 class="font-weight-bold text-capitalize text-h4">
                   {{ themeConfig.app.title }}
@@ -112,37 +107,37 @@ onBeforeMount(loadQuote)
               </div>
 
               <strong class="mb-0">
-                Formulario de Cotizacion 
+                Formulario de Cotización   
               </strong>
             </div>
 
             <!-- 👉 Right Content -->
-            <div class="mt-4 ma-sm-4">
+            <div class="mt-4 ma-sm-4 text-end">
               <!-- 👉 Issue Date -->
               <p class="my-3">
-                <span>Fecha de emision: </span>
+                <span>Fecha de Emisión : </span>
                 <span>{{ invoice.issuedDate }}</span>
               </p>
 
               <!-- 👉 Due Date -->
               <p class="mb-0">
-                <span>Fecha de Validacion: </span>
+                <span>Fecha de Validación : </span>
                 <span>{{ invoice.expiration_date }}</span>
               </p>
             </div>
           </VCardText>
           <!-- !SECTION -->
-
           <VDivider />
-
           <!-- 👉 Payment Details -->
           <VCardText class="d-flex justify-space-between flex-wrap flex-column flex-sm-row print-row">
             <div class="ma-sm-4">
               <table>
                 <tbody>
                   <tr>
-                    <td class="pe-6 pb-1">
-                      Rason Social:
+                    <td class="pe-6 pb-1 font-bold">
+                      <Strong>
+                        Razón Social:
+                      </Strong>
                     </td>
                     <td class="pb-1">
                       <span class="font-weight-medium">
@@ -151,8 +146,10 @@ onBeforeMount(loadQuote)
                     </td>
                   </tr>
                   <tr>
-                    <td class="pe-6 pb-1">
-                      Celular:
+                    <td class="pe-6 pb-1 ">
+                      <strong>
+                        Celular:
+                      </strong>
                     </td>
                     <td class="pb-1">
                       {{ invoice.customer.phone }}
@@ -160,7 +157,9 @@ onBeforeMount(loadQuote)
                   </tr>
                   <tr>
                     <td class="pe-6 pb-1">
-                      Direccion:
+                      <strong>
+                        Direccion:
+                      </strong>
                     </td>
                     <td class="pb-1">
                       {{ invoice.customer.address }}
@@ -175,7 +174,9 @@ onBeforeMount(loadQuote)
                 <tbody>
                   <tr>
                     <td class="pe-6 pb-1">
-                      C.I./NIT:
+                      <strong>
+                        C.I./NIT:
+                      </strong>
                     </td>
                     <td class="pb-1">
                       {{ invoice.customer.nit }}
@@ -183,7 +184,9 @@ onBeforeMount(loadQuote)
                   </tr>
                   <tr>
                     <td class="pe-6 pb-1">
-                      Correo:
+                      <strong>
+                        Correo:
+                      </strong>
                     </td>
                     <td class="pb-1">
                       {{ invoice.customer.email }}
@@ -191,7 +194,9 @@ onBeforeMount(loadQuote)
                   </tr>
                   <tr>
                     <td class="pe-6 pb-1">
-                      Trabajo:
+                      <strong>
+                        Trabajo:
+                      </strong>
                     </td>
                     <td class="pb-1">
                       {{ invoice.customer.workplace }}
@@ -209,7 +214,10 @@ onBeforeMount(loadQuote)
             <thead>
               <tr>
                 <th scope="col">
-                  Departamento
+                  Propiedad
+                </th>
+                <th scope="col">
+                  tipo
                 </th>
                 <th scope="col">
                   Superficie
@@ -218,7 +226,7 @@ onBeforeMount(loadQuote)
                   Piso
                 </th>
                 <th scope="col">
-                  Balcon
+                  Caracteristicas
                 </th>
                 <th scope="col">
                   Precio
@@ -244,25 +252,41 @@ onBeforeMount(loadQuote)
                 :key="property.id"
               >
                 <td class="text-no-wrap">
-                  {{ property.title }}
+                  {{ property.code }}
+                </td>
+                <td class="text-no-wrap">
+                  {{ property.property_type }}
                 </td>
                 <td class="text-no-wrap">
                   {{ property.surface }} m2
                 </td>
+                <td
+                  v-if="property.floor_park"
+                  class="text-no-wrap"
+                >
+                  {{ property.floor_park }} 
+                </td>
+                <td
+                  v-if="property.floor_departmennt"
+                  class="text-no-wrap"
+                >
+                  {{ property.floor_departmennt }} 
+                </td>
+                
                 <td class="text-no-wrap">
-                  {{ property.code }} Piso
+                  {{ property.isfacade ? 'Fachada ,' : '' }} 
+                  {{ property.number_bedrooms ? property.number_bedrooms + " Dormitorios" : '' }} 
+                  {{ property.cover ? property.cover : '' }} 
                 </td>
-                <td class="text-no-wrap">
-                  {{ property.isfacade ? 'Sí' : 'No' }}
-                </td>
-                <td class="text-center">
-                  ${{ property.pivot_price }}
-                </td>
-                <td class="text-center">
-                  ${{ property.pivot_price_it }}
+                
+                <td class="">
+                  {{ formatCurrency(property.pivot_price ) }}
                 </td>
                 <td class="text-center">
-                  ${{ property.pivot_price_contrato }}
+                  {{ formatCurrency(property.pivot_price_it ) }}
+                </td>
+                <td class="text-center">
+                  {{ formatCurrency(property.pivot_price_contrato) }}
                 </td>
               </tr>
             </tbody>
@@ -288,26 +312,27 @@ onBeforeMount(loadQuote)
                     <td class="text-end">
                       <div class="me-5">
                         <p class="mb-2">
-                          Cuota Inicial:
+                          Anticipo:
                         </p>
                         <p class="mb-2">
-                          SubTotal:
+                          Saldo por Pagar:
                         </p>
                         <p class="mb-2">
-                          Total:
+                          Precio Contrato:
                         </p>
                       </div>
                     </td>
 
-                    <td class="font-weight-medium text-high-emphasis">
+                    <td class="font-weight-medium text-high-emphasis text-end">
                       <p class="mb-2">
-                        ${{ invoice.initial_fee }}
+                        <!-- ${{ invoice.initial_fee }} -->
+                        {{ formatCurrency(invoice.initial_fee) }}
                       </p>
                       <p class="mb-2">
-                        ${{ invoice.balance }}
+                        {{ formatCurrency(invoice.balance) }}
                       </p>
                       <p class="mb-2">
-                        ${{ invoice.amount }}
+                        {{ formatCurrency(invoice.amount) }}
                       </p>
                     </td>
                   </tr>
@@ -316,42 +341,12 @@ onBeforeMount(loadQuote)
             </div>
           </VCardText>
 
-          <VCardText class="add-products-form">
-            <VRow>
-              <VCol
-                cols="12"
-                sm="6"
-                class="mt-15"
-              >
-                <VDivider thickness="4" />
-                <div class="text-center my-1">
-                  <span>
-                    <strong>
-                      Firma del Cliente 
-                    </strong>
-                  </span>
-                </div>
-              </VCol>
-              <VCol
-                cols="12"
-                sm="6"
-                class="mt-15"
-              >
-                <VDivider thickness="4" />
-                <div class="text-center my-1">
-                  <span> <strong>
-                    Firma Asesor Comercial
-                  </strong>  </span>
-                </div>
-              </VCol>
-            </VRow>
-          </VCardText>
-
+       
           <VDivider />
           <VCardText>
             <div class="d-flex mx-sm-4">
               <span><strong>
-                El comprador deberá realizar todos los pagos acordados, en las cuentas indicadas de Canzza Desarrolladora Inmobiliaria Srl. y entregar el respectivo comprobante de depósito.
+                El comprador deberá realizar todos los pagos acordados, en las cuentas indicadas de Canzza Desarrolladora Inmobiliaria S.R.L. y entregar el respectivo comprobante de depósito.
               </strong></span>
             </div>
           </VCardText>

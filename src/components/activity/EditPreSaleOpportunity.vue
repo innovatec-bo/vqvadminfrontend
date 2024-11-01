@@ -175,7 +175,7 @@ const statusQuote = async (quoteId, statusquote) => {
               {{ item.properties[0].title }}
             </td>
             <td>
-              {{ new Date(item.creation_date).toLocaleDateString() }}
+              {{ item.created_at }}
             </td>
             <td>
               <!-- Todo: aprobar  -->

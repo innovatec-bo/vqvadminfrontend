@@ -28,8 +28,9 @@ const props = defineProps({
 const emit = defineEmits(['update:isDialogVisible', 'registerSale'])
 const { generateSale, generateSaleChangeStage } = useSales()
 const loadingSale = ref(false)
-const items = ['10', '20', '30']
-const selectedPercentage =  ref('10')
+
+const items = ['30', '50', '80', '100']
+const selectedPercentage =  ref('30')
 
 const dialogVisibleUpdate = val => {
   emit('update:isDialogVisible', val)
@@ -152,7 +153,7 @@ const isFormValid = computed(() => {
 const generateSalePage = async () => {
   if (!isInitialFeeValid.value) {
     // showWarningToast('Validación fallida', 'La suma de las diferencias de la cuota inicial no son correctas')
-    alert('Por favor, diferencias de la cuota inicial ')
+    alert('Por favor, diferencias del anticipo ')
     
     return
   }
@@ -286,7 +287,7 @@ watch(
           <div class="d-flex align-center justify-sm-end mb-3">
             <VTextField
               v-model="salesData.creation_date"
-              label="emision"
+              label="emisión"
               type="date"
                 
               outlined
@@ -306,7 +307,7 @@ watch(
             <AppTextField
               v-model="salesData.social_reason"
               :rules="[requiredValidator]"
-              label="Razon social *"
+              label="Razón social *"
               placeholder="Canzza"
               outlined
               dense
@@ -349,7 +350,7 @@ watch(
           >
             <AppTextField
               v-model="salesData.address"
-              label="Direccion"
+              label="Dirección"
               placeholder="Av/ Equipetrol ...."
               outlined
               dense
@@ -393,7 +394,7 @@ watch(
             style="padding-block: 0;padding-inline: 8px;"
           >
             <AppTextField
-              label="Telefono Fijo "
+              label="Teléfono Fijo "
               placeholder="33557292"
               outlined
               dense
@@ -458,7 +459,7 @@ watch(
             style="padding-block: 0;padding-inline: 8px;"
           >
             <InvoiceAddMoney
-              title="Saldo "
+              title="Saldo por Pagar"
               :amount="salesData.amount - salesData.initial_fee"
               :differs="salesData.differs_balance"
               :type="BALANCE"
@@ -473,7 +474,7 @@ watch(
               auto-grow
               label="Observaciones del Cliente"
               rows="2"
-              placeholder="Descripcion..."
+              placeholder="Descripción..."
               row-height="20"
             />
           </VCol>

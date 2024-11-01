@@ -106,7 +106,7 @@ const generateCotization = async() =>{
     return
   }
   if (!isInitialFeeValid.value) {
-    showWarningToast('Validación fallida', 'La suma de las diferencias de la cuota inicial no son correctas')
+    showWarningToast('Validación fallida', 'La suma de las diferencias del anticipo no son correctas')
     
     return 
   }

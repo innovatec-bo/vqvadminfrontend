@@ -91,6 +91,7 @@ onMounted(async () => {
       <VRow
         v-for="(property, index) in props.properties"
         :key="index"
+        class="mb-4"
       >
         <VCol
           cols="12"
@@ -112,13 +113,13 @@ onMounted(async () => {
           />
           <span
             v-if="property.property_id && property.property_type === PropertyType.DEPARTAMENT.value "
-            style="font-size:smaller ; padding-block: "
+            style="font-size:small ; padding-block: "
           > 
             <strong>
               {{ propertyDepartament[property.property_id -1].departament.isfacade === 1? 'Con Fachada': 'Sin Fachada' }},
             </strong>
             {{ propertyDepartament[property.property_id -1].surface }}   <strong> m2,</strong>
-            {{ propertyDepartament[property.property_id -1].departament.number_bedrooms }} Habitacion(s),  
+            {{ propertyDepartament[property.property_id -1].departament.number_bedrooms }} Dormitorio(s),  
           </span>
         </VCol>
 
