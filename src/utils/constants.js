@@ -1,10 +1,7 @@
 export const COOKIE_MAX_AGE_1_YEAR = 365 * 24 * 60 * 60
 
-// export const URL_BACKEND = 'https://phplaravel-1171375-4944906.cloudwaysapps.com/'
-export const URL_BACKEND = 'http://127.0.0.1:8000/'
-
-
-export const URL_MICROSERVICIO= 'http://localhost:3000/'
+export const URL_BACKEND = 'https://phplaravel-1171375-4944906.cloudwaysapps.com/'
+export const URL_MICROSERVICIO= 'https://nuna-properties-ia-production.up.railway.app/'
 
 export const URL_ADMIN =  URL_BACKEND +'api/' 
 
