@@ -37,7 +37,7 @@ const headers = [
     key: 'ia_status',
   },
   {
-    title: 'Accion',
+    title: 'Acción',
     key: 'action',
   },
   
@@ -112,7 +112,7 @@ onMounted(async () =>{
 
 <template>
   <div>
-    <VCard title="Lista de Conversacion con la IA">
+    <VCard title="Lista de Conversación con la IA">
       <VCardText>
         <div class="d-flex justify-space-between flex-wrap gap-y-4">
           <AppTextField
@@ -185,12 +185,19 @@ onMounted(async () =>{
           </span>
         </template>
         <template #item.action="{ item }">
-          <VSwitch
+          <VCheckbox
             v-model="item.ia_status"
-            :label="item.ia_status ? 'Activado' : 'Desactivado'"
-            inset
-            @update:model-value="() => toggleStatus(item)"
-          />
+            :true-value="1"
+            :false-value="0"
+            @change="toggleStatus(item)"
+          > 
+            <VTooltip
+              activator="parent"
+              location="top"
+            >
+              {{ item.ia_status ? 'Desactivar IA': 'Activar IA' }}
+            </VTooltip>
+          </VCheckbox> 
         </template>
         <template #bottom>
           <VDivider />

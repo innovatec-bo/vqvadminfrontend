@@ -2,7 +2,9 @@
 import Kanban from '@/components/Kanban.vue'
 
 const selectedDateRange = ref([new Date(2024, 9, 10), new Date(2024, 10, 10)]) // Rango de fechas
-const filters = ref(['Todos', 'OGA', 'PORA']) // Opciones de filtro
+// const filters = ref(['Todos', 'OGA', 'PORA']) // Opciones de filtro
+const filters = ref(['Todos', 'PORA']) // Opciones de filtro
+
 const selectedFilter = ref('Todos') // Filtro seleccionado
 </script>
 

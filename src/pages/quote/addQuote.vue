@@ -204,7 +204,7 @@ watch(
             class="mb-2"
             @click="generateCotization"
           >
-            Guardar Cotizacion
+            Guardar Cotización 
           </VBtn>
         </VCardText>
       </VCard>

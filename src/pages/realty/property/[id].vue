@@ -23,19 +23,11 @@ onMounted(fetchProperty)
           </h4>
         </div>
       </div>
-      <div class="d-flex gap-5">
-        <VBtn
-          variant="tonal"
-          color="info"
-        >
-          Editar Propiedad
-        </VBtn>
-      </div>
     </div>
     <VRow>
       <VCol
         cols="12"
-        lg="5"
+        lg="8"
       >
         <VCard class="overflow-visible course-details">
           <VCardText>

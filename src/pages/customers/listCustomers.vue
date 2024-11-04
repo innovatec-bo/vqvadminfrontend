@@ -105,7 +105,6 @@ onMounted(async () =>{
         :items="customers"
         :headers="headers"
         :items-length="totalCustomers"
-        show-select
         class="text-no-wrap"
         @update:options="updateOptions"
       >
