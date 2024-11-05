@@ -2,13 +2,12 @@
 import { useCustomer } from '@/composables/Customer/useCustomer'
 import ECommerceAddCustomerDrawer from '@/views/apps/ecommerce/ECommerceAddCustomerDrawer.vue'
 import { paginationMeta } from '@api-utils/paginationMeta'
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { debounce } from 'lodash'
+
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
 const searchQuery = ref('')
 const isAddCustomerDrawerOpen = ref(false)
-const router = useRouter()
 
 const { allCustomerPaginate, totalCustomers, customers } = useCustomer()
 
@@ -46,19 +45,23 @@ const headers = [
   },
 ]
 
+const AllCustomer =  ()=>{
+  allCustomerPaginate({
+    page: page.value,
+    itemsPerPage: itemsPerPage.value,
+    search: searchQuery.value,
+  })
+}
+
 const updateOptions = options => {
   page.value = options.page
   sortBy.value = options.sortBy[0]?.key
   orderBy.value = options.sortBy[0]?.order
 }
 
+const debouncedFetch = debounce(AllCustomer, 300)
 
-onMounted(async () =>{
-  await allCustomerPaginate({
-    page: page.value,
-    itemsPerPage: itemsPerPage.value,
-  })
-})
+watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 </script>
 
 <template>

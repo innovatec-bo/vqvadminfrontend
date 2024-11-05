@@ -9,7 +9,7 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
 </script>
 
 <template>
-  <div class="kanban-container">
+  <div>
     <!-- Barra de herramientas (encima del Kanban) -->
     <div class="toolbar">
       <div class="breadcrumbs">
@@ -54,27 +54,23 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
 </template>
 
 <style scoped>
-.kanban-container {
-  padding: 10px;
-}
-
 .toolbar {
   display: flex;
-  flex-wrap: wrap; /* Asegura que los elementos se ajusten en pantallas pequeñas */
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
 
 .breadcrumbs {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
+  /* color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); */
   font-size: 1rem;
 }
 
 .filter-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+
+  /* gap: 10px; */
 }
 
 .filters {

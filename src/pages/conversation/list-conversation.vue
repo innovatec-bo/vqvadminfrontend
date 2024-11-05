@@ -1,18 +1,13 @@
 <script setup>
 import { useConversation } from '@/composables/Customer/useConversation'
-import ECommerceAddCustomerDrawer from '@/views/apps/ecommerce/ECommerceAddCustomerDrawer.vue'
 import { paginationMeta } from '@api-utils/paginationMeta'
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { debounce } from 'lodash'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-
-const searchQuery = ref('')
-const isAddCustomerDrawerOpen = ref(false)
-const router = useRouter()
 
 const { allConversationsPaginate, totalConversations, conversations, updateConversationStatus } = useConversation()
 
 // Data table options
+const searchQuery = ref('')
 const itemsPerPage = ref(10)
 const page = ref(1)
 const sortBy = ref()
@@ -45,9 +40,23 @@ const headers = [
 
 const updateOptions = options => {
   page.value = options.page
-  sortBy.value = options.sortBy[0]?.key
-  orderBy.value = options.sortBy[0]?.order
+  itemsPerPage.value = options.itemsPerPage
+
+  // sortBy.value = options.sortBy[0]?.key
+  // orderBy.value = options.sortBy[0]?.order
 }
+
+const AllConversations =  ()=>{
+  allConversationsPaginate({
+    page: page.value,
+    itemsPerPage: itemsPerPage.value,
+    search: searchQuery.value,
+  })
+}
+
+const debouncedFetch = debounce(AllConversations, 300)
+
+watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 
 const toggleStatus = async item => {
   const newStatus = ref(0)
@@ -56,7 +65,6 @@ const toggleStatus = async item => {
   }
   await updateConversationStatus(item.id, newStatus.value)
 }
-
 
 const formatDate = dateString => {
   const date = new Date(dateString)
@@ -101,13 +109,6 @@ const getStatusColor = lastMessage => {
     return 'green' // puedes ajustar el rango de verde si es necesario
   }
 }
-
-onMounted(async () =>{
-  await allConversationsPaginate({
-    page: page.value,
-    itemsPerPage: itemsPerPage.value,
-  })
-})
 </script>
 
 <template>
@@ -145,7 +146,7 @@ onMounted(async () =>{
           <div class="d-flex gap-x-2">
             <!-- Enlace a WhatsApp API -->
             <a
-              :href="`https://api.whatsapp.com/send?phone=591${item.phone}`"
+              :href="`https://api.whatsapp.com/send?phone=${item.phone}`"
               target="_blank"
               rel="noopener noreferrer"
               class="text-body-1"
@@ -238,8 +239,6 @@ onMounted(async () =>{
         </template>
       </VDataTableServer>
     </VCard>
-
-    <ECommerceAddCustomerDrawer v-model:is-drawer-open="isAddCustomerDrawerOpen" />
   </div>
 </template>
 

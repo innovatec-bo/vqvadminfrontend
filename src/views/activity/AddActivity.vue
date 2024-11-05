@@ -182,7 +182,7 @@ const formatDate = dateString => {
                   </VCol>
                   <VCol cols="12">
                     <div class="mb-2">
-                      <span>
+                      <span style="font-size: 14px; font-weight: 500;">
                         {{ props.activitiesData.title }}  • {{ formatDate(props.activitiesData.scheduled_at) }}
                       </span>
                       <br>

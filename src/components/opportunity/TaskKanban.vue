@@ -20,7 +20,6 @@ const stageOptions = Object.values(StagesOpportunity).map(stage => ({
   value: stage.value,
 }))
 
-// Obtener funciones y variables de `useProperty`
 const { allProperty, properties } = useProperty()
 
 const { getallTypeActivities, typeActivities, registerActivity, loadingActivity, changeStatusActivity } = useActivity()
@@ -124,7 +123,6 @@ watch(() => props.isDialogVisible, async newValue => {
     <DialogCloseBtn @click="dialogVisibleUpdate" />
 
     <VCard class="pa-sm-8">
-      <!-- Pestañas de navegación -->
       <VTabs v-model="navigationTab">
         <VTab
           v-for="item in tabItems"
@@ -293,7 +291,6 @@ watch(() => props.isDialogVisible, async newValue => {
             </VCardText>
           </VCard>
         </VWindowItem>
-
         <!-- Pestaña 2: Agregar Actividad -->
         <VWindowItem
           :value="tabItems[1]"
@@ -407,14 +404,3 @@ watch(() => props.isDialogVisible, async newValue => {
   </VDialog>
 </template>
 
-<style lang="scss">
-.refer-link-input {
-  .v-field--appended {
-    padding-inline-end: 0;
-  }
-
-  .v-field__append-inner {
-    padding-block-start: 0.125rem;
-  }
-}
-</style>
