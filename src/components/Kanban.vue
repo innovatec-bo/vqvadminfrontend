@@ -196,7 +196,7 @@ onMounted(async () => {
             <div class="icon-section">
               <IconBtn>
                 <VIcon icon="tabler-message" />
-                <span class="details">{{ item.cantComments }}</span>
+                <span>{{ item.cantComments }}</span>
               </IconBtn>
             </div>
           </div>
@@ -216,6 +216,7 @@ onMounted(async () => {
 /* Estilos personalizados para la tarjeta */
 .kanban {
   display: flex;
+  flex-wrap: nowrap;
   padding: 10px;
   background-color: rgba(var(--v-theme-background), 1); /* Color de fondo */
   gap: 24px;
@@ -231,6 +232,8 @@ onMounted(async () => {
   background-color: #F3F3F3;
   border: 1px solid #E5E7EB;
 }
+
+
 
 /* Encabezado de la columna */
 .kanban-column-header {

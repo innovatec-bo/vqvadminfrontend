@@ -3,10 +3,10 @@ import { useActivity } from '@/composables/Activity/useActivity'
 import AddActivity from '@/views/activity/AddActivity.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 
-const searchQuery = ref('') 
+const searchQuery = ref('')
 const currentActiveTab = ref('Anteriores')
 const filters = ref(['Todos', 'PORA'])
-const selectedFilter = ref('Todos')  
+const selectedFilter = ref('Todos')
 
 const {
   getallActivitiesByAsesorFecha,
@@ -150,17 +150,17 @@ watch(searchQuery, newValue => {
     >
       <VCard class="flex-grow-1">
         <VCardTitle class="d-flex justify-between align-center flex-wrap">
-          <div class="title-search-container">
-            <h4 class="title-responsive">
-              Mis Actividades
-            </h4>
+          <h4 class="mt-5">
+            Mis Actividades
+          </h4>
+          <div class="mt-2 mx-3"> 
             <VTextField
               v-model="searchQuery"
               placeholder="Buscar actividad..."
-              class="search-field"
+              class="search-field "
+              variant="plain" 
               hide-details
               dense
-              solo-inverted
               prepend-inner-icon="tabler-search"
             />
           </div>

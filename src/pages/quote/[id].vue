@@ -115,13 +115,13 @@ onBeforeMount(loadQuote)
             <div class="mt-4 ma-sm-4 text-end">
               <!-- 👉 Issue Date -->
               <p class="my-3">
-                <span>Fecha de Emisión : </span>
+                <span>Fecha de Emisión: </span>
                 <span>{{ invoice.issuedDate }}</span>
               </p>
 
               <!-- 👉 Due Date -->
               <p class="mb-0">
-                <span>Fecha de Validación : </span>
+                <span>Fecha de Validación: </span>
                 <span>{{ invoice.expiration_date }}</span>
               </p>
             </div>
@@ -158,7 +158,7 @@ onBeforeMount(loadQuote)
                   <tr>
                     <td class="pe-6 pb-1">
                       <strong>
-                        Direccion:
+                        Dirección:
                       </strong>
                     </td>
                     <td class="pb-1">

@@ -102,7 +102,7 @@ const onSubmit = () => {
           />
 
           <h4 class="text-h4 mb-1">
-            Welcome to <span class="text-capitalize"> {{ themeConfig.app.title }} </span>! 👋🏻
+            Bienvenido a  <br> <span class="text-capitalize"> {{ themeConfig.app.title }} </span>
           </h4>
         </VCardText>
         
@@ -139,10 +139,12 @@ const onSubmit = () => {
                 />
 
                 <div class="d-flex align-center flex-wrap justify-space-between mt-1 mb-4">
-                  <VCheckbox
+                  <!--
+                    <VCheckbox
                     v-model="rememberMe"
                     label="Recordar"
-                  />
+                    /> 
+                  -->
                 </div>
                 <br>
                 <VBtn

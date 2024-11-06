@@ -190,7 +190,7 @@ const statusQuote = async (quoteId, statusquote) => {
                     activator="parent"
                     location="top"
                   >
-                    Aprobar Cotizacion
+                    Aprobar Cotización 
                   </VTooltip>
                 </VCheckbox>
 
