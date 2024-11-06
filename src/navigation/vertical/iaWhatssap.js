@@ -3,7 +3,7 @@ export default [
     subject: ['ASESOR', 'ADMINISTRADOR'],
   },
   {
-    title: 'IA Whatssap',
+    title: 'IA WhatsApp',
     icon: { icon: 'tabler-brand-whatsapp' },
     to: 'whatssap-ia-whatssap',
     subject: ['ASESOR', 'ADMINISTRADOR'],

@@ -86,7 +86,7 @@ const dialogModelValueUpdate = val => {
                 <VCol>
                   <AppTextarea
                     v-model="projectData.description"
-                    label="Descripcion (Opcional)"
+                    label="Descripción (Opcional)"
                     rows="3"
                   />
                 </VCol>

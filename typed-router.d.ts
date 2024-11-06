@@ -152,6 +152,7 @@ declare module 'vue-router/auto/routes' {
     'pages-pricing': RouteRecordInfo<'pages-pricing', '/pages/pricing', Record<never, never>, Record<never, never>>,
     'pages-typography': RouteRecordInfo<'pages-typography', '/pages/typography', Record<never, never>, Record<never, never>>,
     'pages-user-profile-tab': RouteRecordInfo<'pages-user-profile-tab', '/pages/user-profile/:tab', { tab: ParamValue<true> }, { tab: ParamValue<false> }>,
+    'perfil-myperfil': RouteRecordInfo<'perfil-myperfil', '/perfil/myperfil', Record<never, never>, Record<never, never>>,
     'quote-id': RouteRecordInfo<'quote-id', '/quote/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'quote-add-quote': RouteRecordInfo<'quote-add-quote', '/quote/addQuote', Record<never, never>, Record<never, never>>,
     'quote-list-qoute': RouteRecordInfo<'quote-list-qoute', '/quote/listQoute', Record<never, never>, Record<never, never>>,

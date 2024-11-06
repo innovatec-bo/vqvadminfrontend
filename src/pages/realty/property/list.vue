@@ -1,14 +1,15 @@
 <script setup>
+import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
+import EditPropertyDialog from '@/components/realty/property/EditPropertyDialog.vue'
 import { useProperty } from '@/composables/Realty/useProperty'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import { debounce } from 'lodash'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import EditPropertyDialog from '@/components/realty/property/EditPropertyDialog.vue'
 
 const { allProperty, properties, property, totalProperties, removeProperty } = useProperty()
 
 const searchQuery = ref()
-const itemsPerPage = ref(10)
+const itemsPerPage = ref(20)
 const page = ref(1)
 const isDialogEditPropertyVisible = ref(false)
 
@@ -63,9 +64,9 @@ const resolvePropertyStatusVariant = stat => {
   switch (stat) {
   case 'AVAILABLE':
     return { color: 'success', text: 'DISPONIBLE' }
-  case 'PRESOLD':
+  case 'PRESALE':
     return { color: 'warning', text: 'PRE VENTA' }
-  case 'SOLD':
+  case 'SALE':
     return { color: 'error', text: 'VENDIDO' }
   case 'DELIVERED':
     return { color: 'error', text: 'ENTREGADO' }
@@ -79,13 +80,9 @@ const deleteProperty = async id => {
   fetchProperties()
 }
 
-const viewProperty = async item => {
-  await router.push({ name: 'owner-property-id', params: { id: item.id } })
-}
-
 const handleUpdateProperty = async item => {
   isDialogEditPropertyVisible.value = true
-  property.value = { ...item };
+  property.value = { ...item }
 }
 
 const handlePropertyUpdated = updatedProperty => {
@@ -113,14 +110,14 @@ const handlePropertyUpdated = updatedProperty => {
           <AppSelect
             :model-value="itemsPerPage"
             :items="[
-              { value: 10, title: '10' },
+              { value: 20, title: '20' },
               { value: 25, title: '25' },
               { value: 50, title: '50' },
               { value: 100, title: '100' },
               { value: -1, title: 'All' },
             ]"
             style="inline-size: 5rem;"
-            @update:model-value="value => itemsPerPage.value = parseInt(value, 10)"
+            @update:model-value="value => itemsPerPage.value = parseInt(value, 20)"
           />
           <!-- 👉 Search  -->
           <AppTextField
@@ -143,13 +140,13 @@ const handlePropertyUpdated = updatedProperty => {
         v-model:items-per-page="itemsPerPage"
         v-model:page="page"
         :items-per-page-options="[
-          { value: 10, title: '10' },
+          { value: 20, title: '20' },
           { value: 25, title: '25' },
           { value: 50, title: '50' },
           { value: -1, title: '$vuetify.dataFooter.itemsPerPageAll' },
         ]"
         :items="properties"
-        :items-length="itemsPerPage.value === -1 ? properties.value.length : totalProperties.value"
+        :items-length="itemsPerPage.value === -1 ? properties.value.length : totalProperties.valueOf"
         :headers="headers"
         class="text-no-wrap"
         @update:options="updateOptions"
@@ -164,7 +161,7 @@ const handlePropertyUpdated = updatedProperty => {
         <!-- Plan -->
         <template #item.typeProperty="{ item }">
           <span
-            v-if="item.park"
+            v-if="item.parking"
             class="text-capitalize font-weight-medium"
           >Parqueo</span>
           <span
@@ -245,9 +242,9 @@ const handlePropertyUpdated = updatedProperty => {
       <!-- SECTION -->
     </VCard>
     <EditPropertyDialog
-      v-model:isDialogVisible="isDialogEditPropertyVisible"
+      v-model:is-dialog-visible="isDialogEditPropertyVisible"
       :property="property"
-      @propertyUpdated="handlePropertyUpdated"
+      @property-updated="handlePropertyUpdated"
     />
   </section>
 </template>
