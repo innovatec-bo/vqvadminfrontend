@@ -21,6 +21,10 @@ const updateOptions = options => {
 // Headers
 const headers = [
   {
+    title: 'Titulo',
+    key: 'title',
+  },
+  {
     title: 'Code',
     key: 'code',
   },
@@ -108,16 +112,9 @@ const handlePropertyUpdated = updatedProperty => {
         <VSpacer />
         <div class="d-flex align-center flex-wrap gap-4">
           <AppSelect
-            :model-value="itemsPerPage"
-            :items="[
-              { value: 20, title: '20' },
-              { value: 25, title: '25' },
-              { value: 50, title: '50' },
-              { value: 100, title: '100' },
-              { value: -1, title: 'All' },
-            ]"
-            style="inline-size: 5rem;"
-            @update:model-value="value => itemsPerPage.value = parseInt(value, 20)"
+            v-model="itemsPerPage"
+            density="compact"
+            :items="[5, 10, 20, 50, 100]"
           />
           <!-- 👉 Search  -->
           <AppTextField
@@ -139,15 +136,9 @@ const handlePropertyUpdated = updatedProperty => {
       <VDataTableServer
         v-model:items-per-page="itemsPerPage"
         v-model:page="page"
-        :items-per-page-options="[
-          { value: 20, title: '20' },
-          { value: 25, title: '25' },
-          { value: 50, title: '50' },
-          { value: -1, title: '$vuetify.dataFooter.itemsPerPageAll' },
-        ]"
         :items="properties"
-        :items-length="itemsPerPage.value === -1 ? properties.value.length : totalProperties.valueOf"
         :headers="headers"
+        :items-length="itemsPerPage.value === -1 ? properties.value.length : totalProperties.valueOf"
         class="text-no-wrap"
         @update:options="updateOptions"
       >
