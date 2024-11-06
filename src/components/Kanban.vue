@@ -121,9 +121,36 @@ onMounted(async () => {
       <div class="kanban-column-header">
         <div class="column-title">
           <h2>{{ column.title }}</h2>
+          <span class="small-badge">{{ column.items.length }}</span>
         </div>
-        <div class="column-info">
-          <span class="task-count">({{ column.items.length }})</span>
+        <div
+          class="d-flex align-center gap-2"
+          style="flex: 0 1 30%; "
+        >
+          <VBtn
+            color="white"
+            title="Agregar Actividad"
+            class="icon-container"
+          >
+            <!-- Establecemos un ancho del 100% -->
+
+            <VIcon
+              icon="tabler-plus"
+              class="icon-small"
+            />
+          </VBtn>
+          <VBtn
+            color="white"
+            title="Agregar Actividad"
+            class="icon-container"
+          >
+            <!-- Establecemos un ancho del 100% -->
+
+            <VIcon
+              icon="tabler-plus"
+              class="icon-small"
+            />
+          </VBtn>
         </div>
       </div>
       <VueDraggable
@@ -140,6 +167,7 @@ onMounted(async () => {
           class="kanban-item"
           @click="selectOpportunity(item)"
         >
+          <div><p><strong>{{ item.name }}</strong></p></div>
           <div class="kanban-header">
             <VAvatar
               size="40"
@@ -168,7 +196,6 @@ onMounted(async () => {
 
           <!-- Información del cliente -->
           <div class="kanban-details">
-            <p><strong>{{ item.name }}</strong></p>
             <p>{{ item.phone }}</p>
           </div>
 
@@ -232,7 +259,15 @@ onMounted(async () => {
   background-color: #F3F3F3;
   border: 1px solid #E5E7EB;
 }
-
+.icon-container {
+    min-width: 24px;
+    max-width: 24px;
+    max-height: 24px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    margin: 0px;
+}
 
 
 /* Encabezado de la columna */
@@ -240,14 +275,13 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-block-end: 2px solid rgba(var(--v-border-color), var(--v-border-opacity));
-  margin-block-end: 10px;
-  padding-block-end: 10px;
+  gap: 4px;
 }
 
 .column-title {
   display: flex;
   align-items: center;
+  gap: 4px;
 }
 
 .column-title h2 {
@@ -260,18 +294,23 @@ onMounted(async () => {
 .column-title h2::first-letter {
     text-transform: uppercase; 
 }
-
+.small-badge {
+  background-color: #525252;
+    border-radius: 50%;     
+    max-width: 14px;        
+    height: 14px;           
+    font-size: 10px;        
+    padding: 0;             
+    width: 14px;   
+    margin-top: -8px; 
+    color: white;
+    text-align: center;
+}
 
 
 .column-info {
   display: flex;
   align-items: center;
-}
-
-.task-count {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
-  font-size: 0.9em;
-  margin-inline-end: 10px;
 }
 
 /* Items dentro de las columnas */
@@ -281,10 +320,11 @@ onMounted(async () => {
 
 .kanban-item {
   padding: 10px;
-  border: 1px solid rgba(var(--v-border-color), 0.25);
+  border: 1px solid #E5E7EB;
   border-radius: 10px;
   background-color: rgb(var(--v-theme-surface));
   margin-block-end: 10px;
+  box-shadow: 0px 2px 6px 0px rgba(82, 82, 82, 0.20);
 }
 
 .kanban-header {
