@@ -120,7 +120,6 @@ onMounted(async () => {
     >
       <div class="kanban-column-header">
         <div class="column-title">
-          <span class="column-dot" /> 
           <h2>{{ column.title }}</h2>
         </div>
         <div class="column-info">
@@ -219,7 +218,8 @@ onMounted(async () => {
   display: flex;
   padding: 10px;
   background-color: rgba(var(--v-theme-background), 1); /* Color de fondo */
-  gap: 10px;
+  gap: 24px;
+  align-items: flex-start;
 }
 
 /* Estilo de la columna */
@@ -228,6 +228,8 @@ onMounted(async () => {
   padding: 10px;
   border-radius: 10px;
   inline-size: 300px;
+  background-color: #F3F3F3;
+  border: 1px solid #E5E7EB;
 }
 
 /* Encabezado de la columna */
@@ -246,18 +248,17 @@ onMounted(async () => {
 }
 
 .column-title h2 {
-  color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
-  font-size: 1.1em;
-  font-weight: bold;
+  color: #525252;
+  font-size: 14px;
+  font-weight: 700;
   margin-inline-start: 5px;
+  text-transform: lowercase;
+}
+.column-title h2::first-letter {
+    text-transform: uppercase; 
 }
 
-.column-dot {
-  border-radius: 50%;
-  background-color: rgb(var(--v-theme-primary));
-  block-size: 8px;
-  inline-size: 8px;
-}
+
 
 .column-info {
   display: flex;
