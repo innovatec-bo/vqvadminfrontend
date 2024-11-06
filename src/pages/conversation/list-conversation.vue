@@ -100,13 +100,13 @@ const getStatusColor = lastMessage => {
 
   console.log(hoursDiff)
   if (hoursDiff >=12) {
-    return 'black'
+    return 'error'
   } else if (hoursDiff >=6) {
-    return 'red'
+    return 'warning'
   } else if (hoursDiff >= 3) {
-    return 'yellow'
+    return 'info'
   } else {
-    return 'green' // puedes ajustar el rango de verde si es necesario
+    return 'succes' // puedes ajustar el rango de verde si es necesario
   }
 }
 </script>
@@ -157,18 +157,9 @@ const getStatusColor = lastMessage => {
         </template>
         <template #item.last_message="{ item }">
           <VRow class="gap-2 align-center">
-            <div
-              :style="{
-                backgroundColor: getStatusColor(item.last_message),
-                width: '15px',
-                height: '15px',
-                borderRadius: '50%',
-                marginRight: '4px',
-              }"
-            />
-            <span>
+            <VChip :color="getStatusColor(item.last_message)">
               {{ formatDate(item.last_message) }}
-            </span>
+            </VChip>
           </VRow>
         </template>
 

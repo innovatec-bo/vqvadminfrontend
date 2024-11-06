@@ -1,9 +1,10 @@
-import { createSale, createSaleChangeStage, getSale } from "@/services/Sales/saleService"
+import { listSalesPaginated, createSale, createSaleChangeStage, getSale } from "@/services/Sales/saleService"
 import { showSuccessNotification } from "@/utils/notifications"
 
 export function useSales (){
   const loadingSale = ref(false)
   const sales = ref([])
+  const totalSales = ref(0)
   const error = ref(null)
   const sale = ref(null)
 
@@ -69,14 +70,32 @@ export function useSales (){
     }
   }
 
+  const AllSalesPaginated = async pagination => {
+    loadingSale.value = true
+    try{
+      const response = await listSalesPaginated(pagination)
+
+      sales.value = response.data.data
+      totalSales.value = response.data.total
+    }catch (error){
+      console.log(error)
+    }finally{
+      loadingSale.value = false
+    }
+
+  }
+
   
   return{
     loadingSale,
     sales,
     error,
     sale,
+    totalSales,
+
     generateSale,
     generateSaleChangeStage,
     getSalebyId,
+    AllSalesPaginated,
   }
 } 

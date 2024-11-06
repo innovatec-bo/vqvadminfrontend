@@ -8,5 +8,11 @@ export default [
     to: 'quote-list-qoute',
     subject: ['ASESOR', 'ADMINISTRADOR'],
   },
+  {
+    title: 'Ventas',
+    icon: { icon: 'tabler-report-money' },
+    to: 'sale-list-sales',
+    subject: ['ASESOR', 'ADMINISTRADOR'],
+  },
 ]
     
