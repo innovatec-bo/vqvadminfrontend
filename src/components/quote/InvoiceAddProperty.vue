@@ -116,9 +116,10 @@ onMounted(async () => {
             style="font-size:small ; padding-block: "
           > 
             <strong>
-              {{ propertyDepartament[property.property_id -1].departament.isfacade === 1? 'Con Fachada': 'Sin Fachada' }},
+              {{ propertyDepartament[property.property_id -1].departament.isfacade === 1? 'En fachada': 'Orientacion sur' }},
             </strong>
-            {{ propertyDepartament[property.property_id -1].surface }}   <strong> m2,</strong>
+            {{ propertyDepartament[property.property_id -1].surface }}   <strong> m2</strong>
+            <br>
             {{ propertyDepartament[property.property_id -1].departament.number_bedrooms }} Dormitorio(s),  
           </span>
         </VCol>

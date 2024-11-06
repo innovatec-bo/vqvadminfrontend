@@ -9,7 +9,7 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
 </script>
 
 <template>
-  <div>
+  <div class="body-kanban">
     <!-- Barra de herramientas (encima del Kanban) -->
     <div class="toolbar">
       <div class="breadcrumbs">
@@ -59,6 +59,7 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  margin-bottom: 16px;
 }
 
 .breadcrumbs {
