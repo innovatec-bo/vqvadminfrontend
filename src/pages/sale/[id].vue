@@ -112,7 +112,7 @@ onBeforeMount(loadSale)
               </div>
 
               <strong class="mb-0">
-                Formulario de Cotización  
+                Formulario de Venta 
               </strong>
             </div>
 
