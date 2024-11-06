@@ -9,7 +9,7 @@ import { AppContentLayoutNav, ContentWidth, FooterType, NavbarType } from '@layo
 
 export const { themeConfig, layoutConfig } = defineThemeConfig({
   app: {
-    title: 'CANZZA - Vertical Homes',
+    title: 'PORA - Vertical Homes',
     logo: h('img', { src: logo, alt: 'Logo de Canzza', style: {
       width: 'auto', 
       height: 'auto',  

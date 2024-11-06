@@ -71,3 +71,10 @@ export const completedActivity = async (idActivity, data) => {
     body: data,
   })
 }
+
+// Da de baja la oportunidad
+export const discardActivity = async idActivity => {
+  return await $api(`/activity/${idActivity}/discard`, {
+    method: 'PATCH',
+  })
+}

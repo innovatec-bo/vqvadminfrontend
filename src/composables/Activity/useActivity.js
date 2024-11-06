@@ -1,4 +1,4 @@
-import { allTypeActivities, changeStatus, completedActivity, get, getByAsesorFecha, getByAsesorFechaFuture, getByAsesorFechaPast, getByAsesorRangoFecha, register, update } from "@/services/Activity/activityService"
+import { allTypeActivities, changeStatus, completedActivity, discardActivity, get, getByAsesorFecha, getByAsesorFechaFuture, getByAsesorFechaPast, getByAsesorRangoFecha, register, update } from "@/services/Activity/activityService"
 import { computed } from "vue"
 import { useRouter } from 'vue-router'
 
@@ -205,6 +205,21 @@ export function useActivity() {
     }
   }
 
+  const discardActivityOpportunity= async idActivity => {
+    loadingActivity.value = true
+    try{
+      const response = await discardActivity(idActivity)
+
+      console.log(response)
+
+    }catch (err){
+      //todo: mejorar los mensajes de error
+      error.value =  err.message
+    }finally {
+      loadingActivity.value = false
+    }
+  }
+
   
   return {
     loadingActivity,
@@ -220,6 +235,7 @@ export function useActivity() {
     getallActivitiesByFechaFuture,
     updateActivity,
     completedActivityAndRegister,
+    discardActivityOpportunity,
     activity,
     activities: computed(()=>activities.value),
     activitiesPast: computed(()=>activitiesPast.value),
