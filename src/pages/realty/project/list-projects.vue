@@ -1,9 +1,10 @@
 <script setup>
 import { useProject } from '@/composables/Realty/useProject'
+import { debounce } from 'lodash'
 import { ref } from 'vue'
 
 const searchQuery = ref('')
-const itemsPerPage = ref(6)
+const itemsPerPage = ref(100)
 const page = ref(1)
 const sortBy = ref()
 const orderBy = ref()
@@ -12,13 +13,24 @@ const descriptionLimit = 100
 
 const { getallProjects, projects, totalProjects } = useProject()
 
-getallProjects({
-  q: searchQuery,
-  itemsPerPage,
-  page,
-  sortBy,
-  orderBy,
-})
+const updateOptions = options => {
+  page.value = options.page
+
+  // sortBy.value = options.sortBy[0]?.key
+  // orderBy.value = options.sortBy[0]?.order
+}
+
+const AllQuote =  ()=>{
+  getallProjects({
+    page: page.value,
+    itemsPerPage: itemsPerPage.value,
+    search: searchQuery.value,
+  })
+}
+
+const debouncedFetch = debounce(AllQuote, 300)
+
+watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 
 watch([
   hideCompleted,

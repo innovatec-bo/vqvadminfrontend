@@ -12,7 +12,7 @@ const { project, getProjectId } = useProject()
 const { allPropertybyProject, properties, loadingProject } = useProperty()
 
 const searchQuery = ref()
-const itemsPerPage = ref(10)
+const itemsPerPage = ref(100)
 const page = ref(1)
 
 const headers = [
@@ -32,10 +32,7 @@ const headers = [
     title: 'Precio',
     key: 'base_price',
   },
-  {
-    title: '% cuota inicial',
-    key: 'percentaje_initial_fee',
-  },
+  
 ]
 
 const projectData = computed(() => project.value)
@@ -71,9 +68,6 @@ function formatDate(dateString) {
 }
 </script>
 
-//TODO: actualizar la lista de propiedades 
-//TODO: listar los proper asociados,
-//todo: actualizar los propers asociados 
 <template>
   <div class="d-flex justify-space-between align-center flex-wrap gap-y-4 mb-6">
     <div>
@@ -82,13 +76,6 @@ function formatDate(dateString) {
           {{ project?.title }}
         </h4>         
       </div>
-      <!--
-        <div>
-        <span class="text-body-1">
-        {{ formatDate(project?.created_at ) }}
-        </span>
-        </div> 
-      -->
       <span v-if="project">
         Numero de Pisos:   {{ project?.num_pisos }}
       </span>
@@ -147,9 +134,7 @@ function formatDate(dateString) {
             <span>$ {{ item.base_price }}</span>
           </template>
 
-          <template #item.percentaje_initial_fee="{ item }">
-            <span>{{ item.percentaje_initial_fee }} %</span>
-          </template>
+         
 
           <template #bottom />
         </VDataTable>
@@ -182,7 +167,7 @@ function formatDate(dateString) {
   </VRow>
 
   <ConfirmDialog
-    v-model:isDialogVisible="isConfirmDialogVisible"
+    v-model:is-dialog-visible="isConfirmDialogVisible"
     confirmation-question="Are you sure to cancel your Order?"
     cancel-msg="Order cancelled!!"
     cancel-title="Cancelled"
@@ -190,7 +175,7 @@ function formatDate(dateString) {
     confirm-title="Cancelled!"
   />
   <ProjectEditDialog
-    v-model:isDialogVisible="isProjectInfoEditDialogVisible" 
+    v-model:is-dialog-visible="isProjectInfoEditDialogVisible" 
     :project-data="projectData"
   />
 </template>

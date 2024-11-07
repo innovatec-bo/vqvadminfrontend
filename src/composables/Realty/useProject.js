@@ -13,15 +13,7 @@ export function useProject() {
 
   const getallProjects = async pagination => {
     try{
-      const defaultPagination = {
-        itemsPerPage: pagination.itemsPerPage.value,
-        page: pagination.page.value,
-        orderBy: pagination.orderBy.value,
-        sortBy: pagination.sortBy.value,
-        search: pagination.q.value,
-      }
-  
-      const response = await allProjects(defaultPagination)
+      const response = await allProjects(pagination)
 
       console.log(response)
   

@@ -69,7 +69,7 @@ const registerProyect = async () => {
               <VCol>
                 <AppTextarea
                   v-model="description"
-                  label="Descripcion"
+                  label="Descripción"
                   rows="3"
                   :error="!!errors.description"
                   :error-messages="errors.description"

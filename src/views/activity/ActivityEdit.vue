@@ -93,7 +93,7 @@ const handleDrawerModelValueUpdate = val => {
         <VCol>
           <AppTextarea
             v-model="activitiesData.description"
-            label="Descripcion"
+            label="Descripción"
             rows="3"
             :rules="[requiredValidator]"
           />

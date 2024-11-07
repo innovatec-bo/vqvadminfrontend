@@ -105,7 +105,7 @@ watch(formData, () => {
         <!-- 👉 Description -->
         <AppTextarea
           v-model="formData.description"
-          label="Descripcion"
+          label="Descripción"
           rows="3"
           :rules="[requiredValidator]"
         />

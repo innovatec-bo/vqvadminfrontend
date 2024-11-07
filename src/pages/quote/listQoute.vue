@@ -2,6 +2,7 @@
 import { useQuote } from '@/composables/Quote/useQuote'
 import ECommerceAddCustomerDrawer from '@/views/apps/ecommerce/ECommerceAddCustomerDrawer.vue'
 import { paginationMeta } from '@api-utils/paginationMeta'
+import { debounce } from 'lodash'
 import { onMounted } from 'vue'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
@@ -48,8 +49,9 @@ const headers = [
 
 const updateOptions = options => {
   page.value = options.page
-  sortBy.value = options.sortBy[0]?.key
-  orderBy.value = options.sortBy[0]?.order
+
+  // sortBy.value = options.sortBy[0]?.key
+  // orderBy.value = options.sortBy[0]?.order
 }
 
 const statusQuote = async (quoteId, statusquote) => {
@@ -62,12 +64,17 @@ const statusQuote = async (quoteId, statusquote) => {
   onMounted()
 }
 
-onMounted(async () =>{
-  await allQuotePaginate({
+const AllQuote =  ()=>{
+  allQuotePaginate({
     page: page.value,
     itemsPerPage: itemsPerPage.value,
+    search: searchQuery.value,
   })
-})
+}
+
+const debouncedFetch = debounce(AllQuote, 300)
+
+watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 </script>
 
 <template>
@@ -87,7 +94,6 @@ onMounted(async () =>{
               density="compact"
               :items="[5, 10, 20, 50, 100]"
             />
-
             <VBtn
               prepend-icon="tabler-screen-share"
               variant="tonal"
@@ -95,7 +101,6 @@ onMounted(async () =>{
             >
               Export
             </VBtn>
-            
             <RouterLink
               :to="{ name: 'quote-add-quote' }"
               class="text-white"
@@ -140,7 +145,6 @@ onMounted(async () =>{
             />
           </div>
         </template>
-
 
         <template #bottom>
           <VDivider />

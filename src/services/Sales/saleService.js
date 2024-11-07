@@ -39,3 +39,10 @@ export const getSaleByOpportunity = async id => {
     method: 'GET',
   })
 }
+
+export const listSalesPaginated = async pagination =>{
+  return await $api('sales/list-paginated', {
+    method: 'GET',
+    params: pagination,
+  })
+}

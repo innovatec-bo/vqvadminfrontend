@@ -83,6 +83,7 @@ const printInvoice = () => {
 }
 
 onBeforeMount(loadQuote)
+console.log(quote)
 </script>
 
 <template>
@@ -94,7 +95,7 @@ onBeforeMount(loadQuote)
           <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row print-row">
             <!-- 👉 Left Content -->
             <div class="ma-sm-4">
-              <div class="d-flex align-center mb-6">
+              <div class="d-flex align-center mb-4">
                 <!-- 👉 Logo -->
                 <VNodeRenderer
                   :nodes="themeConfig.app.logo"
@@ -115,13 +116,13 @@ onBeforeMount(loadQuote)
             <div class="mt-4 ma-sm-4 text-end">
               <!-- 👉 Issue Date -->
               <p class="my-3">
-                <span>Fecha de Emisión : </span>
+                <span>Fecha de Emisión: </span>
                 <span>{{ invoice.issuedDate }}</span>
               </p>
 
               <!-- 👉 Due Date -->
               <p class="mb-0">
-                <span>Fecha de Validación : </span>
+                <span>Fecha de Validación: </span>
                 <span>{{ invoice.expiration_date }}</span>
               </p>
             </div>
@@ -136,7 +137,7 @@ onBeforeMount(loadQuote)
                   <tr>
                     <td class="pe-6 pb-1 font-bold">
                       <Strong>
-                        Razón Social:
+                        Nombre:
                       </Strong>
                     </td>
                     <td class="pb-1">
@@ -158,7 +159,7 @@ onBeforeMount(loadQuote)
                   <tr>
                     <td class="pe-6 pb-1">
                       <strong>
-                        Direccion:
+                        Dirección:
                       </strong>
                     </td>
                     <td class="pb-1">
@@ -169,7 +170,7 @@ onBeforeMount(loadQuote)
               </table>
             </div>
 
-            <div class="mt-4 ma-sm-4">
+            <div class="mt-2 ma-sm-4">
               <table>
                 <tbody>
                   <tr>
@@ -208,92 +209,84 @@ onBeforeMount(loadQuote)
           </VCardText>
 
           <!-- 👉 Table -->
-          <VDivider />
-
+          
           <VTable class="invoice-preview-table">
             <thead>
               <tr>
                 <th scope="col">
-                  Propiedad
+                  PROPIEDAD
                 </th>
                 <th scope="col">
-                  tipo
+                  TIPO
                 </th>
                 <th scope="col">
-                  Superficie
+                  SUPERFICIE
                 </th>
                 <th scope="col">
-                  Piso
+                  PISO
                 </th>
                 <th scope="col">
-                  Caracteristicas
-                </th>
-                <th scope="col">
-                  Precio
-                </th>
-                <th
-                  scope="col"
-                  class="text-center"
-                >
-                  3% (IT)
-                </th>
-                <th
-                  scope="col"
-                  class="text-center"
-                >
-                  Precio Contrato:
+                  CARACTERISTICAS
                 </th>
               </tr>
             </thead>
-
             <tbody>
               <tr
                 v-for="property in invoice.properties"
                 :key="property.id"
               >
-                <td class="text-no-wrap">
-                  {{ property.code }}
+                <td>{{ property.code }}</td>
+                <td>{{ property.property_type }}</td>
+                <td>{{ property.surface }} m²</td>
+                <td>
+                  <template v-if="property.floor_park">
+                    {{ property.floor_park }}
+                  </template>
+                  <template v-if="property.floor_departmennt">
+                    {{ property.floor_departmennt }}
+                  </template>
                 </td>
-                <td class="text-no-wrap">
-                  {{ property.property_type }}
+                <td>
+                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada' : 'Orientación sur': "" }}
+                  {{ property.number_bedrooms ? ', ' + property.number_bedrooms + ' Dormitorios' : '' }}
+                  {{ property.cover ? property.cover : '' }}
                 </td>
-                <td class="text-no-wrap">
-                  {{ property.surface }} m2
+              </tr>
+              <br>
+              <tr>
+                <th scope="col">
+                  METODO DE PAGO
+                </th>
+                <th scope="col">
+                  PRECIO
+                </th>
+                <th scope="col">
+                  3% (IT)
+                </th>
+                <th scope="col">
+                  Precio Contrato:
+                </th>               
+              </tr>
+              <tr
+                v-for="property in invoice.properties"
+                :key="'price-'+property.id"
+              >
+                <td>
+                  {{ invoice.payment_method }}
                 </td>
-                <td
-                  v-if="property.floor_park"
-                  class="text-no-wrap"
-                >
-                  {{ property.floor_park }} 
+                <td>
+                  {{ formatCurrency(property.pivot_price) }}
                 </td>
-                <td
-                  v-if="property.floor_departmennt"
-                  class="text-no-wrap"
-                >
-                  {{ property.floor_departmennt }} 
+                <td colspan="1">
+                  {{ formatCurrency(property.pivot_price_it) }}
                 </td>
-                
-                <td class="text-no-wrap">
-                  {{ property.isfacade ? 'Fachada ,' : '' }} 
-                  {{ property.number_bedrooms ? property.number_bedrooms + " Dormitorios" : '' }} 
-                  {{ property.cover ? property.cover : '' }} 
-                </td>
-                
-                <td class="">
-                  {{ formatCurrency(property.pivot_price ) }}
-                </td>
-                <td class="text-center">
-                  {{ formatCurrency(property.pivot_price_it ) }}
-                </td>
-                <td class="text-center">
+                <td colspan="1">
                   {{ formatCurrency(property.pivot_price_contrato) }}
                 </td>
               </tr>
             </tbody>
           </VTable>
-
-          <VDivider class="mb-2" />
-
+          <!-- <VDivider class="mb-2" /> -->
           <!-- Total -->
           <VCardText class="d-flex justify-space-between flex-column flex-sm-row print-row">
             <div class="my-2 mx-sm-4 text-base">
@@ -305,17 +298,17 @@ onBeforeMount(loadQuote)
               </div>
             </div>
 
-            <div class="my-2 mx-sm-4">
+            <div class="my-1 mx-sm-4">
               <table>
                 <tbody>
                   <tr>
                     <td class="text-end">
                       <div class="me-5">
                         <p class="mb-2">
-                          Anticipo:
+                          Anticipo {{ (invoice.initial_fee / invoice.amount )* 100 }}% :
                         </p>
                         <p class="mb-2">
-                          Saldo por Pagar:
+                          Saldo por Pagar {{ (invoice.balance / invoice.amount )* 100 }}% :
                         </p>
                         <p class="mb-2">
                           Precio Contrato:
@@ -326,11 +319,11 @@ onBeforeMount(loadQuote)
                     <td class="font-weight-medium text-high-emphasis text-end">
                       <p class="mb-2">
                         <!-- ${{ invoice.initial_fee }} -->
-                        {{ formatCurrency(invoice.initial_fee) }}
+                        {{ formatCurrency(invoice.initial_fee) }}   
                       </p>
                       <p class="mb-2">
-                        {{ formatCurrency(invoice.balance) }}
-                      </p>
+                        {{ formatCurrency(invoice.balance) }}  
+                      </p>  
                       <p class="mb-2">
                         {{ formatCurrency(invoice.amount) }}
                       </p>
@@ -340,31 +333,31 @@ onBeforeMount(loadQuote)
               </table>
             </div>
           </VCardText>
-
-       
           <VDivider />
-          <VCardText>
-            <div class="d-flex mx-sm-4">
-              <span><strong>
-                El comprador deberá realizar todos los pagos acordados, en las cuentas indicadas de Canzza Desarrolladora Inmobiliaria S.R.L. y entregar el respectivo comprobante de depósito.
-              </strong></span>
-            </div>
-          </VCardText>
-          <VDivider />
-          <VCardText>
-            <div class="d-flex mx-sm-4">
-              <span><strong>
-                Todos los gastos administrativos, inscripción en derechos reales y honorarios profesionales para consolidar el derecho de propiedad a favor del comprador deben ser asumidos por el comprador.</strong></span>
-            </div>
-          </VCardText>
-          <VDivider />
-          <VCardText>
-            <div class="d-flex mx-sm-4">
-              <span><strong>
-                Este documento tiene validez únicamente hasta el <span style="text-decoration: underline;">{{ invoice.expiration_date }}</span>.
-              </strong></span>
-            </div>
-          </VCardText>
+          <div>
+            <VCardText>
+              <div class="d-flex mx-sm-3">
+                <span style="font-size: 12px;"><strong>
+                  El comprador deberá realizar todos los pagos acordados, en las cuentas indicadas de Canzza Desarrolladora Inmobiliaria S.R.L. y entregar el respectivo comprobante de depósito.
+                </strong></span>
+              </div>
+            </VCardText>
+            <VDivider />
+            <VCardText>
+              <div class="d-flex mx-sm-3">
+                <span style="font-size: 12px;"><strong>
+                  Todos los gastos administrativos, inscripción en derechos reales y honorarios profesionales para consolidar el derecho de propiedad a favor del comprador deben ser asumidos por el comprador.</strong></span>
+              </div>
+            </VCardText>
+            <VDivider />
+            <VCardText>
+              <div class="d-flex mx-sm-3">
+                <span style="font-size: 12px;"><strong>
+                  Este documento tiene validez únicamente hasta el <span style="text-decoration: underline;">{{ invoice.expiration_date }}</span>.
+                </strong></span>
+              </div>
+            </VCardText>
+          </div>
         </VCard>
       </VCol>
     </VRow>

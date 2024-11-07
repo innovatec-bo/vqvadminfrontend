@@ -78,7 +78,7 @@ export default defineComponent({
       return h('div', { class: ['layout-wrapper', ...configStore._layoutClasses] }, [
         verticalNavWrapper ? h(verticalNavWrapper, verticalNavWrapperProps, { default: () => verticalNav }) : verticalNav,
         h('div', { class: 'layout-content-wrapper' }, [
-          navbar,
+          // navbar,
           main,
           footer,
         ]),

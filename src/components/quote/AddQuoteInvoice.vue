@@ -55,7 +55,7 @@ const calculatedAmount = totalAmount => {
           </h4>
         </div>
         <p class="mb-0">
-          Formulario de Cotizacion 
+          Formulario de Cotización  
         </p>
       </div>
       <!-- 👉 Right Content -->
@@ -306,7 +306,7 @@ const calculatedAmount = totalAmount => {
             auto-grow
             label="Observaciones del Cliente"
             rows="3"
-            placeholder="Descripcion..."
+            placeholder="Descripción..."
             row-height="20"
           />
         </VCol>

@@ -41,7 +41,7 @@ const registerCustomer = async () => {
         <h4 class="text-h4 font-weight-medium">
           Registrar Cliente
         </h4>
-        <span>Agrega un Nuevo Cliente Potencial</span>
+        <span>Agrega nuevo cliente potencial</span>
       </div>
 
       <div class="d-flex gap-4 align-center flex-wrap">

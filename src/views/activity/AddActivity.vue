@@ -8,6 +8,8 @@ import EditSaleOpportunity from '@/components/activity/EditSaleOpportunity.vue'
 import SellerReport from '@/components/report/SellerReport.vue'
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
+import { discardActivity } from '@/services/Activity/activityService'
+import Swal from 'sweetalert2'
 import { watch } from 'vue'
 import CustomerHistory from '../Bitacora/CustomerHistory.vue'
 
@@ -105,7 +107,28 @@ const onSubmit = async() => {
   closeNavigationDrawer()
 
   // emit('refreshActivities') 
+}
 
+
+const discard = async() => {
+ 
+  Swal.fire({
+    title: "Quieres dar de baja al cliente ?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "confirmar",
+  }).then(result => {
+    if (result.isConfirmed) {
+      discardActivity(activitiesData.value.id)
+      closeNavigationDrawer()
+      Swal.fire({
+        text: "EL cliente fue dado de baja",
+        icon: "success",
+      })
+    }
+  })
 }
 
 const openHistory =  () => {
@@ -182,8 +205,12 @@ const formatDate = dateString => {
                   </VCol>
                   <VCol cols="12">
                     <div class="mb-2">
-                      <span>
+                      <span style="font-size: 14px; font-weight: 500;">
                         {{ props.activitiesData.title }}  • {{ formatDate(props.activitiesData.scheduled_at) }}
+                      </span>
+                      <br>
+                      <span style="font-size: 12px; font-weight: 500;">
+                        {{ props.activitiesData.description }} 
                       </span>
                     </div>
                     <VRadioGroup
@@ -193,7 +220,7 @@ const formatDate = dateString => {
                       inline
                     >
                       <span class="my-1">
-                        ¿ Se Realizo ?
+                        ¿Se realizó?
                       </span> 
                       <VRadio
                         label="Si"
@@ -211,28 +238,26 @@ const formatDate = dateString => {
                     </VRadioGroup>
                     <VDivider class="mt-2" />
                   </VCol>
-
-                
                   <VCol cols="12">
                     <AppTextField
                       v-model="newActivity.title"
-                      label="Titulo de la actividad"
+                      label="Título de la actividad"
                       placeholder="..."
                     />
                   </VCol>
                   <VCol cols="12">
                     <AppSelect
                       v-model="newActivity.type_activity_id"
-                      label="Tipo de Actividad"
-                      placeholder="Selecciona el Tipo de Actividad"
+                      label="Tipo de actividad"
+                      placeholder="Selecciona el tipo de actividad"
                       :items="typeActivities.map(activity => ({ title: activity.name, value: activity.id }))"
                     />
                   </VCol>
                   <VCol cols="12">
                     <AppDateTimePicker
                       v-model="newActivity.scheduled_at"
-                      label="Seleccione la Fecha y Hora"
-                      placeholder="Select date and time"
+                      label="Seleccione la fecha y hora"
+                      placeholder="Seleccione la fecha y hora"
                       :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
                       :rules="[requiredValidator]"
                     />
@@ -240,7 +265,7 @@ const formatDate = dateString => {
                   <VCol cols="12">
                     <AppTextarea
                       v-model="newActivity.description"
-                      label="Descripcion"
+                      label="Descripción"
                       rows="3"
                       :rules="[requiredValidator]"
                     />
@@ -262,6 +287,7 @@ const formatDate = dateString => {
                       class="mx-1" 
                       variant="tonal"
                       size="small"
+                      @click="discard"
                     >
                       Dar de Baja
                     </VBtn>
