@@ -20,7 +20,7 @@ export const $api = ofetch.create({
       if (useCookie('accessToken')) {
         useCookie('accessToken').value = null
       }
-      await router.push('/auth/login')
+      await router.push('/login')
     }
     
     return Promise.reject(error)
@@ -44,7 +44,7 @@ export const $microservice = ofetch.create({
       if (useCookie('accessToken')) {
         useCookie('accessToken').value = null
       }
-      await router.push('/auth/login')
+      await router.push('/login')
     }
     
     return Promise.reject(error)

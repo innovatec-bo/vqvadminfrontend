@@ -8,6 +8,8 @@ import EditSaleOpportunity from '@/components/activity/EditSaleOpportunity.vue'
 import SellerReport from '@/components/report/SellerReport.vue'
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
+import { discardActivity } from '@/services/Activity/activityService'
+import Swal from 'sweetalert2'
 import { watch } from 'vue'
 import CustomerHistory from '../Bitacora/CustomerHistory.vue'
 
@@ -105,7 +107,28 @@ const onSubmit = async() => {
   closeNavigationDrawer()
 
   // emit('refreshActivities') 
+}
 
+
+const discard = async() => {
+ 
+  Swal.fire({
+    title: "Quieres dar de baja al cliente ?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "confirmar",
+  }).then(result => {
+    if (result.isConfirmed) {
+      discardActivity(activitiesData.value.id)
+      closeNavigationDrawer()
+      Swal.fire({
+        text: "EL cliente fue dado de baja",
+        icon: "success",
+      })
+    }
+  })
 }
 
 const openHistory =  () => {
@@ -264,6 +287,7 @@ const formatDate = dateString => {
                       class="mx-1" 
                       variant="tonal"
                       size="small"
+                      @click="discard"
                     >
                       Dar de Baja
                     </VBtn>

@@ -436,8 +436,4 @@ button {
   padding-block: 8px;
   padding-inline: 16px;
 }
-
-button:hover {
-  background-color: rgb(var(--v-theme-on-surface));
-}
 </style>

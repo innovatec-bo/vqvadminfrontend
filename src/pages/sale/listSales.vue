@@ -3,6 +3,7 @@ import { useConversation } from '@/composables/Customer/useConversation'
 import { useSales } from '@/composables/Sales/useSales'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import { debounce } from 'lodash'
+import { ref, watch } from 'vue'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
 const { AllSalesPaginate, totalConversations, conversations, updateConversationStatus } = useConversation()
@@ -15,41 +16,36 @@ const page = ref(1)
 const sortBy = ref()
 const orderBy = ref()
 
-// Data table Headers
+// Data table Headers (Reordered)
 const headers = [
   { title: '', key: 'data-table-expand' },
-  {
-    title: 'Razon Social',
-    key: 'social_reason',
-  },
-  {
-    title: 'Nit/CI',
-    key: 'nit',
-  },
-  {
-    title: 'Metodo de Pago',
-    key: 'payment_method',
-  },
-  {
-    title: 'Total de Contrato',
-    key: 'amount',
-  },
-  {
-    title: 'Acción',
-    key: 'action',
-  },
-  
+  { title: 'Nit/CI', key: 'nit' },
+  { title: 'Razón Social', key: 'social_reason' },
+  { title: 'Método de Pago', key: 'payment_method' },
+  { title: 'Total de Contrato', key: 'amount' },
+  { title: 'Acción', key: 'action' },
 ]
+
+// Function to display payment method as "Al Contado" if it's CASH
+const displayPaymentMethod = method => {
+  if (method === 'CASH') {
+    return 'Al Contado'
+  } else if (method === 'DIRECTCREDIT') {
+    return 'Crédito Directo'
+  } else if (method === 'BANKCREDIT') {
+    return 'Crédito Bancario'
+  }
+  
+  return method
+}
+
 
 const updateOptions = options => {
   page.value = options.page
   itemsPerPage.value = options.itemsPerPage
-
-  // sortBy.value = options.sortBy[0]?.key
-  // orderBy.value = options.sortBy[0]?.order
 }
 
-const AllSales =  ()=>{
+const AllSales = () => {
   AllSalesPaginated({
     page: page.value,
     itemsPerPage: itemsPerPage.value,
@@ -70,7 +66,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
           <AppTextField
             v-model="searchQuery"
             style="max-inline-size: 200px; min-inline-size: 200px;"
-            placeholder="Search .."
+            placeholder="Buscar..."
             density="compact"
           />
           <div class="d-flex flex-row gap-4 align-center flex-wrap">
@@ -95,27 +91,52 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
         @update:options="updateOptions"
       >
         <!-- Expanded Row Data -->
-        <template #expanded-row="">
+        <template #expanded-row="{ item }">
           <tr class="v-data-table__tr">
             <td :colspan="headers.length">
-              <p class="my-1">
-                City: Santa Cruz
-              </p>
-              <p class="my-1">
-                Experience: Ninguna
-              </p>
-              <p>Post: Hola</p>
+              <div class="mb-2">
+                <strong>Propiedades:</strong>
+                <ul>
+                  <li
+                    v-for="property in item.properties"
+                    :key="property.id"
+                  >
+                    {{ property.title }} - {{ property.code }} ({{ property.surface }} m²)
+                  </li>
+                </ul>
+              </div>
+              <div class="mb-2">
+                <strong>Pagos Iniciales:</strong>
+                <ul>
+                  <li
+                    v-for="payment in item.initial_payments"
+                    :key="payment.id"
+                  >
+                    Fecha: {{ payment.date }}, Monto: {{ payment.amount }}, Pagado: {{ payment.is_paid ? 'Sí' : 'No' }}
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <strong>Pagos de Saldo:</strong>
+                <ul>
+                  <li
+                    v-for="balance in item.balance_payments"
+                    :key="balance.id"
+                  >
+                    Fecha: {{ balance.date }}, Monto: {{ balance.amount }}, Pagado: {{ balance.is_paid ? 'Sí' : 'No' }}
+                  </li>
+                </ul>
+              </div>
             </td>
           </tr>
         </template>
+
         <template #bottom>
           <VDivider />
-
           <div class="d-flex align-center justify-sm-space-between justify-center flex-wrap gap-3 pa-5 pt-3">
             <p class="text-sm text-disabled mb-0">
               {{ paginationMeta({ page, itemsPerPage }, totalSales) }}
             </p>
-
             <VPagination
               v-model="page"
               :length="Math.ceil(totalSales / itemsPerPage)"
@@ -128,10 +149,9 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
                   v-bind="slotProps"
                   :icon="false"
                 >
-                  Previous
+                  Anterior
                 </VBtn>
               </template>
-
               <template #next="slotProps">
                 <VBtn
                   variant="tonal"
@@ -139,10 +159,28 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
                   v-bind="slotProps"
                   :icon="false"
                 >
-                  Next
+                  Siguiente
                 </VBtn>
               </template>
             </VPagination>
+          </div>
+        </template>
+
+        <template #item.payment_method="{ item }">
+          {{ displayPaymentMethod(item.payment_method) }}
+        </template>
+
+        <template #item.amount="{ item }">
+          {{ item.amount }} $
+        </template>
+
+        <template #item.action="{ item }">
+          <div class="d-flex items-center gap-x-2">
+            <RouterLink :to="{ name: 'sale-id', params: { id: item.id } }">
+              <IconBtn>
+                <VIcon icon="tabler-eye" />
+              </IconBtn>
+            </RouterLink>
           </div>
         </template>
       </VDataTableServer>
@@ -151,7 +189,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 </template>
 
 <style lang="scss" scoped>
-.customer-title:hover{
+.customer-title:hover {
   color: rgba(var(--v-theme-primary)) !important;
 }
 </style>
