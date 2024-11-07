@@ -63,7 +63,7 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
 }
 
 .breadcrumbs {
-  /* color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); */
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
   font-size: 1rem;
 }
 
