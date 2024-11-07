@@ -78,7 +78,7 @@ export function useAuth() {
       user.value = null
       isAuthenticated.value = false
       accessToken.value = null
-      router.push('/auth/login')
+      router.push('/login')
     } catch (err) {
       error.value = 'Logout failed: ' + err.message
     } finally {
@@ -167,7 +167,7 @@ export function useAuth() {
       const response =await resetPassword(data)
 
       console.log(response)
-      await router.push('/auth/login')
+      await router.push('/login')
     } catch (err) {
       console.log(err)
       error.value = 'Password reset failed: ' + err.message

@@ -1,4 +1,4 @@
-import { listSalesPaginated, createSale, createSaleChangeStage, getSale } from "@/services/Sales/saleService"
+import { createSale, createSaleChangeStage, getSale, listSalesPaginated } from "@/services/Sales/saleService"
 import { showSuccessNotification } from "@/utils/notifications"
 
 export function useSales (){
@@ -60,6 +60,8 @@ export function useSales (){
     loadingSale.value = true
     try{
       const response = await getSale(id)
+
+      console.log(response.data)
 
       sale.value = response.data
       
