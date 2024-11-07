@@ -124,7 +124,7 @@ onMounted(async () => {
           <span class="small-badge">{{ column.items.length }}</span>
         </div>
         <div
-          class="d-flex align-center gap-2"
+          class="d-flex justify-end gap-2"
           style="flex: 0 1 30%; "
         >
           <VBtn
@@ -167,37 +167,54 @@ onMounted(async () => {
           class="kanban-item"
           @click="selectOpportunity(item)"
         >
-          <div><p><strong>{{ item.name }}</strong></p></div>
-          <div class="kanban-header">
-            <VAvatar
-              size="40"
-              rounded
-            >
-              <img
-                :src="poraIcon"
-                alt="Logo pora"
-                style="border-radius: 30%;"
-              >
-            </VAvatar>
-            <!-- Nombre del proyecto y código del departamento -->
-            <div class="project-info">
-              <h3 class="project-name">
-                {{ item.project }}
-              </h3>
-              <h4 class="department-code">
-                {{ item.property || 'Sin código' }}
-              </h4>
-            </div>
-            <!-- Precio alineado a la derecha -->
-            <p class="price">
-              <strong>{{ item.price }}$</strong>
+          <div>
+            <p style="margin-block-end:5px;">
+              <strong>{{ item.name }}</strong>
             </p>
+          </div>
+          <div class="kanban-header">
+            <div class="d-flex gap-1">
+              <VAvatar
+                size="40"
+                rounded
+              >
+                <img
+                  :src="poraIcon"
+                  alt="Logo pora"
+                  style="border-radius: 30%;"
+                >
+              </VAvatar>
+              <!-- Nombre del proyecto y código del departamento -->
+              <div>
+                <p class="label-info">
+                  Departamento
+                </p>
+                <div class="project-info">
+                  <h3 class="project-name">
+                    {{ item.project }}
+                  </h3>
+                  <h4 class="department-code">
+                    {{ item.property || 'Sin código' }}
+                  </h4>
+                </div>
+                <!-- Precio alineado a la derecha -->
+                <p class="price">
+                  <strong>{{ item.price }}$</strong>
+                </p>
+              </div>
+            </div>
+            <div class="kanban-details">
+              <p class="label-info">
+                10 de octubre 2024
+              </p>
+              <p style="font-weight: 700; font-size: 0.9rem;color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); ">
+                {{ item.phone }}
+              </p>
+            </div>
           </div>
 
           <!-- Información del cliente -->
-          <div class="kanban-details">
-            <p>{{ item.phone }}</p>
-          </div>
+          
 
           <!-- Detalles del proyecto -->
           <div class="kanban-project-details">
@@ -218,15 +235,17 @@ onMounted(async () => {
             </div>
           </div>
 
-          <!-- Footer con comentarios y otras acciones -->
-          <div class="kanban-footer">
+          <!--
+            Footer con comentarios y otras acciones 
+            <div class="kanban-footer">
             <div class="icon-section">
-              <IconBtn>
-                <VIcon icon="tabler-message" />
-                <span>{{ item.cantComments }}</span>
-              </IconBtn>
+            <IconBtn>
+            <VIcon icon="tabler-message" />
+            <span>{{ item.cantComments }}</span>
+            </IconBtn>
             </div>
-          </div>
+            </div>
+          -->
         </div>
       </VueDraggable>
     </div>
@@ -248,11 +267,14 @@ onMounted(async () => {
   background-color: rgba(var(--v-theme-background), 1); /* Color de fondo */
   gap: 24px;
   align-items: flex-start;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 /* Estilo de la columna */
 .kanban-column {
   position: relative;
+  min-width: 300px;
   padding: 10px;
   border-radius: 10px;
   inline-size: 300px;
@@ -306,7 +328,11 @@ onMounted(async () => {
     color: white;
     text-align: center;
 }
-
+.label-info{
+  font-size: 12px;
+  color: #4B465C;
+  margin-block-end: 0px !important;
+}
 
 .column-info {
   display: flex;
@@ -319,12 +345,15 @@ onMounted(async () => {
 }
 
 .kanban-item {
-  padding: 10px;
+  padding: 10px 14px;
   border: 1px solid #E5E7EB;
   border-radius: 10px;
   background-color: rgb(var(--v-theme-surface));
   margin-block-end: 10px;
   box-shadow: 0px 2px 6px 0px rgba(82, 82, 82, 0.20);
+}
+.kanban-details p{
+  text-align: end;
 }
 
 .kanban-header {
@@ -358,13 +387,13 @@ onMounted(async () => {
   padding: 0;
   margin: 0;
   color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
-  font-size: 1rem;
+  font-size: 12px;
   font-weight: bold;
 }
 
 /* Detalles del proyecto */
 .kanban-project-details {
-  margin-block-start: 10px;
+  margin-block-start: 0;
 }
 
 .status {
@@ -375,6 +404,8 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-block-end: 0px;
+
 }
 
 .kanban-footer {
