@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    '[id]': typeof import('./src/components/bitacora/[id].vue')['default']
     AddAuthenticatorAppDialog: typeof import('./src/components/dialogs/AddAuthenticatorAppDialog.vue')['default']
     AddEditAddressDialog: typeof import('./src/components/dialogs/AddEditAddressDialog.vue')['default']
     AddEditPermissionDialog: typeof import('./src/components/dialogs/AddEditPermissionDialog.vue')['default']
@@ -28,6 +29,7 @@ declare module 'vue' {
     AppStepper: typeof import('./src/@core/components/AppStepper.vue')['default']
     AppTextarea: typeof import('./src/@core/components/app-form-elements/AppTextarea.vue')['default']
     AppTextField: typeof import('./src/@core/components/app-form-elements/AppTextField.vue')['default']
+    BitacoraCustomer: typeof import('./src/components/bitacora/BitacoraCustomer.vue')['default']
     BuyNow: typeof import('./src/@core/components/BuyNow.vue')['default']
     CardAddEditDialog: typeof import('./src/components/dialogs/CardAddEditDialog.vue')['default']
     CardStatisticsHorizontal: typeof import('./src/@core/components/cards/CardStatisticsHorizontal.vue')['default']
@@ -368,6 +370,7 @@ declare module 'vue' {
     DemoTooltipTransition: typeof import('./src/views/demos/components/tooltip/DemoTooltipTransition.vue')['default']
     DemoTooltipVModelSupport: typeof import('./src/views/demos/components/tooltip/DemoTooltipVModelSupport.vue')['default']
     DialogCloseBtn: typeof import('./src/@core/components/DialogCloseBtn.vue')['default']
+    DrawerBitacora: typeof import('./src/components/bitacora/DrawerBitacora.vue')['default']
     EditCustomerDialog: typeof import('./src/components/customer/EditCustomerDialog.vue')['default']
     EditDeliveryOpportunity: typeof import('./src/components/activity/EditDeliveryOpportunity.vue')['default']
     EditPreSaleOpportunity: typeof import('./src/components/activity/EditPreSaleOpportunity.vue')['default']

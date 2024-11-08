@@ -5,6 +5,7 @@ import EditDeliveryOpportunity from '@/components/activity/EditDeliveryOpportuni
 import EditPreSaleOpportunity from '@/components/activity/EditPreSaleOpportunity.vue'
 import EditProspectOpportunity from '@/components/activity/EditProspectOpportunity.vue'
 import EditSaleOpportunity from '@/components/activity/EditSaleOpportunity.vue'
+import DrawerBitacora from '@/components/bitacora/DrawerBitacora.vue'
 import SellerReport from '@/components/report/SellerReport.vue'
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
@@ -38,6 +39,13 @@ const emit = defineEmits([
 const historyDrawerVisible = ref(false)
 const checkLastActivity = ref(false)
 const columnRadio = ref('radio-1')
+
+// En tu componente principal
+const isBitacoraCustomer = ref(false)
+
+const seeBitacora = () => {
+  isBitacoraCustomer.value = true
+}
 
 const newActivity = ref({
   title: '',
@@ -105,13 +113,9 @@ const onSubmit = async() => {
   })
   
   closeNavigationDrawer()
-
-  // emit('refreshActivities') 
 }
 
-
 const discard = async() => {
- 
   Swal.fire({
     title: "Quieres dar de baja al cliente ?",
     icon: "warning",
@@ -131,21 +135,9 @@ const discard = async() => {
   })
 }
 
-const openHistory =  () => {
-  historyDrawerVisible.value = true
-}
-
 const complet = async () =>{
   emit('update:isDrawerOpen', false) // Cerrar el drawer
   emit('refreshActivities') 
-}
-
-const activitySwitch  = state =>{
-  return state === 'COMPLETED'
-}
-
-const handleDrawerModelValueUpdate = val => {
-  emit('update:isDrawerOpen', val)
 }
 
 const updateNewProperty = () => {
@@ -155,7 +147,6 @@ const updateNewProperty = () => {
 
 const formatDate = dateString => {
   const date = new Date(dateString)
-
   const day = date.getDate() // Día del mes
 
   const months = [
@@ -173,22 +164,18 @@ const formatDate = dateString => {
     'diciembre',
   ]
 
-  const month = months[date.getMonth()] // Mes en formato humano
+  const month = months[date.getMonth()] 
 
-  const hours = date.getHours().toString().padStart(2, '0') // Hora con dos dígitos
-  const minutes = date.getMinutes().toString().padStart(2, '0') // Minutos con dos dígitos
+  const hours = date.getHours().toString().padStart(2, '0') 
+  const minutes = date.getMinutes().toString().padStart(2, '0') 
 
-  // Retorna la fecha en formato: 7 de marzo, 14:00
   return `${day} de ${month}, ${hours}:${minutes}`
 }
 </script>
 
 <template>
-  <!-- Row to hold two VCard components side by side -->
   <VRow class="d-flex justify-space-between">
-    <!-- First VCard (Activities and Stage) -->
     <VCol cols="12">
-      <!-- Adjust the column size based on your needs -->
       <VCard v-if="isDrawerOpen">               
         <VCardText>
           <VWindow class="mx-2 my-2">
@@ -199,9 +186,17 @@ const formatDate = dateString => {
               >
                 <VRow>
                   <VCol cols="12">
-                    <span style="font-size: 18px; font-weight: 500;">
-                      Actividad
-                    </span>
+                    <div class="d-flex justify-space-between align-center">
+                      <span style="font-size: 18px; font-weight: 500;">
+                        Actividad
+                      </span>
+                      <VChip
+                        color="warning"
+                        @click="seeBitacora"
+                      >
+                        historial
+                      </VChip>
+                    </div>
                   </VCol>
                   <VCol cols="12">
                     <div class="mb-2">
@@ -211,6 +206,8 @@ const formatDate = dateString => {
                       <br>
                       <span style="font-size: 12px; font-weight: 500;">
                         {{ props.activitiesData.description }} 
+                        {{ opportunity.customer_id }} 
+
                       </span>
                     </div>
                     <VRadioGroup
@@ -353,6 +350,7 @@ const formatDate = dateString => {
         title="Reporte de Actividades"
       >
         <SellerReport />
+        <!-- <BitacoraCustomer customer="1" /> -->
       </VCard>
     </VCol>
 
@@ -364,4 +362,8 @@ const formatDate = dateString => {
       <CustomerHistory v-model:is-drawer-open="historyDrawerVisible" />
     </VCol>
   </VRow>
+  <DrawerBitacora
+    v-model:is-drawer-open="isBitacoraCustomer"
+    :customer="opportunity.customer_id"
+  />
 </template>
