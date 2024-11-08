@@ -34,6 +34,7 @@ export function useOpportunity (){
     try{
       const response = await allOpportunityKanban(userData.id)
 
+      console.log(response.data)
       kanban.value = response.data
       console.log(kanban)
     }catch(error){
