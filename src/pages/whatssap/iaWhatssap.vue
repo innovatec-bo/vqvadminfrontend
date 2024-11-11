@@ -93,7 +93,6 @@ onBeforeUnmount(() => {
     <!-- Componentes hijos -->
     <QrView
       v-if="!isAuthenticated"
-
       :qr-code="qrCode"
       class="full-component"
     />
