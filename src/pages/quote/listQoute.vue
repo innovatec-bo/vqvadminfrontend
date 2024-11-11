@@ -70,6 +70,7 @@ const AllQuote =  ()=>{
     itemsPerPage: itemsPerPage.value,
     search: searchQuery.value,
   })
+  console.log(quotes)
 }
 
 const debouncedFetch = debounce(AllQuote, 300)

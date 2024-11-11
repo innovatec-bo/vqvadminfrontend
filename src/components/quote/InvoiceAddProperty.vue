@@ -137,6 +137,7 @@ onMounted(async () => {
             outlined
             dense
             class="custom-salesforce-input"
+            type="number"
           />
         </VCol>
 

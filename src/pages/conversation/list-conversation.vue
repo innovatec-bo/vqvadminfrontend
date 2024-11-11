@@ -24,6 +24,10 @@ const headers = [
     key: 'isCustomer',
   },
   {
+    title: 'Cliente',
+    key: 'customerName',
+  },
+  {
     title: 'Ultimo Mensaje',
     key: 'last_message',
   },

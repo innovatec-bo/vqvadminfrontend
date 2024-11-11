@@ -278,7 +278,7 @@ watch(
               :items="props.opportunity.quotes
                 .filter(quote => quote.status === 'APPROVED') // Filtrar solo aprobados
                 .map(quote => ({
-                  title: quote.properties[0]?.title || quote.social_reason, // Mostrar el título de la primera propiedad
+                  title: quote.properties[0]?.code + ' | ' + quote.amount + '$ ' || quote.social_reason + ' | ' + quote.amount + '$ ' , 
                   value: quote.id
                 }))"
               outlined
