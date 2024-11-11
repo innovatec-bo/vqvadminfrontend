@@ -95,36 +95,22 @@ onBeforeMount(loadSale)
     <VRow>
       <VCol>
         <VCard>
-          <!-- SECTION Header -->
           <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row print-row">
-            <!-- 👉 Left Content -->
-            <div class="ma-sm-4">
-              <div class="d-flex align-center mb-4">
-                <!-- 👉 Logo -->
-                <VNodeRenderer
-                  :nodes="themeConfig.app.logo"
-                  class="me-3"
-                />
-                <!-- 👉 Title -->
-                <h6 class="font-weight-bold text-capitalize text-h4">
-                  {{ themeConfig.app.title }}
-                </h6>
-              </div>
-
-              <strong class="mb-0">
-                Formulario de Venta   
-              </strong>
-            </div>
-
-            <!-- 👉 Right Content -->
-            <div class="mt-4 ma-sm-4 text-end">
-              <!-- 👉 Issue Date -->
-              <p class="my-3">
-                <span>Fecha de Emisión: </span>
-                <span>{{ invoice.issuedDate }}</span>
-              </p>
-            </div>
+            <VNodeRenderer
+              :nodes="themeConfig.app.logo"
+              class="me-3"
+            />
+            <div class="font-weight-bold text-capitalize text-h4 d-flex align-center">
+              Formulario de Venta
+            </div> 
+            <VNodeRenderer
+              :nodes="themeConfig.app.logopora"
+              class="me-3"
+            />
           </VCardText>
+          <VRow class="my-2 justify-end">
+            <span class="mx-15">{{ invoice.issuedDate }}</span>
+          </VRow>
           <!-- !SECTION -->
           <VDivider />
           <!-- 👉 Payment Details -->
@@ -133,7 +119,7 @@ onBeforeMount(loadSale)
               <table>
                 <tbody>
                   <tr>
-                    <td class="pe-6 pb-1 font-bold">
+                    <td class="pe-5 pb-1 font-bold">
                       <Strong>
                         Nombre:
                       </Strong>
@@ -234,7 +220,8 @@ onBeforeMount(loadSale)
                 :key="property.id"
               >
                 <td>{{ property.code }}</td>
-                <td>{{ property.property_type }}</td>
+                <!-- <td>{{ property.property_type }}</td> -->
+                <td>{{ property.property_type == "DEPARTAMENT" ? 'Departamento': 'Parqueo' }}</td>
                 <td>{{ property.surface }} m²</td>
                 <td>
                   <template v-if="property.floor_park">
@@ -330,6 +317,37 @@ onBeforeMount(loadSale)
                 </tbody>
               </table>
             </div>
+          </VCardText>
+          <VCardText class="mt-10">
+            <VRow>
+              <VCol cols="4">
+                <VDivider
+                  class="mx-5 mb-2"
+                  thickness="3"
+                />
+                <p class="text-center">
+                  Firma Comprador
+                </p>
+              </VCol>
+              <VCol cols="4">
+                <VDivider
+                  class="mx-5 mb-2"
+                  thickness="3"
+                />
+                <p class="text-center">
+                  Firma Asesor Comercial
+                </p>
+              </VCol>
+              <VCol cols="4">
+                <VDivider
+                  class="mx-5 mb-2"
+                  thickness="3"
+                />
+                <p class="text-center">
+                  Firma Gerente de Ventas
+                </p>
+              </VCol>
+            </VRow>
           </VCardText>
           <VDivider />
           <div>

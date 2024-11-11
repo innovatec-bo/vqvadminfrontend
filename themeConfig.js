@@ -5,14 +5,20 @@ import { VIcon } from 'vuetify/components/VIcon'
 
 // ❗ Logo SVG must be imported with ?raw suffix
 import logo from '@images/logos/canzza.svg'
+import logopora from '@images/logos/logo-pora.svg'
+
 import { AppContentLayoutNav, ContentWidth, FooterType, NavbarType } from '@layouts/enums'
 
 export const { themeConfig, layoutConfig } = defineThemeConfig({
   app: {
-    title: 'PORA - Vertical Homes',
+    title: 'Canzza - Vertical Homes',
     logo: h('img', { src: logo, alt: 'Logo de Canzza', style: {
       width: 'auto', 
       height: 'auto',  
+    } }),
+    logopora: h('img', { src: logopora, alt: 'Logo de Pora', style: {
+      width: 'auto', 
+      height: 'auto', 
     } }),
     contentWidth: ContentWidth.Boxed,
     contentLayoutNav: AppContentLayoutNav.Vertical,

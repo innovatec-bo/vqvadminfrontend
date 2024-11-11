@@ -74,6 +74,7 @@ onMounted(async () => {
             dense
             class="custom-salesforce-input"
           />
+          {{ formatCurrency(invoice.initial_fee) }}   
         </VCol>
 
         <VCol

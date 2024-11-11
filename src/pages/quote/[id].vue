@@ -93,40 +93,23 @@ console.log(quote)
         <VCard>
           <!-- SECTION Header -->
           <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row print-row">
-            <!-- 👉 Left Content -->
-            <div class="ma-sm-4">
-              <div class="d-flex align-center mb-4">
-                <!-- 👉 Logo -->
-                <VNodeRenderer
-                  :nodes="themeConfig.app.logo"
-                  class="me-3"
-                />
-                <!-- 👉 Title -->
-                <h6 class="font-weight-bold text-capitalize text-h4">
-                  {{ themeConfig.app.title }}
-                </h6>
-              </div>
-
-              <strong class="mb-0">
-                Formulario de Cotización   
-              </strong>
-            </div>
-
-            <!-- 👉 Right Content -->
-            <div class="mt-4 ma-sm-4 text-end">
-              <!-- 👉 Issue Date -->
-              <p class="my-3">
-                <span>Fecha de Emisión: </span>
-                <span>{{ invoice.issuedDate }}</span>
-              </p>
-
-              <!-- 👉 Due Date -->
-              <p class="mb-0">
-                <span>Fecha de Validación: </span>
-                <span>{{ invoice.expiration_date }}</span>
-              </p>
-            </div>
+            <VNodeRenderer
+              :nodes="themeConfig.app.logo"
+              class="me-3"
+            />
+            <div class="font-weight-bold text-capitalize text-h4 d-flex align-center">
+              Formulario de Cotizacion
+            </div> 
+            <VNodeRenderer
+              :nodes="themeConfig.app.logopora"
+              class="me-3"
+            />
           </VCardText>
+          <VRow class="justify-end my-2 mx-5">
+            <span class="mx-2">Emitido: {{ invoice.issuedDate }}</span>
+            <span> | </span>
+            <span class="mx-2"> Valido: {{ invoice.expiration_date }}</span>
+          </VRow>
           <!-- !SECTION -->
           <VDivider />
           <!-- 👉 Payment Details -->
@@ -236,7 +219,7 @@ console.log(quote)
                 :key="property.id"
               >
                 <td>{{ property.code }}</td>
-                <td>{{ property.property_type }}</td>
+                <td>{{ property.property_type == "DEPARTAMENT" ? 'Departamento': 'Parqueo' }}</td>
                 <td>{{ property.surface }} m²</td>
                 <td>
                   <template v-if="property.floor_park">
@@ -289,7 +272,7 @@ console.log(quote)
           <!-- <VDivider class="mb-2" /> -->
           <!-- Total -->
           <VCardText class="d-flex justify-space-between flex-column flex-sm-row print-row">
-            <div class="my-2 mx-sm-4 text-base">
+            <div class="my-1 mx-sm-4 text-base">
               <div class="d-flex align-center mb-1">
                 <h6 class="text-base font-weight-medium me-1">
                   Asesor Comercial:
@@ -332,6 +315,28 @@ console.log(quote)
                 </tbody>
               </table>
             </div>
+          </VCardText>
+          <VCardText class="mt-8">
+            <VRow>
+              <VCol cols="6">
+                <VDivider
+                  class="mx-5 mb-2"
+                  thickness="3"
+                />
+                <p class="text-center">
+                  Firma Comprador
+                </p>
+              </VCol>
+              <VCol cols="6">
+                <VDivider
+                  class="mx-5 mb-2"
+                  thickness="3"
+                />
+                <p class="text-center">
+                  Firma Asesor Comercial
+                </p>
+              </VCol>
+            </VRow>
           </VCardText>
           <VDivider />
           <div>
