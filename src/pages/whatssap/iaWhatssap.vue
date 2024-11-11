@@ -36,7 +36,7 @@ onMounted(() => {
   })
 
   // Recibir código QR
-  socket.on('qr', qr => {
+  socket.on('qr-whatssap', qr => {
     qrCode.value = qr
     console.log("QR Code recibido")
   })
@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
 
     <!-- Componentes hijos -->
     <QrView
-      v-if="!isAuthenticated"
+      v-if="!isAuthenticated && qrCode"
       :qr-code="qrCode"
       class="full-component"
     />
