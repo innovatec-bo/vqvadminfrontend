@@ -32,6 +32,9 @@ const invoice = ref({
   contract_signing_date: null,
   amount: null,
   initial_fee: null,
+
+  // percentage_initial_fee: null,
+
   balance: null,
   opportunity_id: null,
   properties: [
@@ -69,6 +72,9 @@ const loadSale = async () => {
       contract_signing_date: '22-10-2023',
       amount: sale.value.amount,
       initial_fee: sale.value.initial_fee,
+
+      // percentage_initial_fee: quote.value.percentage_initial_fee,
+
       balance: sale.value.balance,
       opportunity_id: sale.value.opportunity_id,
       properties: sale.value.properties,
@@ -118,7 +124,7 @@ onBeforeMount(loadSale)
           <VDivider />
           <!-- 👉 Payment Details -->
           <VCardText class="d-flex justify-space-between flex-wrap flex-column flex-sm-row print-row">
-            <div class="ma-sm-4">
+            <div class="ma-sm-2">
               <table>
                 <tbody>
                   <tr>
@@ -157,7 +163,7 @@ onBeforeMount(loadSale)
               </table>
             </div>
 
-            <div class="mt-2 ma-sm-4">
+            <div class=" ma-sm-2">
               <table>
                 <tbody>
                   <tr>
@@ -234,7 +240,7 @@ onBeforeMount(loadSale)
                     {{ property.floor_departmennt }}
                   </template>
                 </td>
-                <td>
+                <td style="font-size: 13px;">
                   {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada,' : 'Orientación sur': "" }}
                   {{ property.number_bedrooms ? property.number_bedrooms + ' Dormitorios' : '' }}
                   {{ property.cover ? property.cover : '' }}
@@ -298,6 +304,14 @@ onBeforeMount(loadSale)
                         <p class="mb-2">
                           Saldo por Pagar {{ ((invoice.amount- invoice.initial_fee ) / invoice.amount )* 100 }}% :
                         </p>
+                        <!--
+                          <p class="mb-2">
+                          Anticipo {{ invoice.percentage_initial_fee }}% :
+                          </p>
+                          <p class="mb-2">
+                          Saldo por Pagar {{ 100 -invoice.percentage_initial_fee }}% :
+                          </p> 
+                        -->
                         <p class="mb-2">
                           Precio Contrato:
                         </p>
