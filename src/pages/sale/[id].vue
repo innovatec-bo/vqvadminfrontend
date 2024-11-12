@@ -100,7 +100,7 @@ onBeforeMount(loadSale)
               :nodes="themeConfig.app.logo"
               class="me-3"
             />
-            <div class="font-weight-bold text-capitalize text-h4 d-flex align-center">
+            <div class="font-weight-bold  text-h4 d-flex align-center">
               Formulario de Venta
             </div> 
             <VNodeRenderer
@@ -262,13 +262,13 @@ onBeforeMount(loadSale)
                 <td>
                   {{ invoice.payment_method == 'CASH' ? 'Contado': invoice.payment_method == 'BANKCREDIT' ? 'Credito Bancario': invoice.payment_method == 'DIRECTCREDIT' ? 'Credito Directo': '' }}
                 </td>
-                <td>
+                <td style="font-size: 14px;">
                   {{ formatCurrency(property.pivot_price) }}
                 </td>
-                <td colspan="1">
+                <td style="font-size: 14px;">
                   {{ formatCurrency(property.pivot_price_it) }}
                 </td>
-                <td colspan="1">
+                <td style="font-size: 14px;">
                   {{ formatCurrency(property.pivot_price_contrato) }}
                 </td>
               </tr>

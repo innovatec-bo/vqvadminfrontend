@@ -49,7 +49,7 @@ const calculatedAmount = totalAmount => {
         :nodes="themeConfig.app.logo"
         class="me-3"
       />
-      <h4 class="font-weight-bold text-capitalize text-h3 d-flex  align-center">
+      <h4 class="font-weight-bold  text-h3 d-flex  align-center">
         Formulario de Cotizacion
       </h4>
       <VNodeRenderer
@@ -72,10 +72,7 @@ const calculatedAmount = totalAmount => {
         </span>
       </div>
       <div class="d-flex align-center justify-sm-end ">
-        <span
-          class="mx-2"
-          style="inline-size: 6rem;"
-        >Vigente hasta  </span>
+        <span class="mx-2">Valido </span>
         <span style="inline-size: 9.5rem;">
           <AppDateTimePicker
             v-model="props.data.expiration_date"
