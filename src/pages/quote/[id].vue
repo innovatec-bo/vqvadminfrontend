@@ -65,7 +65,7 @@ const loadQuote = async () => {
         email: quote.value.email,
       },
       observations: quote.value.observations,
-      payment_method: 'Tarjeta de crédito',
+      payment_method: quote.value.payment_method,
       contract_signing_date: '22-10-2023',
       amount: quote.value.amount,
       initial_fee: quote.value.initial_fee,
@@ -76,10 +76,6 @@ const loadQuote = async () => {
   } catch (error) {
     console.error('Error al obtener la cotización:', error)
   }
-}
-
-const printInvoice = () => {
-  window.print()
 }
 
 onBeforeMount(loadQuote)
@@ -190,8 +186,6 @@ console.log(quote)
               </table>
             </div>
           </VCardText>
-
-          <!-- 👉 Table -->
           
           <VTable class="invoice-preview-table">
             <thead>
@@ -255,7 +249,7 @@ console.log(quote)
                 :key="'price-'+property.id"
               >
                 <td>
-                  {{ invoice.payment_method }}
+                  {{ invoice.payment_method == 'CASH' ? 'Contado': invoice.payment_method == 'BANKCREDIT' ? 'Credito Bancario': invoice.payment_method == 'DIRECTCREDIT' ? 'Credito Directo': '' }}
                 </td>
                 <td>
                   {{ formatCurrency(property.pivot_price) }}
@@ -269,7 +263,6 @@ console.log(quote)
               </tr>
             </tbody>
           </VTable>
-          <!-- <VDivider class="mb-2" /> -->
           <!-- Total -->
           <VCardText class="d-flex justify-space-between flex-column flex-sm-row print-row">
             <div class="my-1 mx-sm-4 text-base">

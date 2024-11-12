@@ -34,12 +34,12 @@ const headers = [
     key: 'email',
   },
   {
-    title: 'Estado',
-    key: 'status',
-  },
-  {
     title: 'Total',
     key: 'amount',
+  },
+  {
+    title: 'Estado',
+    key: 'status',
   },
   {
     title: 'Accion',
@@ -48,10 +48,7 @@ const headers = [
 ]
 
 const updateOptions = options => {
-  page.value = options.page
-
-  // sortBy.value = options.sortBy[0]?.key
-  // orderBy.value = options.sortBy[0]?.order
+  page.value = options.page  
 }
 
 const statusQuote = async (quoteId, statusquote) => {
@@ -80,7 +77,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 
 <template>
   <div>
-    <VCard>
+    <VCard title="Lista de Cotizaciones">
       <VCardText>
         <div class="d-flex justify-space-between flex-wrap gap-y-4">
           <AppTextField
@@ -124,26 +121,38 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
         class="text-no-wrap"
         @update:options="updateOptions"
       >
+        <template #item.amount="{ item }">
+          <div class="d-flex gap-x-2">
+            {{ formatCurrency(item.amount ) }} 
+          </div>
+        </template>
         <template #item.status="{ item }">
           <div class="d-flex gap-x-2">
-            {{ item.status === 'APPROVED' ? 'Aprovado' : 'No Aprovado' }}
+            {{ item.status === 'APPROVED' ? 'Aprobado' : 'No Aprobado' }}
           </div>
         </template>
         <!-- Actions -->
        
         <template #item.action="{ item }">
           <div class="d-flex items-center gap-x-2">
-            <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">
-              <IconBtn>
-                <VIcon icon="tabler-eye" />
-              </IconBtn>
-            </RouterLink>
             <VCheckbox
               v-model="item.status"
               true-value="APPROVED"
               false-value="NOT_APPROVED"
               @click="statusQuote(item.id, item.status)" 
-            />
+            >
+              <VTooltip
+                activator="parent"
+                location="top"
+              >
+                {{ item.status == "NOT_APPROVED"? 'Aprobar Cotización ': 'Cancelar Aprobacion' }}
+              </VTooltip>
+            </VCheckbox>
+            <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">
+              <IconBtn>
+                <VIcon icon="tabler-eye" />
+              </IconBtn>
+            </RouterLink>
           </div>
         </template>
 

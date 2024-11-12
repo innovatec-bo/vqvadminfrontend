@@ -65,7 +65,7 @@ const loadSale = async () => {
         email: sale.value.email,
       },
       observations: sale.value.observations,
-      payment_method: 'Tarjeta de crédito',
+      payment_method: sale.value.payment_method,
       contract_signing_date: '22-10-2023',
       amount: sale.value.amount,
       initial_fee: sale.value.initial_fee,
@@ -109,7 +109,10 @@ onBeforeMount(loadSale)
             />
           </VCardText>
           <VRow class="my-2 justify-end">
-            <span class="mx-15">{{ invoice.issuedDate }}</span>
+            <span class="mx-2">
+              Emitido:
+            </span>
+            <span class="mr-10">{{ invoice.issuedDate }}</span>
           </VRow>
           <!-- !SECTION -->
           <VDivider />
@@ -121,7 +124,7 @@ onBeforeMount(loadSale)
                   <tr>
                     <td class="pe-5 pb-1 font-bold">
                       <Strong>
-                        Nombre:
+                        Cliente:
                       </Strong>
                     </td>
                     <td class="pb-1">
@@ -257,7 +260,7 @@ onBeforeMount(loadSale)
                 :key="'price-'+property.id"
               >
                 <td>
-                  {{ invoice.payment_method }}
+                  {{ invoice.payment_method == 'CASH' ? 'Contado': invoice.payment_method == 'BANKCREDIT' ? 'Credito Bancario': invoice.payment_method == 'DIRECTCREDIT' ? 'Credito Directo': '' }}
                 </td>
                 <td>
                   {{ formatCurrency(property.pivot_price) }}

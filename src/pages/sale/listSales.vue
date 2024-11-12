@@ -20,7 +20,7 @@ const orderBy = ref()
 const headers = [
   { title: '', key: 'data-table-expand' },
   { title: 'Nit/CI', key: 'nit' },
-  { title: 'Razón Social', key: 'social_reason' },
+  { title: 'Cliente', key: 'social_reason' },
   { title: 'Método de Pago', key: 'payment_method' },
   { title: 'Total de Contrato', key: 'amount' },
   { title: 'Acción', key: 'action' },
@@ -94,7 +94,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
         <template #expanded-row="{ item }">
           <tr class="v-data-table__tr">
             <td :colspan="headers.length">
-              <div class="mb-2">
+              <div class="mb-2 mx-10">
                 <strong>Propiedades:</strong>
                 <ul>
                   <li
@@ -105,25 +105,25 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
                   </li>
                 </ul>
               </div>
-              <div class="mb-2">
+              <div class="mb-2 mx-10">
                 <strong>Pagos Iniciales:</strong>
                 <ul>
                   <li
                     v-for="payment in item.initial_payments"
                     :key="payment.id"
                   >
-                    Fecha: {{ payment.date }}, Monto: {{ payment.amount }}, Pagado: {{ payment.is_paid ? 'Sí' : 'No' }}
+                    Fecha: {{ payment.date }} | Monto: {{ formatCurrency(payment.amount) }} | Pagado: {{ payment.is_paid ? 'Sí' : 'No' }}
                   </li>
                 </ul>
               </div>
-              <div>
+              <div class="mb-2 mx-10">
                 <strong>Pagos de Saldo:</strong>
                 <ul>
                   <li
                     v-for="balance in item.balance_payments"
                     :key="balance.id"
                   >
-                    Fecha: {{ balance.date }}, Monto: {{ balance.amount }}, Pagado: {{ balance.is_paid ? 'Sí' : 'No' }}
+                    Fecha: {{ balance.date }} | Monto: {{ formatCurrency(balance.amount ) }} | Pagado: {{ balance.is_paid ? 'Sí' : 'No' }}
                   </li>
                 </ul>
               </div>
@@ -171,7 +171,8 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
         </template>
 
         <template #item.amount="{ item }">
-          {{ item.amount }} $
+          <!-- {{ item.amount }} $ -->
+          {{ formatCurrency(item.amount ) }}
         </template>
 
         <template #item.action="{ item }">

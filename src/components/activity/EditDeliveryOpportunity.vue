@@ -67,7 +67,7 @@ const markProcedureAsDone = async (procedureId, isChecked) => {
               {{ property.project_title }} | {{ property.title }}
             </VListItemTitle>
             <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span>$ {{ property.pivot_price }}</span>
+              <span> {{ formatCurrency(property.pivot_price ) }} </span>
             </VListItemSubtitle>
           </VCol>
         </div>
@@ -103,6 +103,12 @@ const markProcedureAsDone = async (procedureId, isChecked) => {
           />
           {{ procedure.title }}
         </VChip>
+        <VTooltip
+          activator="parent"
+          location="top"
+        >
+          {{ procedure.pivot.is_check? 'Deshacer Proceso': 'Confirmar Proceso' }}
+        </VTooltip>
       </div>
     </div>
     <div v-else>

@@ -115,6 +115,12 @@ const markProcedureAsDone = async procedure => {
           />
           {{ procedure.title }}
         </VChip>
+        <VTooltip
+          activator="parent"
+          location="top"
+        >
+          {{ procedure.pivot.is_check? 'Deshacer Proceso': 'Confirmar Proceso' }}
+        </VTooltip>
       </div>
     </div>
     
@@ -139,19 +145,14 @@ const markProcedureAsDone = async procedure => {
         <thead>
           <tr>
             <th>
-              Nombre
-            </th>
-            <th>
               Propiedad
             </th>
             <th>
               Fecha
             </th>
-            <!--
-              <th>
+            <th>
               Monto
-              </th> 
-            -->
+            </th>
             <th />
           </tr>
         </thead>
@@ -162,19 +163,16 @@ const markProcedureAsDone = async procedure => {
             :key="item.id"
           >
             <td>
-              {{ item.social_reason }}
-            </td>
-            <td>
               {{ item.properties[0].title }}
             </td>
             <td>
               {{ item.created_at }}
             </td>
-            <!--
-              <td>
-              {{ item.amount }}
-              </td> 
-            -->
+            
+            <td>
+              {{ formatCurrency(item.amount ) }} 
+            </td> 
+           
             <td>
               <!-- Todo: ponerle rutas  para ver la cotizacion por id -->
               <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">
