@@ -26,12 +26,16 @@ const invoice = ref({
     address: null,
     workplace: null,
     email: null,
+    landline: null,
+
   },
   observations: null,
   payment_method: null,
   contract_signing_date: null,
   amount: null,
   initial_fee: null,
+  percentage_initial_fee: null,
+
   balance: null,
   opportunity_id: null,
   properties: [
@@ -63,12 +67,14 @@ const loadQuote = async () => {
         address: quote.value.address,
         workplace: quote.value.workplace,
         email: quote.value.email,
+        landline: quote.value.landline,
       },
       observations: quote.value.observations,
       payment_method: quote.value.payment_method,
       contract_signing_date: '22-10-2023',
       amount: quote.value.amount,
       initial_fee: quote.value.initial_fee,
+      percentage_initial_fee: quote.value.percentage_initial_fee,
       balance: quote.value.balance,
       opportunity_id: quote.value.opportunity_id,
       properties: quote.value.properties,
@@ -88,17 +94,19 @@ console.log(quote)
       <VCol>
         <VCard>
           <!-- SECTION Header -->
-          <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row print-row">
+          <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row align-center">
             <VNodeRenderer
               :nodes="themeConfig.app.logo"
               class="me-3"
+              style="align-self: center;"
             />
             <div class="font-weight-bold  text-h3 d-flex align-center">
-              Formulario de Cotizacion
+              Formulario de Cotización
             </div> 
             <VNodeRenderer
               :nodes="themeConfig.app.logopora"
               class="me-3"
+              style="align-self: center;"
             />
           </VCardText>
           <VRow class="justify-end my-2 mx-5">
@@ -109,8 +117,11 @@ console.log(quote)
           <!-- !SECTION -->
           <VDivider />
           <!-- 👉 Payment Details -->
-          <VCardText class="d-flex justify-space-between flex-wrap flex-column flex-sm-row print-row">
-            <div class="ma-sm-4">
+          <VCardText
+            class="d-flex justify-space-between flex-wrap flex-column flex-sm-row print-row"
+            style="font-size: 14px;"
+          >
+            <div class="ma-sm-2">
               <table>
                 <tbody>
                   <tr>
@@ -145,11 +156,21 @@ console.log(quote)
                       {{ invoice.customer.address }}
                     </td>
                   </tr>
+                  <tr>
+                    <td class="pe-6 pb-1">
+                      <strong>
+                        Teléfono fijo:
+                      </strong>
+                    </td>
+                    <td class="pb-1">
+                      {{ invoice.customer.landline }}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
 
-            <div class="mt-2 ma-sm-4">
+            <div class=" ma-sm-2">
               <table>
                 <tbody>
                   <tr>
@@ -223,9 +244,9 @@ console.log(quote)
                     {{ property.floor_departmennt }}
                   </template>
                 </td>
-                <td>
+                <td style="font-size: 13px;">
                   {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada,' : 'Orientación sur': "" }}
-                  {{ property.number_bedrooms ? property.number_bedrooms + ' Dormitorios' : '' }}
+                  {{ property.number_bedrooms ? property.number_bedrooms + ' Dormitorio(s)' : '' }}
                   {{ property.cover ? property.cover : '' }}
                 </td>
               </tr>
@@ -281,10 +302,10 @@ console.log(quote)
                     <td class="text-end">
                       <div class="me-5">
                         <p class="mb-2">
-                          Anticipo{{ (invoice.initial_fee / invoice.amount )* 100 }}% :
+                          Anticipo {{ invoice.percentage_initial_fee }}% :
                         </p>
                         <p class="mb-2">
-                          Saldo por Pagar{{ (invoice.balance / invoice.amount )* 100 }}% :
+                          Saldo por Pagar {{ 100 -invoice.percentage_initial_fee }}% :
                         </p>
                         <p class="mb-2">
                           Precio Contrato:

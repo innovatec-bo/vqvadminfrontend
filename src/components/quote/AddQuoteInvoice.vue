@@ -33,6 +33,9 @@ const calculatedAmount = totalAmount => {
   // eslint-disable-next-line vue/no-mutating-props, camelcase
   props.data.initial_fee = (totalAmount * selectedPercentage.value) / 100 
 
+  // eslint-disable-next-line vue/no-mutating-props, camelcase
+  props.data.percentage_initial_fee = selectedPercentage.value
+
   // eslint-disable-next-line vue/no-mutating-props
   props.data.balance = totalAmount - props.data.initial_fee
 
@@ -44,10 +47,11 @@ const calculatedAmount = totalAmount => {
 <template>
   <VCard>
     <!-- SECTION Header -->
-    <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row">
+    <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row align-center">
       <VNodeRenderer
         :nodes="themeConfig.app.logo"
         class="me-3"
+        style="align-self: center;"
       />
       <h4 class="font-weight-bold  text-h3 d-flex  align-center">
         Formulario de Cotizacion
@@ -55,6 +59,7 @@ const calculatedAmount = totalAmount => {
       <VNodeRenderer
         :nodes="themeConfig.app.logopora"
         class="me-3"
+        style="align-self: center;"
       />
     </VCardText>
 
@@ -188,6 +193,7 @@ const calculatedAmount = totalAmount => {
           style="padding-block: 0;padding-inline: 8px;"
         >
           <AppTextField
+            v-model="props.data.landline"
             label="Teléfono Fijo"
             placeholder="33557292"
             outlined
@@ -235,13 +241,12 @@ const calculatedAmount = totalAmount => {
         >
           <AppTextField
             v-model="props.data.amount"
-            :value="formatNumber(props.data.amount)"
+            :value="props.data.amount"
             :rules="[requiredValidator]"
             label="Total *"
             placeholder="1000.000,00"
             outlined
             dense
-            disabled
           />
         </VCol>
         <VCol
