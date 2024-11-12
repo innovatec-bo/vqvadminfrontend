@@ -213,7 +213,7 @@ onBeforeMount(loadSale)
                   PISO
                 </th>
                 <th scope="col">
-                  CARACTERISTICAS
+                  CARACTERÍSTICAS
                 </th>
               </tr>
             </thead>
@@ -235,15 +235,15 @@ onBeforeMount(loadSale)
                   </template>
                 </td>
                 <td>
-                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada' : 'Orientación sur': "" }}
-                  {{ property.number_bedrooms ? ', ' + property.number_bedrooms + ' Dormitorios' : '' }}
+                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada,' : 'Orientación sur': "" }}
+                  {{ property.number_bedrooms ? property.number_bedrooms + ' Dormitorios' : '' }}
                   {{ property.cover ? property.cover : '' }}
                 </td>
               </tr>
               <br>
               <tr>
                 <th scope="col">
-                  METODO DE PAGO
+                  MÉTODO DE PAGO
                 </th>
                 <th scope="col">
                   PRECIO
