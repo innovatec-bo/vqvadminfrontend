@@ -420,7 +420,6 @@ watch(
             <AppSelect
               v-model="salesData.payment_method"
               :rules="[requiredValidator]"
-
               label="Tipo de Pago *"
               placeholder="Seleccione "
               :items="Object.values(PaymentMethod)"

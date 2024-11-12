@@ -71,6 +71,7 @@ declare global {
   const formatCurrency: typeof import('./src/utils/currencyFormatter.js')['formatCurrency']
   const formatDate: typeof import('./src/@core/utils/formatters.js')['formatDate']
   const formatDateToMonthShort: typeof import('./src/@core/utils/formatters.js')['formatDateToMonthShort']
+  const formatNumber: typeof import('./src/utils/numberFormatter.js')['formatNumber']
   const getActivePinia: typeof import('pinia')['getActivePinia']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
@@ -458,6 +459,7 @@ declare module 'vue' {
     readonly formatCurrency: UnwrapRef<typeof import('./src/utils/currencyFormatter.js')['formatCurrency']>
     readonly formatDate: UnwrapRef<typeof import('./src/@core/utils/formatters.js')['formatDate']>
     readonly formatDateToMonthShort: UnwrapRef<typeof import('./src/@core/utils/formatters.js')['formatDateToMonthShort']>
+    readonly formatNumber: UnwrapRef<typeof import('./src/utils/numberFormatter.js')['formatNumber']>
     readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>

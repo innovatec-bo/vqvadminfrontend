@@ -67,6 +67,7 @@ onMounted(async () => {
         >
           <AppTextField
             v-model="property.price"
+            :value="formatNumber(property.price)"
             :rules="[requiredValidator]"
             label="Precio *"
             placeholder="$"
@@ -84,6 +85,7 @@ onMounted(async () => {
         >
           <AppTextField
             v-model="property.price_it"
+            :value="formatNumber(property.price_it)"
             :rules="[requiredValidator]"
             label="3% (IT) *"
             placeholder="%"
@@ -100,6 +102,7 @@ onMounted(async () => {
         >
           <AppTextField
             v-model="property.price_contrato"
+            :value="formatNumber(property.price_contrato)"
             :rules="[requiredValidator]"
             label="Precio Contrato *"
             placeholder="Escribe el precio"

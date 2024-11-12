@@ -238,13 +238,13 @@ const calculatedAmount = totalAmount => {
         >
           <AppTextField
             v-model="props.data.amount"
+            :value="formatNumber(props.data.amount)"
             :rules="[requiredValidator]"
-
             label="Total *"
-            placeholder="Placeholder Text"
+            placeholder="1000.000,00"
             outlined
             dense
-            class="custom-salesforce-input"
+            disabled
           />
         </VCol>
         <VCol
