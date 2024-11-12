@@ -270,7 +270,7 @@ watch(searchQuery, newValue => {
                         md="5"
                       >
                         <VListItemSubtitle class="text-left">
-                          <strong>
+                          <strong style="font-size: 12px;">
                             Departamento
                           </strong>
                         </VListItemSubtitle>

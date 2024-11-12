@@ -11,6 +11,6 @@ export function formatCurrency(value) {
     .replace('.', ',') // Primero cambia el punto decimal a coma
     .replace(/\B(?=(\d{3})+(?!\d))/g, '.') // Luego añade puntos como separadores de miles
   
-  return `$${formattedValue}`
+  return `$us ${formattedValue}`
 }
   

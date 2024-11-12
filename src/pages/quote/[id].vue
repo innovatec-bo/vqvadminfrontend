@@ -65,7 +65,7 @@ const loadQuote = async () => {
         email: quote.value.email,
       },
       observations: quote.value.observations,
-      payment_method: 'Tarjeta de crédito',
+      payment_method: quote.value.payment_method,
       contract_signing_date: '22-10-2023',
       amount: quote.value.amount,
       initial_fee: quote.value.initial_fee,
@@ -76,10 +76,6 @@ const loadQuote = async () => {
   } catch (error) {
     console.error('Error al obtener la cotización:', error)
   }
-}
-
-const printInvoice = () => {
-  window.print()
 }
 
 onBeforeMount(loadQuote)
@@ -97,7 +93,7 @@ console.log(quote)
               :nodes="themeConfig.app.logo"
               class="me-3"
             />
-            <div class="font-weight-bold text-capitalize text-h4 d-flex align-center">
+            <div class="font-weight-bold  text-h3 d-flex align-center">
               Formulario de Cotizacion
             </div> 
             <VNodeRenderer
@@ -108,7 +104,7 @@ console.log(quote)
           <VRow class="justify-end my-2 mx-5">
             <span class="mx-2">Emitido: {{ invoice.issuedDate }}</span>
             <span> | </span>
-            <span class="mx-2"> Valido: {{ invoice.expiration_date }}</span>
+            <span class="mx-2"> Válido: {{ invoice.expiration_date }}</span>
           </VRow>
           <!-- !SECTION -->
           <VDivider />
@@ -120,7 +116,7 @@ console.log(quote)
                   <tr>
                     <td class="pe-6 pb-1 font-bold">
                       <Strong>
-                        Nombre:
+                        Cliente:
                       </Strong>
                     </td>
                     <td class="pb-1">
@@ -179,7 +175,7 @@ console.log(quote)
                   <tr>
                     <td class="pe-6 pb-1">
                       <strong>
-                        Trabajo:
+                        Lugar de Trabajo:
                       </strong>
                     </td>
                     <td class="pb-1">
@@ -190,8 +186,6 @@ console.log(quote)
               </table>
             </div>
           </VCardText>
-
-          <!-- 👉 Table -->
           
           <VTable class="invoice-preview-table">
             <thead>
@@ -209,7 +203,7 @@ console.log(quote)
                   PISO
                 </th>
                 <th scope="col">
-                  CARACTERISTICAS
+                  CARACTERÍSTICAS
                 </th>
               </tr>
             </thead>
@@ -230,15 +224,15 @@ console.log(quote)
                   </template>
                 </td>
                 <td>
-                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada' : 'Orientación sur': "" }}
-                  {{ property.number_bedrooms ? ', ' + property.number_bedrooms + ' Dormitorios' : '' }}
+                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada,' : 'Orientación sur': "" }}
+                  {{ property.number_bedrooms ? property.number_bedrooms + ' Dormitorios' : '' }}
                   {{ property.cover ? property.cover : '' }}
                 </td>
               </tr>
               <br>
               <tr>
                 <th scope="col">
-                  METODO DE PAGO
+                  MÉTODO DE PAGO
                 </th>
                 <th scope="col">
                   PRECIO
@@ -255,21 +249,20 @@ console.log(quote)
                 :key="'price-'+property.id"
               >
                 <td>
-                  {{ invoice.payment_method }}
+                  {{ invoice.payment_method == 'CASH' ? 'Contado': invoice.payment_method == 'BANKCREDIT' ? 'Credito Bancario': invoice.payment_method == 'DIRECTCREDIT' ? 'Credito Directo': '' }}
                 </td>
-                <td>
+                <td style="font-size: 14px;">
                   {{ formatCurrency(property.pivot_price) }}
                 </td>
-                <td colspan="1">
+                <td style="font-size: 14px;">
                   {{ formatCurrency(property.pivot_price_it) }}
                 </td>
-                <td colspan="1">
+                <td style="font-size: 14px;">
                   {{ formatCurrency(property.pivot_price_contrato) }}
                 </td>
               </tr>
             </tbody>
           </VTable>
-          <!-- <VDivider class="mb-2" /> -->
           <!-- Total -->
           <VCardText class="d-flex justify-space-between flex-column flex-sm-row print-row">
             <div class="my-1 mx-sm-4 text-base">
@@ -288,10 +281,10 @@ console.log(quote)
                     <td class="text-end">
                       <div class="me-5">
                         <p class="mb-2">
-                          Anticipo {{ (invoice.initial_fee / invoice.amount )* 100 }}% :
+                          Anticipo{{ (invoice.initial_fee / invoice.amount )* 100 }}% :
                         </p>
                         <p class="mb-2">
-                          Saldo por Pagar {{ (invoice.balance / invoice.amount )* 100 }}% :
+                          Saldo por Pagar{{ (invoice.balance / invoice.amount )* 100 }}% :
                         </p>
                         <p class="mb-2">
                           Precio Contrato:
@@ -343,7 +336,7 @@ console.log(quote)
             <VCardText>
               <div class="d-flex mx-sm-3">
                 <span style="font-size: 12px;"><strong>
-                  El comprador deberá realizar todos los pagos acordados, en las cuentas indicadas de Canzza Desarrolladora Inmobiliaria S.R.L. y entregar el respectivo comprobante de depósito.
+                  El comprador deberá realizar todos los pagos acordados en las cuentas indicadas de Canzza Desarrolladora Inmobiliaria S.R.L. y entregar el respectivo comprobante de depósito.
                 </strong></span>
               </div>
             </VCardText>
@@ -351,7 +344,7 @@ console.log(quote)
             <VCardText>
               <div class="d-flex mx-sm-3">
                 <span style="font-size: 12px;"><strong>
-                  Todos los gastos administrativos, inscripción en derechos reales y honorarios profesionales para consolidar el derecho de propiedad a favor del comprador deben ser asumidos por el comprador.</strong></span>
+                  Todos los gastos administrativos, inscripción en Derechos Reales y honorarios profesionales para consolidar el derecho de propiedad a favor del comprador deben ser asumidos por el comprador.</strong></span>
               </div>
             </VCardText>
             <VDivider />

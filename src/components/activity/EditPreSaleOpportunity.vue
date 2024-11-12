@@ -122,6 +122,12 @@ const statusQuote = async (quoteId, statusquote) => {
           />
           {{ procedure.title }}
         </VChip>
+        <VTooltip
+          activator="parent"
+          location="top"
+        >
+          {{ procedure.pivot.is_check? 'Deshacer Proceso': 'Confirmar Proceso' }}
+        </VTooltip>
       </div>
     </div>
     <div v-else>
@@ -146,19 +152,14 @@ const statusQuote = async (quoteId, statusquote) => {
         <thead>
           <tr>
             <th>
-              Nombre
-            </th>
-            <th>
               Propiedad
             </th>
             <th>
               Fecha
             </th>
-            <!--
-              <th>
+            <th>
               Monto
-              </th> 
-            -->
+            </th>
             <th />
           </tr>
         </thead>
@@ -169,13 +170,13 @@ const statusQuote = async (quoteId, statusquote) => {
             :key="item.id"
           >
             <td>
-              {{ item.social_reason }}
-            </td>
-            <td>
               {{ item.properties[0].title }}
             </td>
             <td>
               {{ item.created_at }}
+            </td>
+            <td>
+              {{ formatCurrency(item.amount ) }} 
             </td>
             <td>
               <!-- Todo: aprobar  -->
@@ -190,7 +191,7 @@ const statusQuote = async (quoteId, statusquote) => {
                     activator="parent"
                     location="top"
                   >
-                    Aprobar Cotización 
+                    {{ item.status == "NOT_APPROVED"? 'Aprobar Cotización ': 'Cancelar Aprobacion' }}
                   </VTooltip>
                 </VCheckbox>
 

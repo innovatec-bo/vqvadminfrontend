@@ -6,6 +6,7 @@ import { PropertyType } from '@/enums/PropertyType'
 import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { VCol } from 'vuetify/lib/components/index.mjs'
 import InvoiceAddMoney from '../quote/InvoiceAddMoney.vue'
 import InvoiceAddPropertySale from './InvoiceAddPropertySale.vue'
 
@@ -256,20 +257,40 @@ watch(
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
     <VCard>
       <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row">
-        <div class="ma-sm-4">
-          <div class="d-flex align-center mb-6">
-            <VNodeRenderer
-              :nodes="themeConfig.app.logo"
-              class="me-3"
+        <VNodeRenderer
+          :nodes="themeConfig.app.logo"
+          class="me-3"
+        />
+        <h4 class="font-weight-bold  text-h3 d-flex  align-center">
+          Formulario de Ventas
+        </h4>
+        <VNodeRenderer
+          :nodes="themeConfig.app.logopora"
+          class="me-3"
+        />
+      </VCardText>  
+      <VRow class=" justify-end ma-sm-2">
+        <div class="d-flex align-center justify-sm-end mx-5 ">
+          <span style="inline-size: 9.5rem;">
+            <VTextField
+              v-model="salesData.creation_date"
+              label="Emisión"
+              type="date"
+              outlined
+              :rules="[requiredValidator]"
             />
-            <h6 class="font-weight-bold text-capitalize text-h4">
-              {{ themeConfig.app.title }}
-            </h6>
-          </div>
-          <H3>Formulario de Venta</H3>
+          </span>
         </div>
-        <div class="mt-4 ma-sm-4">
-          <div class="d-flex align-center justify-sm-end mb-3">
+      </Vrow>
+
+      <VDivider thickness="12" />
+      <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row gap-y-5 gap-4">
+        <VRow>
+          <VCol
+            cols="12"
+            sm="6"
+            style="padding-block: 0;padding-inline: 8px;"
+          >
             <AppAutocomplete
               v-model="salesData.quote_id"
               :rules="[requiredValidator]"
@@ -283,22 +304,8 @@ watch(
                 }))"
               outlined
             />
-          </div>  
-          <div class="d-flex align-center justify-sm-end mb-3">
-            <VTextField
-              v-model="salesData.creation_date"
-              label="emisión"
-              type="date"
-                
-              outlined
-              :rules="[requiredValidator]"
-            />
-          </div>       
-        </div>
-      </VCardText>
-      <VDivider thickness="12" />
-      <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row gap-y-5 gap-4">
-        <VRow>
+          </VCol>
+         
           <VCol
             cols="12"
             sm="8"
@@ -307,7 +314,7 @@ watch(
             <AppTextField
               v-model="salesData.social_reason"
               :rules="[requiredValidator]"
-              label="Razón social *"
+              label="Cliente *"
               placeholder="Canzza"
               outlined
               dense
@@ -420,7 +427,6 @@ watch(
             <AppSelect
               v-model="salesData.payment_method"
               :rules="[requiredValidator]"
-
               label="Tipo de Pago *"
               placeholder="Seleccione "
               :items="Object.values(PaymentMethod)"

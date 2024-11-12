@@ -65,7 +65,7 @@ const loadSale = async () => {
         email: sale.value.email,
       },
       observations: sale.value.observations,
-      payment_method: 'Tarjeta de crédito',
+      payment_method: sale.value.payment_method,
       contract_signing_date: '22-10-2023',
       amount: sale.value.amount,
       initial_fee: sale.value.initial_fee,
@@ -100,7 +100,7 @@ onBeforeMount(loadSale)
               :nodes="themeConfig.app.logo"
               class="me-3"
             />
-            <div class="font-weight-bold text-capitalize text-h4 d-flex align-center">
+            <div class="font-weight-bold  text-h3 d-flex align-center">
               Formulario de Venta
             </div> 
             <VNodeRenderer
@@ -109,7 +109,10 @@ onBeforeMount(loadSale)
             />
           </VCardText>
           <VRow class="my-2 justify-end">
-            <span class="mx-15">{{ invoice.issuedDate }}</span>
+            <span class="mx-2">
+              Emitido:
+            </span>
+            <span class="mr-10">{{ invoice.issuedDate }}</span>
           </VRow>
           <!-- !SECTION -->
           <VDivider />
@@ -121,7 +124,7 @@ onBeforeMount(loadSale)
                   <tr>
                     <td class="pe-5 pb-1 font-bold">
                       <Strong>
-                        Nombre:
+                        Cliente:
                       </Strong>
                     </td>
                     <td class="pb-1">
@@ -180,7 +183,7 @@ onBeforeMount(loadSale)
                   <tr>
                     <td class="pe-6 pb-1">
                       <strong>
-                        Trabajo:
+                        Lugar de Trabajo:
                       </strong>
                     </td>
                     <td class="pb-1">
@@ -210,7 +213,7 @@ onBeforeMount(loadSale)
                   PISO
                 </th>
                 <th scope="col">
-                  CARACTERISTICAS
+                  CARACTERÍSTICAS
                 </th>
               </tr>
             </thead>
@@ -232,15 +235,15 @@ onBeforeMount(loadSale)
                   </template>
                 </td>
                 <td>
-                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada' : 'Orientación sur': "" }}
-                  {{ property.number_bedrooms ? ', ' + property.number_bedrooms + ' Dormitorios' : '' }}
+                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada,' : 'Orientación sur': "" }}
+                  {{ property.number_bedrooms ? property.number_bedrooms + ' Dormitorios' : '' }}
                   {{ property.cover ? property.cover : '' }}
                 </td>
               </tr>
               <br>
               <tr>
                 <th scope="col">
-                  METODO DE PAGO
+                  MÉTODO DE PAGO
                 </th>
                 <th scope="col">
                   PRECIO
@@ -257,15 +260,15 @@ onBeforeMount(loadSale)
                 :key="'price-'+property.id"
               >
                 <td>
-                  {{ invoice.payment_method }}
+                  {{ invoice.payment_method == 'CASH' ? 'Contado': invoice.payment_method == 'BANKCREDIT' ? 'Credito Bancario': invoice.payment_method == 'DIRECTCREDIT' ? 'Credito Directo': '' }}
                 </td>
-                <td>
+                <td style="font-size: 14px;">
                   {{ formatCurrency(property.pivot_price) }}
                 </td>
-                <td colspan="1">
+                <td style="font-size: 14px;">
                   {{ formatCurrency(property.pivot_price_it) }}
                 </td>
-                <td colspan="1">
+                <td style="font-size: 14px;">
                   {{ formatCurrency(property.pivot_price_contrato) }}
                 </td>
               </tr>

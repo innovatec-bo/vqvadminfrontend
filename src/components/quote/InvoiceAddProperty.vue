@@ -133,11 +133,10 @@ onMounted(async () => {
             v-model="property.price"
             :rules="[requiredValidator]"
             label="Precio *"
-            placeholder="$"
+            placeholder="$us"
             outlined
             dense
             class="custom-salesforce-input"
-            type="number"
           />
         </VCol>
 

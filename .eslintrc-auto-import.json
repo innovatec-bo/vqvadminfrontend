@@ -386,6 +386,7 @@
     "showQuestionToast": true,
     "showSuccessToast": true,
     "showWarningToast": true,
-    "formatCurrency": true
+    "formatCurrency": true,
+    "formatNumber": true
   }
 }

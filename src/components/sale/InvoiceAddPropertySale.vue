@@ -69,12 +69,12 @@ onMounted(async () => {
             v-model="property.price"
             :rules="[requiredValidator]"
             label="Precio *"
-            placeholder="$"
+            placeholder="$us"
             outlined
             dense
             class="custom-salesforce-input"
           />
-          {{ formatCurrency(invoice.initial_fee) }}   
+          <!-- {{ formatCurrency(invoice.initial_fee) }}    -->
         </VCol>
 
         <VCol

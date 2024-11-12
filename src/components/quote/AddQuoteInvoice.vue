@@ -2,6 +2,7 @@
 import { PaymentMethod } from '@/enums/PaymentMethod'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { VRow } from 'vuetify/lib/components/index.mjs'
 import InvoiceAddMoney from './InvoiceAddMoney.vue'
 import InvoiceAddProperty from './InvoiceAddProperty.vue'
 
@@ -44,56 +45,45 @@ const calculatedAmount = totalAmount => {
   <VCard>
     <!-- SECTION Header -->
     <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row">
-      <div class="ma-sm-4">
-        <div class="d-flex align-center mb-6">
-          <VNodeRenderer
-            :nodes="themeConfig.app.logo"
-            class="me-3"
-          />
-          <h4 class="font-weight-bold text-capitalize text-h3">
-            {{ themeConfig.app.title }}
-          </h4>
-        </div>
-        <p class="mb-0">
-          Formulario de Cotización  
-        </p>
-      </div>
-      <!-- 👉 Right Content -->
-      <div class="mt-4 ma-sm-4">
-        <div class="d-flex align-center justify-sm-end mb-3">
-          <span
-            class="me-3"
-            style="inline-size: 6rem;"
-          >Emisión</span>
-          <span style="inline-size: 9.5rem;">
-            <AppDateTimePicker
-             
-              v-model="props.data.creation_date"
-              :rules="[requiredValidator]"
-              density="compact"
-              placeholder="YYYY-MM-DD"
-              :config="{ position: 'auto right' }"
-            />
-          </span>
-        </div>
-        <div class="d-flex align-center justify-sm-end mb-3">
-          <span
-            class="me-3"
-            style="inline-size: 6rem;"
-          >Vigente hasta</span>
-          <span style="inline-size: 9.5rem;">
-            <AppDateTimePicker
-              v-model="props.data.expiration_date"
-              :rules="[requiredValidator]"
-              density="compact"
-              placeholder="YYYY-MM-DD"
-              :config="{ position: 'auto right' }"
-            />
-          </span>
-        </div>
-      </div>
+      <VNodeRenderer
+        :nodes="themeConfig.app.logo"
+        class="me-3"
+      />
+      <h4 class="font-weight-bold  text-h3 d-flex  align-center">
+        Formulario de Cotizacion
+      </h4>
+      <VNodeRenderer
+        :nodes="themeConfig.app.logopora"
+        class="me-3"
+      />
     </VCardText>
 
+    <VRow class=" justify-end ma-sm-2">
+      <div class="d-flex align-center justify-sm-end mx-2 ">
+        <span style="inline-size: 6rem;">Emisión </span>
+        <span style="inline-size: 9.5rem;">
+          <AppDateTimePicker
+            v-model="props.data.creation_date"
+            :rules="[requiredValidator]"
+            density="compact"
+            placeholder="YYYY-MM-DD"
+            :config="{ position: 'auto right' }"
+          />
+        </span>
+      </div>
+      <div class="d-flex align-center justify-sm-end ">
+        <span class="mx-2">Válido </span>
+        <span style="inline-size: 9.5rem;">
+          <AppDateTimePicker
+            v-model="props.data.expiration_date"
+            :rules="[requiredValidator]"
+            density="compact"
+            placeholder="YYYY-MM-DD"
+            :config="{ position: 'auto right' }"
+          />
+        </span>
+      </div>
+    </Vrow>
     <VDivider thickness="12" />
 
     <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row gap-y-5 gap-4">
@@ -106,7 +96,7 @@ const calculatedAmount = totalAmount => {
           <AppTextField
             v-model="props.data.social_reason"
             :rules="[requiredValidator]"
-            label="Razón Social *"
+            label="Cliente *"
             placeholder="Canzza"
             outlined
             dense
@@ -245,13 +235,13 @@ const calculatedAmount = totalAmount => {
         >
           <AppTextField
             v-model="props.data.amount"
+            :value="formatNumber(props.data.amount)"
             :rules="[requiredValidator]"
-
             label="Total *"
-            placeholder="Placeholder Text"
+            placeholder="1000.000,00"
             outlined
             dense
-            class="custom-salesforce-input"
+            disabled
           />
         </VCol>
         <VCol

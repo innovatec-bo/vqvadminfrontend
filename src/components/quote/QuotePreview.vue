@@ -90,7 +90,7 @@ onMounted(() => {
                 />
 
                 <!-- 👉 Title -->
-                <h6 class="font-weight-bold text-capitalize text-h4">
+                <h6 class="font-weight-bold  text-h4">
                   {{ themeConfig.app.title }}
                 </h6>
               </div>
