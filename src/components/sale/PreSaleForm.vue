@@ -261,7 +261,7 @@ watch(
           :nodes="themeConfig.app.logo"
           class="me-3"
         />
-        <h4 class="font-weight-bold  text-h4 d-flex  align-center">
+        <h4 class="font-weight-bold  text-h3 d-flex  align-center">
           Formulario de Ventas
         </h4>
         <VNodeRenderer

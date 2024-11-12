@@ -100,7 +100,7 @@ onBeforeMount(loadSale)
               :nodes="themeConfig.app.logo"
               class="me-3"
             />
-            <div class="font-weight-bold  text-h4 d-flex align-center">
+            <div class="font-weight-bold  text-h3 d-flex align-center">
               Formulario de Venta
             </div> 
             <VNodeRenderer
@@ -183,7 +183,7 @@ onBeforeMount(loadSale)
                   <tr>
                     <td class="pe-6 pb-1">
                       <strong>
-                        Trabajo:
+                        Lugar de Trabajo:
                       </strong>
                     </td>
                     <td class="pb-1">
