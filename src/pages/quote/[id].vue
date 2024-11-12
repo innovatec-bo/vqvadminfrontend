@@ -94,7 +94,7 @@ console.log(quote)
               class="me-3"
             />
             <div class="font-weight-bold  text-h4 d-flex align-center">
-              Formulario de Cotizacion
+              Formulario de Cotización
             </div> 
             <VNodeRenderer
               :nodes="themeConfig.app.logopora"
@@ -104,7 +104,7 @@ console.log(quote)
           <VRow class="justify-end my-2 mx-5">
             <span class="mx-2">Emitido: {{ invoice.issuedDate }}</span>
             <span> | </span>
-            <span class="mx-2"> Valido: {{ invoice.expiration_date }}</span>
+            <span class="mx-2"> Válido: {{ invoice.expiration_date }}</span>
           </VRow>
           <!-- !SECTION -->
           <VDivider />
@@ -203,7 +203,7 @@ console.log(quote)
                   PISO
                 </th>
                 <th scope="col">
-                  CARACTERISTICAS
+                  CARACTERÍSTICAS
                 </th>
               </tr>
             </thead>
@@ -224,15 +224,15 @@ console.log(quote)
                   </template>
                 </td>
                 <td>
-                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada' : 'Orientación sur': "" }}
-                  {{ property.number_bedrooms ? ', ' + property.number_bedrooms + ' Dormitorios' : '' }}
+                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada,' : 'Orientación sur': "" }}
+                  {{ property.number_bedrooms ? property.number_bedrooms + ' Dormitorios' : '' }}
                   {{ property.cover ? property.cover : '' }}
                 </td>
               </tr>
               <br>
               <tr>
                 <th scope="col">
-                  METODO DE PAGO
+                  MÉTODO DE PAGO
                 </th>
                 <th scope="col">
                   PRECIO
@@ -281,10 +281,10 @@ console.log(quote)
                     <td class="text-end">
                       <div class="me-5">
                         <p class="mb-2">
-                          Anticipo {{ (invoice.initial_fee / invoice.amount )* 100 }}% :
+                          Anticipo{{ (invoice.initial_fee / invoice.amount )* 100 }}% :
                         </p>
                         <p class="mb-2">
-                          Saldo por Pagar {{ (invoice.balance / invoice.amount )* 100 }}% :
+                          Saldo por Pagar{{ (invoice.balance / invoice.amount )* 100 }}% :
                         </p>
                         <p class="mb-2">
                           Precio Contrato:
@@ -336,7 +336,7 @@ console.log(quote)
             <VCardText>
               <div class="d-flex mx-sm-3">
                 <span style="font-size: 12px;"><strong>
-                  El comprador deberá realizar todos los pagos acordados, en las cuentas indicadas de Canzza Desarrolladora Inmobiliaria S.R.L. y entregar el respectivo comprobante de depósito.
+                  El comprador deberá realizar todos los pagos acordados en las cuentas indicadas de Canzza Desarrolladora Inmobiliaria S.R.L. y entregar el respectivo comprobante de depósito.
                 </strong></span>
               </div>
             </VCardText>
@@ -344,7 +344,7 @@ console.log(quote)
             <VCardText>
               <div class="d-flex mx-sm-3">
                 <span style="font-size: 12px;"><strong>
-                  Todos los gastos administrativos, inscripción en derechos reales y honorarios profesionales para consolidar el derecho de propiedad a favor del comprador deben ser asumidos por el comprador.</strong></span>
+                  Todos los gastos administrativos, inscripción en Derechos Reales y honorarios profesionales para consolidar el derecho de propiedad a favor del comprador deben ser asumidos por el comprador.</strong></span>
               </div>
             </VCardText>
             <VDivider />

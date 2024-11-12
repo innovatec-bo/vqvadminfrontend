@@ -72,7 +72,7 @@ const calculatedAmount = totalAmount => {
         </span>
       </div>
       <div class="d-flex align-center justify-sm-end ">
-        <span class="mx-2">Valido </span>
+        <span class="mx-2">Válido </span>
         <span style="inline-size: 9.5rem;">
           <AppDateTimePicker
             v-model="props.data.expiration_date"
