@@ -1,4 +1,5 @@
 <script setup>
+import { formatCurrency } from '@/utils/currencyFormatter'
 import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
@@ -60,7 +61,7 @@ watch(currentTotal, newTotal => {
     class="d-flex flex-column pa-5"
   >
     <h3 class="mb-2">
-      {{ props.title }} :   {{ props.amount }}
+      {{ props.title }} :   {{ formatCurrency( props.amount) }}
     </h3>
     <div
       v-for="(payment, index) in payments"
@@ -101,11 +102,11 @@ watch(currentTotal, newTotal => {
 
     <!-- Mostrar la suma actual de los pagos -->
     <div class="mt-4">
-      <strong>Suma Actual de Pagos: </strong> ${{ currentTotal.toFixed(2) }}
+      <strong>Suma Actual de Pagos: </strong> {{ formatCurrency ( currentTotal) }}
     </div>
     <!-- Mostrar el monto restante -->
     <div class="mt-4">
-      <strong>Monto Restante:</strong> ${{ (props.amount - currentTotal).toFixed(2) }}
+      <strong>Monto Restante:</strong> {{ formatCurrency((props.amount - currentTotal)) }}
     </div>
     <!-- Botón para agregar más pagos -->
     <VBtn
