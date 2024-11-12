@@ -44,10 +44,11 @@ const calculatedAmount = totalAmount => {
 <template>
   <VCard>
     <!-- SECTION Header -->
-    <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row">
+    <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row align-center">
       <VNodeRenderer
         :nodes="themeConfig.app.logo"
         class="me-3"
+        style="align-self: center;"
       />
       <h4 class="font-weight-bold  text-h3 d-flex  align-center">
         Formulario de Cotizacion
@@ -55,6 +56,7 @@ const calculatedAmount = totalAmount => {
       <VNodeRenderer
         :nodes="themeConfig.app.logopora"
         class="me-3"
+        style="align-self: center;"
       />
     </VCardText>
 

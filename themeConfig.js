@@ -18,7 +18,7 @@ export const { themeConfig, layoutConfig } = defineThemeConfig({
     } }),
     logopora: h('img', { src: logopora, alt: 'Logo de Pora', style: {
       width: 'auto', 
-      height: 'auto', 
+      height: '60px', 
     } }),
     contentWidth: ContentWidth.Boxed,
     contentLayoutNav: AppContentLayoutNav.Vertical,

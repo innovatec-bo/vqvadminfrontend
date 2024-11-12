@@ -95,10 +95,11 @@ onBeforeMount(loadSale)
     <VRow>
       <VCol>
         <VCard>
-          <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row print-row">
+          <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row print-row align-center">
             <VNodeRenderer
               :nodes="themeConfig.app.logo"
               class="me-3"
+              style="align-self: center;"
             />
             <div class="font-weight-bold  text-h3 d-flex align-center">
               Formulario de Venta
@@ -106,6 +107,7 @@ onBeforeMount(loadSale)
             <VNodeRenderer
               :nodes="themeConfig.app.logopora"
               class="me-3"
+              style="align-self: center;"
             />
           </VCardText>
           <VRow class="my-2 justify-end">

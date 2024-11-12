@@ -256,10 +256,11 @@ watch(
     <!-- 👉 Dialog close btn -->
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
     <VCard>
-      <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row">
+      <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row align-center">
         <VNodeRenderer
           :nodes="themeConfig.app.logo"
           class="me-3"
+          style="align-self: center;"
         />
         <h4 class="font-weight-bold  text-h3 d-flex  align-center">
           Formulario de Ventas
@@ -267,6 +268,7 @@ watch(
         <VNodeRenderer
           :nodes="themeConfig.app.logopora"
           class="me-3"
+          style="align-self: center;"
         />
       </VCardText>  
       <VRow class=" justify-end ma-sm-2">

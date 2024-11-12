@@ -88,10 +88,11 @@ console.log(quote)
       <VCol>
         <VCard>
           <!-- SECTION Header -->
-          <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row print-row">
+          <VCardText class="d-flex flex-wrap justify-space-between flex-column flex-sm-row align-center">
             <VNodeRenderer
               :nodes="themeConfig.app.logo"
               class="me-3"
+              style="align-self: center;"
             />
             <div class="font-weight-bold  text-h3 d-flex align-center">
               Formulario de Cotizacion
@@ -99,6 +100,7 @@ console.log(quote)
             <VNodeRenderer
               :nodes="themeConfig.app.logopora"
               class="me-3"
+              style="align-self: center;"
             />
           </VCardText>
           <VRow class="justify-end my-2 mx-5">
