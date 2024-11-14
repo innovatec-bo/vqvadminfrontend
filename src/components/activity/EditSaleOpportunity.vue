@@ -228,10 +228,11 @@ const updateDeliveryDate = async opportunityId => {
               <div 
                 v-if="item.is_paid === 0"
                 fill-dot
-
+                style="cursor: pointer;"
                 @click="editPaymentPlan(item)"
               >
                 <VIcon
+                
                   size="25"
                   icon="tabler-edit"
                 />
@@ -304,7 +305,7 @@ const updateDeliveryDate = async opportunityId => {
               <div 
                 v-if="item.is_paid === 0"
                 fill-dot
-               
+                style="cursor: pointer;"
                 @click="editPaymentPlan(item)"
               >
                 <VIcon
@@ -348,6 +349,12 @@ const updateDeliveryDate = async opportunityId => {
           />
           {{ procedure.title }}
         </VChip>
+        <VTooltip
+          activator="parent"
+          location="top"
+        >
+          {{ procedure.pivot.is_check? 'Deshacer Proceso': 'Confirmar Proceso' }}
+        </VTooltip>
       </div>
     </div>
     <div v-else>

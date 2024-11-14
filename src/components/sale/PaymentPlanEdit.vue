@@ -1,6 +1,7 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import { usePaymentPlans } from '@/composables/Sales/usePaymentPlans'
+import { formatCurrency } from '@/utils/currencyFormatter'
 
 const props = defineProps({
   isDialogVisible: {
@@ -129,7 +130,7 @@ const resetForm = () => {
         <VRow class="mx-5">
           <VCol cols="6">
             <h3>
-              Monto a Pagar : $ {{ projectData.amount }}
+              Monto a Pagar : {{ formatCurrency( projectData.amount) }}
             </h3>
           </VCol>
           <VCol cols="6">
@@ -182,7 +183,7 @@ const resetForm = () => {
           </div>
           
           <div v-if="payments.length > 0">
-            <strong>Monto Restante:</strong> ${{ (projectData.amount - currentTotal).toFixed(2) }}
+            <strong>Monto Restante:</strong> {{ formatCurrency(projectData.amount - currentTotal) }}
           </div> 
          
           <!-- Botón para agregar más pagos -->
