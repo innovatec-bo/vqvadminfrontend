@@ -175,7 +175,20 @@ watch(() => props.isDialogVisible, async newValue => {
                         <AppSelect
                           v-model="opportunity.customer.cod_phone"
                           label="Código"
-                          :items="['+591', '+1', '+52']"
+                          :items="[
+                            '+1', // Estados Unidos y Canadá
+                            '+52',
+                            '+55', // Brasil
+                            '+54', // Argentina
+                            '+49', // Alemania
+                            '+33', // Francia
+                            '+34', // España
+                            '+39', // Italia
+                            '+86', // China
+                            '+81', // Japón
+                            '+7', // Rusia
+                            '+591' // Bolivia
+                          ]"
                           placeholder="Cód."
                           outlined
                         />

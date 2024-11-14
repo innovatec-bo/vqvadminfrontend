@@ -4,7 +4,7 @@ export default [
   },
   {
     title: 'Cotizaciones',
-    icon: { icon: 'tabler-report-money' },
+    icon: { icon: 'tabler-report-analytics' },
     to: 'quote-list-qoute',
     subject: ['ASESOR', 'ADMINISTRADOR'],
   },

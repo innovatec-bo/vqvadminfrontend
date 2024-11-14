@@ -1,5 +1,4 @@
 <script setup>
-import TiptapEditor from '@/@core/components/TiptapEditor.vue'
 import { useCustomer } from '@/composables/Customer/useCustomer'
 import { ref } from 'vue'
 
@@ -99,7 +98,20 @@ const registerCustomer = async () => {
                       <AppSelect
                         v-model="customerForm.countryCode"
                         label="Cod País"
-                        :items="['+591']"
+                        :items="[
+                          '+1', // Estados Unidos y Canadá
+                          '+52',
+                          '+55', // Brasil
+                          '+54', // Argentina
+                          '+49', // Alemania
+                          '+33', // Francia
+                          '+34', // España
+                          '+39', // Italia
+                          '+86', // China
+                          '+81', // Japón
+                          '+7', // Rusia
+                          '+591' // Bolivia
+                        ]"
                       />
                     </VCol>
                     <VCol md="8">
@@ -135,11 +147,13 @@ const registerCustomer = async () => {
                   />
                 </VCol>
                 <VCol>
-                  <span class="mb-1">Descripción (Opcional)</span>
-                  <TiptapEditor
+                  <AppTextarea
                     v-model="customerForm.description"
-                    placeholder="Descripción del Cliente"
-                    class="border rounded"
+                    label="Descripción (opcional)"
+                    placeholder="Ingresa una descripción"
+                    rows="3"
+                    auto-grow
+                    outlined
                   />
                 </VCol>
               </VRow>

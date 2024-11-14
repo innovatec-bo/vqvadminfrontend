@@ -229,6 +229,8 @@ watch(searchQuery, newValue => {
                   :key="item.id"
                   fill-dot
                   class="border mb-2 rounded-sm py-2"
+                  style="cursor: pointer;"
+
                   @click="editActivity(item)"
                 >
                   <VListItem>
