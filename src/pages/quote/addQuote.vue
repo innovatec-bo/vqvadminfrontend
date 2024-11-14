@@ -51,7 +51,8 @@ const isGeneralFormValid  = computed(() => {
          quoteData.value.creation_date &&
          quoteData.value.expiration_date &&
          quoteData.value.payment_method &&
-         quoteData.value.balance &&
+
+  //  quoteData.value.balance &&
          quoteData.value.customer_id 
 })
 

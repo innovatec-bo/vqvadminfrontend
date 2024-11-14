@@ -79,11 +79,12 @@ const isGeneralFormValid = computed(() => {
          salesData.value.nit &&
          salesData.value.email &&
          salesData.value.phone &&
-         salesData.value.amount &&
+         salesData.value.amount &&  
          salesData.value.creation_date &&
          salesData.value.payment_method &&
-         salesData.value.quote_id &&
-         salesData.value.balance 
+
+  //  salesData.value.balance &&
+         salesData.value.quote_id 
 })
 
 const arePropertiesValid = computed(() => {
@@ -172,11 +173,14 @@ const generateSalePage = async () => {
   }
   loadingSale.value = true
   try {
+    // eslint-disable-next-line sonarjs/no-collapsible-if
     if (salesData.value.differs_balance.length === 0){
-      salesData.value.differs_balance.push({
-        date: new Date().toISOString().slice(0, 19).replace('T', ' '),
-        amount: salesData.value.amount - salesData.value.initial_fee,
-      })
+      if(salesData.value.balance != 0 ){
+        salesData.value.differs_balance.push({
+          date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          amount: salesData.value.amount - salesData.value.initial_fee,
+        })
+      }
     }
 
     if (salesData.value.differs_initial_fee.length === 0){
