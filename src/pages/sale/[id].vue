@@ -33,7 +33,7 @@ const invoice = ref({
   amount: null,
   initial_fee: null,
 
-  // percentage_initial_fee: null,
+  percentage_initial_fee: null,
 
   balance: null,
   opportunity_id: null,
@@ -73,7 +73,7 @@ const loadSale = async () => {
       amount: sale.value.amount,
       initial_fee: sale.value.initial_fee,
 
-      // percentage_initial_fee: quote.value.percentage_initial_fee,
+      percentage_initial_fee: sale.value.percentage_initial_fee,
 
       balance: sale.value.balance,
       opportunity_id: sale.value.opportunity_id,
@@ -300,20 +300,22 @@ onBeforeMount(loadSale)
                   <tr>
                     <td class="text-end">
                       <div class="me-5">
-                        <p class="mb-2">
-                          Anticipo {{ (invoice.initial_fee / invoice.amount )* 100 }}% :
-                        </p>
-                        <p class="mb-2">
-                          Saldo por Pagar {{ ((invoice.amount- invoice.initial_fee ) / invoice.amount )* 100 }}% :
-                        </p>
                         <!--
                           <p class="mb-2">
-                          Anticipo {{ invoice.percentage_initial_fee }}% :
+                          Anticipo {{ (invoice.initial_fee / invoice.amount )* 100 }}% :
                           </p>
                           <p class="mb-2">
-                          Saldo por Pagar {{ 100 -invoice.percentage_initial_fee }}% :
+                          Saldo por Pagar {{ ((invoice.amount- invoice.initial_fee ) / invoice.amount )* 100 }}% :
                           </p> 
                         -->
+                        
+                        <p class="mb-2">
+                          Anticipo {{ invoice.percentage_initial_fee }}% :
+                        </p>
+                        <p class="mb-2">
+                          Saldo por Pagar {{ 100 - invoice.percentage_initial_fee }}% :
+                        </p> 
+                       
                         <p class="mb-2">
                           Precio Contrato:
                         </p>

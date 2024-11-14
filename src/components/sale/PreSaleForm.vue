@@ -49,6 +49,7 @@ const salesData = ref({
   contract_signing_date: null,
   amount: null,
   initial_fee: null,
+  percentage_initial_fee: null,
   observations: '',
   opportunity_id: props.opportunity?.id ?? null,
   stage_id: StagesOpportunity.SALE.value,
@@ -70,6 +71,7 @@ const calculatedAmount = totalAmount => {
   // eslint-disable-next-line vue/no-mutating-props, camelcase
   salesData.value.initial_fee = (totalAmount * selectedPercentage.value) / 100
   salesData.value.balance = totalAmount - salesData.value.initial_fee
+  salesData.value.percentage_initial_fee = selectedPercentage.value
 
   return (totalAmount * selectedPercentage.value) / 100
 }
