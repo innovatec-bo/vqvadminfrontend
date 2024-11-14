@@ -1,5 +1,0 @@
-<<<<<<<< HEAD:dist/assets/createUrl-76586d3e.js
-import{s as f}from"./index-9c720871.js";import{a2 as q,c7 as e}from"./index-df4ab518.js";const s=(c,r)=>q(()=>{if(!(r!=null&&r.query))return e(c);const a=e(c),t=e(r==null?void 0:r.query),u=Object.fromEntries(Object.entries(t).map(([m,y])=>[m,e(y)]));return`${a}${u?`?${f(u)}`:""}`});export{s as c};
-========
-import{s as f}from"./index-9c720871.js";import{a2 as q,c7 as e}from"./index-7e5a0ba5.js";const s=(c,r)=>q(()=>{if(!(r!=null&&r.query))return e(c);const a=e(c),t=e(r==null?void 0:r.query),u=Object.fromEntries(Object.entries(t).map(([m,y])=>[m,e(y)]));return`${a}${u?`?${f(u)}`:""}`});export{s as c};
->>>>>>>> Develop:dist/assets/createUrl-c477449f.js

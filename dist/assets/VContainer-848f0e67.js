@@ -1,5 +1,0 @@
-<<<<<<<< HEAD:dist/assets/VContainer-848f0e67.js
-import"./VRow-e75d05ca.js";import{aU as n,aT as o,aZ as r,aQ as l,bV as i,b5 as c,b as m}from"./index-df4ab518.js";const u=n({fluid:{type:Boolean,default:!1},...o(),...r()},"VContainer"),V=l()({name:"VContainer",props:u(),setup(a,e){let{slots:s}=e;const{rtlClasses:t}=i();return c(()=>m(a.tag,{class:["v-container",{"v-container--fluid":a.fluid},t.value,a.class],style:a.style},s)),{}}});export{V};
-========
-import"./VRow-b5f95815.js";import{aU as n,aT as o,aZ as r,aQ as l,bV as i,b5 as c,b as m}from"./index-7e5a0ba5.js";const u=n({fluid:{type:Boolean,default:!1},...o(),...r()},"VContainer"),V=l()({name:"VContainer",props:u(),setup(a,e){let{slots:s}=e;const{rtlClasses:t}=i();return c(()=>m(a.tag,{class:["v-container",{"v-container--fluid":a.fluid},t.value,a.class],style:a.style},s)),{}}});export{V};
->>>>>>>> Develop:dist/assets/VContainer-e8559369.js
