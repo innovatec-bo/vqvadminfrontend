@@ -1,6 +1,7 @@
 import { listCustomerPaginate, registerCustomer } from '@/services/Customer/customerService'
 
-// import { createThread } from '@/services/OpenAI/openAIService'
+// eslint-disable-next-line case-police/string-check
+import { createThread } from '@/services/OpenAi/openAIService'
 import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -23,15 +24,13 @@ export function useCustomer(){
     loading.value = true
     error.value = null
     try {
-      // const thread = await createThread()
-
-      // console.log(thread)
+      const thread = await createThread()
 
       const customerData = {
         name: data.name,
         phone: data.phone,
 
-        // thread: thread.id,
+        thread: thread.id,
         email: data.email,
         ci: data.ci,
         // eslint-disable-next-line camelcase
