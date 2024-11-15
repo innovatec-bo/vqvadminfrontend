@@ -49,6 +49,7 @@ const salesData = ref({
   contract_signing_date: null,
   amount: null,
   initial_fee: null,
+  percentage_initial_fee: null,
   observations: '',
   opportunity_id: props.opportunity?.id ?? null,
   stage_id: StagesOpportunity.SALE.value,
@@ -70,6 +71,7 @@ const calculatedAmount = totalAmount => {
   // eslint-disable-next-line vue/no-mutating-props, camelcase
   salesData.value.initial_fee = (totalAmount * selectedPercentage.value) / 100
   salesData.value.balance = totalAmount - salesData.value.initial_fee
+  salesData.value.percentage_initial_fee = selectedPercentage.value
 
   return (totalAmount * selectedPercentage.value) / 100
 }
@@ -79,10 +81,12 @@ const isGeneralFormValid = computed(() => {
          salesData.value.nit &&
          salesData.value.email &&
          salesData.value.phone &&
-         salesData.value.amount &&
+         salesData.value.amount &&  
          salesData.value.creation_date &&
          salesData.value.payment_method &&
-         salesData.value.balance 
+
+  //  salesData.value.balance &&
+         salesData.value.quote_id 
 })
 
 const arePropertiesValid = computed(() => {
@@ -171,11 +175,14 @@ const generateSalePage = async () => {
   }
   loadingSale.value = true
   try {
+    // eslint-disable-next-line sonarjs/no-collapsible-if
     if (salesData.value.differs_balance.length === 0){
-      salesData.value.differs_balance.push({
-        date: new Date().toISOString().slice(0, 19).replace('T', ' '),
-        amount: salesData.value.amount - salesData.value.initial_fee,
-      })
+      if(salesData.value.balance != 0 ){
+        salesData.value.differs_balance.push({
+          date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          amount: salesData.value.amount - salesData.value.initial_fee,
+        })
+      }
     }
 
     if (salesData.value.differs_initial_fee.length === 0){
@@ -310,7 +317,7 @@ watch(
          
           <VCol
             cols="12"
-            sm="8"
+            sm="6"
             style="padding-block: 0;padding-inline: 8px;"
           >
             <AppTextField
@@ -318,49 +325,6 @@ watch(
               :rules="[requiredValidator]"
               label="Cliente *"
               placeholder="Canzza"
-              outlined
-              dense
-              class="custom-salesforce-input"
-            />
-          </VCol>
-          <VCol
-            cols="12"
-            sm="4"
-            style="padding-block: 0;padding-inline: 8px;"
-          >
-            <AppTextField
-              v-model="salesData.nit"
-              label="C.I./NIT *"
-              :rules="[requiredValidator]"
-              placeholder="0000000"
-              outlined
-              dense
-              class="custom-salesforce-input"
-            />
-          </VCol>
-          <VCol
-            cols="12"
-            sm="6"
-            style="padding-block: 0;padding-inline: 8px;"
-          >
-            <AppTextField
-              v-model="salesData.workplace"
-              label="Lugar de Trabajo"
-              placeholder="Placeholder Text"
-              outlined
-              dense
-              class="custom-salesforce-input"
-            />
-          </VCol>
-          <VCol
-            cols="12"
-            sm="6"
-            style="padding-block: 0;padding-inline: 8px;"
-          >
-            <AppTextField
-              v-model="salesData.address"
-              label="Dirección"
-              placeholder="Av/ Equipetrol ...."
               outlined
               dense
               class="custom-salesforce-input"
@@ -403,13 +367,59 @@ watch(
             style="padding-block: 0;padding-inline: 8px;"
           >
             <AppTextField
-              label="Teléfono Fijo "
-              placeholder="33557292"
+              v-model="salesData.nit"
+              label="C.I./NIT *"
+              :rules="[requiredValidator]"
+              placeholder="0000000"
               outlined
               dense
               class="custom-salesforce-input"
             />
           </VCol>
+          <VCol
+            cols="12"
+            sm="6"
+            style="padding-block: 0;padding-inline: 8px;"
+          >
+            <AppTextField
+              v-model="salesData.workplace"
+              label="Lugar de Trabajo"
+              placeholder="Placeholder Text"
+              outlined
+              dense
+              class="custom-salesforce-input"
+            />
+          </VCol>
+          <VCol
+            cols="12"
+            sm="6"
+            style="padding-block: 0;padding-inline: 8px;"
+          >
+            <AppTextField
+              v-model="salesData.address"
+              label="Dirección"
+              placeholder="Av/ Equipetrol ...."
+              outlined
+              dense
+              class="custom-salesforce-input"
+            />
+          </VCol>
+         
+          <!--
+            <VCol
+            cols="12"
+            sm="3"
+            style="padding-block: 0;padding-inline: 8px;"
+            >
+            <AppTextField
+            label="Teléfono Fijo "
+            placeholder="33557292"
+            outlined
+            dense
+            class="custom-salesforce-input"
+            />
+            </VCol> 
+          -->
         </VRow>
       </VCardText>
       <VDivider thickness="12" />

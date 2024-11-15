@@ -1,6 +1,5 @@
 <!-- eslint-disable camelcase -->
 <script setup>
-import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
 import { useProperty } from '@/composables/Realty/useProperty'
 import { PropertyType } from '@/enums/PropertyType'
 
@@ -98,10 +97,9 @@ onMounted(async () => {
           sm="4"
           style="padding-block: 0;padding-inline: 8px;"
         >
-          <AppSelect
+          <AppAutocomplete
             v-model="property.property_id"
             :rules="[requiredValidator]"
-
             :label="property.property_type_name"
             placeholder="Selecciona una propiedad"
             :items="property.property_type === PropertyType.DEPARTAMENT.value ? propertyDepartament : propertyPark"

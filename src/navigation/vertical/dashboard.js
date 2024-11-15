@@ -9,7 +9,7 @@ export default [
   },
   {
     title: 'Lista de Actividades',
-    icon: { icon: 'tabler-smart-home' },
+    icon: { icon: 'tabler-menu' },
     to: 'activity-list',
     subject: 'ASESOR',
 

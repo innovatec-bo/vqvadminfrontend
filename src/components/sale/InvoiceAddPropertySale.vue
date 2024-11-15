@@ -1,6 +1,5 @@
 <!-- eslint-disable camelcase -->
 <script setup>
-import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
 import { useProperty } from '@/composables/Realty/useProperty'
 
 const props = defineProps({
@@ -46,7 +45,7 @@ onMounted(async () => {
           sm="4"
           style="padding-block: 0;padding-inline: 8px;"
         >
-          <AppSelect
+          <AppAutocomplete
             v-model="property.property_id"
             :label="property.property_type_name"
             :rules="[requiredValidator]"

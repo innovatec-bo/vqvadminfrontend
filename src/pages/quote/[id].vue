@@ -156,16 +156,18 @@ console.log(quote)
                       {{ invoice.customer.address }}
                     </td>
                   </tr>
-                  <tr>
+                  <!--
+                    <tr>
                     <td class="pe-6 pb-1">
-                      <strong>
-                        Teléfono fijo:
-                      </strong>
+                    <strong>
+                    Teléfono fijo:
+                    </strong>
                     </td>
                     <td class="pb-1">
-                      {{ invoice.customer.landline }}
+                    {{ invoice.customer.landline }}
                     </td>
-                  </tr>
+                    </tr> 
+                  -->
                 </tbody>
               </table>
             </div>

@@ -66,9 +66,9 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 
 <template>
   <div>
-    <VCard>
+    <VCard title="Lista de Clientes">
       <VCardText>
-        <div class="d-flex justify-space-between flex-wrap gap-y-4">
+        <div class="d-flex justify-space-between flex-wrap ">
           <AppTextField
             v-model="searchQuery"
             style="max-inline-size: 200px; min-inline-size: 200px;"
@@ -88,7 +88,6 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
             >
               Export
             </VBtn>
-           
             <RouterLink
               :to="{ name: 'customers-add-customer' }"
               class="text-white"
@@ -115,7 +114,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
           <div class="d-flex gap-x-2">
             <!-- Enlace a WhatsApp API -->
             <a
-              :href="`https://api.whatsapp.com/send?phone=591${item.phone}`"
+              :href="`https://api.whatsapp.com/send?phone=${item.cod_phone}${item.phone}`"
               target="_blank"
               rel="noopener noreferrer"
               class="text-body-1"

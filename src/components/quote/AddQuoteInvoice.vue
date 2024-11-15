@@ -187,20 +187,22 @@ const calculatedAmount = totalAmount => {
           />
         </VCol>
 
-        <VCol
+        <!--
+          <VCol
           cols="12"
           sm="3"
           style="padding-block: 0;padding-inline: 8px;"
-        >
+          >
           <AppTextField
-            v-model="props.data.landline"
-            label="Teléfono Fijo"
-            placeholder="33557292"
-            outlined
-            dense
-            class="custom-salesforce-input"
+          v-model="props.data.landline"
+          label="Teléfono Fijo"
+          placeholder="33557292"
+          outlined
+          dense
+          class="custom-salesforce-input"
           />
-        </VCol>
+          </VCol> 
+        -->
       </VRow>
     </VCardText>
 
