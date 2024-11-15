@@ -1,4 +1,4 @@
-import { changeStatus, getQuote, listQuotePaginate, registerQuote } from "@/services/Quote/quoteService"
+import { changeStatus, changeStatusCustomer, getQuote, listQuotePaginate, registerQuote } from "@/services/Quote/quoteService"
 import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
 import { useRouter } from "vue-router"
 
@@ -61,6 +61,22 @@ export function useQuote() {
     }
   }
 
+  const changeStatusQuotesCustomer = async (id, data )=> {
+    loadingQuote.value = true
+    try{
+      const response = await changeStatusCustomer(id, data)
+
+      quote.value = response.data
+
+      console.log(response)
+      showSuccessToast('¡El estado de la cotización ha cambiado! ', 'La cotización ha pasado a un nuevo estado')
+    } catch (err) {
+      console.log(err)
+    } finally {
+      loadingQuote.value = false
+    }
+  }
+
   const allQuotePaginate = async paginated =>{
     loadingQuote.value = true
     try {
@@ -78,6 +94,7 @@ export function useQuote() {
   
   return {
     changeStatusQuotes,
+    changeStatusQuotesCustomer,
     getQuotebyId,
     loadingQuote,
     quote,

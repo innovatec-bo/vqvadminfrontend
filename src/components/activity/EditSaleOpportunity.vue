@@ -224,7 +224,14 @@ const updateDeliveryDate = async opportunityId => {
                 :false-value="0"
                 :disabled="item.is_paid === 1"
                 @change="confirmPayment(item.id)"
-              />
+              >
+                <VTooltip
+                  activator="parent"
+                  location="top"
+                >
+                  Confirmar Pago
+                </VTooltip>
+              </VCheckbox>
               <div 
                 v-if="item.is_paid === 0"
                 fill-dot
