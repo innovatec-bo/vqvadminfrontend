@@ -8,7 +8,8 @@ import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
 const searchQuery = ref('')
 const isAddCustomerDrawerOpen = ref(false)
-const { allQuotePaginate, totalQuotes, quotes, changeStatusQuotes } = useQuote()
+const { allQuotePaginate, totalQuotes, quotes, changeStatusQuotes, changeStatusQuotesCustomer } = useQuote()
+const userData = useCookie('userAbilityRules').value
 
 // Data table options
 const itemsPerPage = ref(10)
@@ -29,17 +30,18 @@ const headers = [
     title: 'Celular',
     key: 'phone',
   },
-  {
-    title: 'Correo',
-    key: 'email',
-  },
+
   {
     title: 'Total',
     key: 'amount',
   },
   {
-    title: 'Estado',
+    title: 'Aprobación de Gerencia',
     key: 'status',
+  },
+  {
+    title: 'Aprobación de Cliente',
+    key: 'status_customer',
   },
   {
     title: 'Accion',
@@ -56,6 +58,16 @@ const statusQuote = async (quoteId, statusquote) => {
 
   console.log(`Procedimiento ${quoteId} marcado como: ${statusquote}`)
   await  changeStatusQuotes(quoteId, {
+    status: newStatus,
+  })
+  onMounted()
+}
+
+const statusQuoteCustomer = async (quoteId, statusquote) => {
+  const newStatus = statusquote === 'APPROVED' ? 'NOT_APPROVED' : 'APPROVED'
+
+  console.log(`Procedimiento ${quoteId} marcado como: ${statusquote}`)
+  await  changeStatusQuotesCustomer(quoteId, {
     status: newStatus,
   })
   onMounted()
@@ -127,27 +139,50 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
           </div>
         </template>
         <template #item.status="{ item }">
-          <div class="d-flex gap-x-2">
-            {{ item.status === 'APPROVED' ? 'Aprobado' : 'No Aprobado' }}
-          </div>
-        </template>
-        <!-- Actions -->
-       
-        <template #item.action="{ item }">
-          <div class="d-flex items-center gap-x-2">
+          <div class="d-flex items-center gap-x-2  ">
+            <span class="my-2">
+              {{ item.status === 'APPROVED' ? 'Aprobado' : 'No Aprobado' }}
+            </span>
             <VCheckbox
               v-model="item.status"
               true-value="APPROVED"
               false-value="NOT_APPROVED"
+              :disabled="!userData.some(rule => rule.action === 'manage' && rule.subject === 'ADMINISTRADOR')"
               @click="statusQuote(item.id, item.status)" 
             >
               <VTooltip
                 activator="parent"
                 location="top"
               >
-                {{ item.status == "NOT_APPROVED"? 'Aprobar Cotización ': 'Cancelar Aprobacion' }}
+                {{ item.status == "NOT_APPROVED"? 'No aprovado por gerencia': 'Aprobado por Gerencia' }}
               </VTooltip>
             </VCheckbox>
+          </div>
+        </template>
+        <template #item.status_customer="{ item }">
+          <div class="d-flex items-center gap-x-2 ">
+            <span class="my-2">
+              {{ item.status_customer === 'APPROVED' ? 'Aprobado' : 'No Aprobado' }}
+            </span>
+            <VCheckbox
+              v-model="item.status_customer"
+              true-value="APPROVED"
+              false-value="NOT_APPROVED"
+              @click="statusQuoteCustomer(item.id, item.status_customer)" 
+            >
+              <VTooltip
+                activator="parent"
+                location="top"
+              >
+                {{ item.status_customer == "NOT_APPROVED"? 'No aprobado por Cliente ': 'Aprobado por Cliente' }}
+              </VTooltip>
+            </VCheckbox>
+          </div>
+        </template>
+        <!-- Actions -->
+       
+        <template #item.action="{ item }">
+          <div class="d-flex items-center gap-x-2">
             <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">
               <IconBtn>
                 <VIcon icon="tabler-eye" />

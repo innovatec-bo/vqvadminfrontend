@@ -14,7 +14,7 @@ const props = defineProps({
 
 const emit = defineEmits(['updateStageId', 'update:newProperty'])
 const { checkProcessForOpportunity } = useProcess()
-const { changeStatusQuotes } = useQuote()
+const { changeStatusQuotesCustomer } = useQuote()
 const opencustomerDialog = ref(false)
 const generateSaleDialog = ref(false)
 
@@ -44,11 +44,11 @@ const markProcedureAsDone = async (procedureId, isChecked) => {
   emit('updateStageId', props.opportunity.id)
 }
 
-const statusQuote = async (quoteId, statusquote) => {
+const statusQuoteCustomer = async (quoteId, statusquote) => {
   const newStatus = statusquote === 'APPROVED' ? 'NOT_APPROVED' : 'APPROVED'
 
   console.log(`Procedimiento ${quoteId} marcado como: ${statusquote}`)
-  await  changeStatusQuotes(quoteId, {
+  await  changeStatusQuotesCustomer(quoteId, {
     status: newStatus,
   })
   emit('updateStageId', props.opportunity.id)
@@ -185,13 +185,19 @@ const statusQuote = async (quoteId, statusquote) => {
                   v-model="item.status"
                   true-value="APPROVED"
                   false-value="NOT_APPROVED"
-                  @click="statusQuote(item.id, item.status)" 
+                  disabled
+                />
+                <VCheckbox
+                  v-model="item.status_customer"
+                  true-value="APPROVED"
+                  false-value="NOT_APPROVED"
+                  @click="statusQuoteCustomer(item.id, item.status_customer)" 
                 >
                   <VTooltip
                     activator="parent"
                     location="top"
                   >
-                    {{ item.status == "NOT_APPROVED"? 'Aprobar Cotización ': 'Cancelar Aprobacion' }}
+                    {{ item.status_customer == "NOT_APPROVED"? 'No aprobado por cliente': 'Aprobado por cliente' }}
                   </VTooltip>
                 </VCheckbox>
 
