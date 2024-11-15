@@ -60,7 +60,9 @@ export function useWhatssap(){
   const initializeConnectToWhatsapp = async () =>{
     loadingConnect.value= true
     try{
-      await inizializateClientWhatssap(clientId)
+      const response = await inizializateClientWhatssap(clientId)
+      
+      return response.qr
     }catch (err){
       console.error(err)
     }finally {
