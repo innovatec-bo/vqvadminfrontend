@@ -47,10 +47,9 @@ onMounted(() => {
   checkAuthStatus()
 })
 
-const requestQrCode = () => {
+const requestQrCode = async () => {
   console.log('solicitar QR')
-  initializeConnectToWhatsapp()
-
+  qrCode.value = await initializeConnectToWhatsapp()
 }
 
 // Desconectar el WebSocket al desmontar el componente
