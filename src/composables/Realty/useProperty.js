@@ -92,18 +92,19 @@ export function useProperty() {
         base_price: propertyDataForm.base_price,
         percentage_initial_fee: propertyDataForm.percentage_initial_fee,
         property_type: propertyDataForm.property_type,
-        number_bathrooms: propertyDataForm.departament.number_bathrooms,
-        number_bedrooms: propertyDataForm.departament.number_bedrooms,
-        floor: propertyDataForm.departament.floor,
+        number_bathrooms: propertyDataForm?.departament?.number_bathrooms ?? '',
+        number_bedrooms: propertyDataForm?.departament?.number_bedrooms ?? '',
         covered: propertyDataForm?.covered ? true : false,
       }
 
       const response = await updateProperty(propertyDataForm.id, propertyData)
 
+      console.log(response)
       showSuccessToast('¡Propiedad actualizada exitosamente!', 'Los detalles de la propiedad han sido editados y guardados correctamente.')
       
       return { success: true, message: 'Actualización Exitosa' }
     } catch (err) {
+      console.log(err)
       if(err.response && err.response.status == 422){
         showWarningToast('Validación fallida', 'Faltan datos por rellenar')
         
