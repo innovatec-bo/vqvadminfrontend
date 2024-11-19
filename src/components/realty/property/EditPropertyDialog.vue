@@ -168,6 +168,35 @@ watch(() => props.property, newProperty => {
                 outlined
               />
             </VCol>
+            <VCol
+              v-if="formProperty.property_type == 'DEPARTAMENT'"
+
+              cols="12"
+              md="3"
+            >
+              <div class="d-flex items-center gap-x-2 py-7 px-1 ">
+                <span class="my-2">
+                  {{ formProperty.departament.is_balcony ? 'Con Terraza' : 'Sin Terraza' }}
+                </span>
+                <VCheckbox
+                  v-model="formProperty.departament.is_balcony" 
+                  :true-value="1"
+                  :false-value="0"
+                />
+              </div>
+            </VCol>
+            <VCol
+              v-if="formProperty.property_type == 'DEPARTAMENT' && formProperty.departament.is_balcony "
+              cols="12"
+              md="3"
+            >
+              <AppTextField
+                v-model="formProperty.departament.surface_balcony"
+                label="Superficie"
+                placeholder="..."
+                outlined
+              />
+            </VCol>
             <!-- Botones de Acción -->
             <VCol
               cols="12"
