@@ -94,6 +94,8 @@ export function useProperty() {
         property_type: propertyDataForm.property_type,
         number_bathrooms: propertyDataForm?.departament?.number_bathrooms ?? '',
         number_bedrooms: propertyDataForm?.departament?.number_bedrooms ?? '',
+        surface_balcony: propertyDataForm?.departament?.surface_balcony ?? '',
+        is_balcony: propertyDataForm?.departament?.is_balcony,
         covered: propertyDataForm?.covered ? true : false,
       }
 

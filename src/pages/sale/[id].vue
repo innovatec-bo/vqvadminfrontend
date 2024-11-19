@@ -44,6 +44,8 @@ const invoice = ref({
       pivot_price_it: null,
       pivot_price_contrato: null,
       isfacade: false,
+      is_balcony: false,
+      surface_balcony: null,
       code: null,
       surface: null,
       property_type: null,
@@ -245,6 +247,9 @@ onBeforeMount(loadSale)
                 <td style="font-size: 13px;">
                   {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada,' : 'Orientación sur': "" }}
                   {{ property.number_bedrooms ? property.number_bedrooms + ' Dormitorios' : '' }}
+                  {{ property.property_type=='DEPARTAMENT' ? property.is_balcony ? ', Balcon' : ', Sin Balcon': "" }}
+                  {{ property.property_type=='DEPARTAMENT' ? property.surface_balcony ? ': '+ property.surface_balcony + 'm²' : '': "" }}
+
                   {{ property.cover ? property.cover : '' }}
                 </td>
               </tr>
