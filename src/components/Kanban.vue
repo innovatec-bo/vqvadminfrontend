@@ -1,7 +1,7 @@
 <script setup>
-import poraIcon from '@/assets/icons/poraIcon.png'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useSales } from '@/composables/Sales/useSales'
+import { formatCurrency } from '@/utils/currencyFormatter'
 import { onMounted, ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import TaskKanban from './opportunity/TaskKanban.vue'
@@ -174,32 +174,42 @@ onMounted(async () => {
           </div>
           <div class="kanban-header">
             <div class="d-flex gap-1">
-              <VAvatar
-                size="40"
-                rounded
-              >
-                <img
-                  :src="poraIcon"
-                  alt="Logo pora"
-                  style="border-radius: 30%;"
-                >
-              </VAvatar>
-              <!-- Nombre del proyecto y código del departamento -->
               <div>
                 <p class="label-info">
-                  Departamento
+                  {{ item.property_type }}
                 </p>
                 <div class="project-info">
-                  <h3 class="project-name">
-                    {{ item.project }}
-                  </h3>
-                  <h4 class="department-code">
-                    {{ item.property || 'Sin código' }}
-                  </h4>
+                  <span
+                    v-if="item.property"
+                    class="label-name"
+                  >
+                    {{ item.project + ' | '+ item.property }}  
+
+                  </span>
+                  <span
+                    v-if="item.property == null"
+                    class="label-name"
+                    style="display: flex; align-items: center; gap: 8px;"
+                  >
+                    <VChip
+                      class="d-flex justify-center align-center"
+                      style="display: inline-flex; border-radius: 4px; block-size: 36px; inline-size: 36px;"
+                    >
+                      <VIcon
+                        size="25"
+                        icon="tabler-home"
+                      />
+                    </VChip>
+                    <strong>
+                      Indefinido
+                    </strong>
+                  </span>
+
+                  <h4 class="department-code" />
                 </div>
                 <!-- Precio alineado a la derecha -->
                 <p class="price">
-                  <strong>{{ item.price }}$</strong>
+                  <strong>{{ formatCurrency(item.price ) }}</strong>
                 </p>
               </div>
             </div>
@@ -207,7 +217,7 @@ onMounted(async () => {
               <p class="label-info">
                 10 de octubre 2024
               </p>
-              <p style="font-weight: 700; font-size: 0.9rem;color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); ">
+              <p style="color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); font-size: 0.9rem;font-weight: 700; ">
                 {{ item.phone }}
               </p>
             </div>
@@ -217,23 +227,25 @@ onMounted(async () => {
           
 
           <!-- Detalles del proyecto -->
-          <div class="kanban-project-details">
+          <!--
+            <div class="kanban-project-details">
             <p
-              v-if="item.status === 'Cumplido'"
-              class="status"
+            v-if="item.status === 'Cumplido'"
+            class="status"
             >
-              Cumplido
+            Cumplido
             </p>
             <div class="checklist">
-              <p>
-                {{ item.lastActivity?.title || ' ' }} 
-                <VIcon
-                  v-if="item.lastActivity"
-                  icon="tabler-check"
-                />
-              </p>
+            <p>
+            {{ item.lastActivity?.title || ' ' }} 
+            <VIcon
+            v-if="item.lastActivity"
+            icon="tabler-check"
+            />
+            </p>
             </div>
-          </div>
+            </div> 
+          -->
 
           <!--
             Footer con comentarios y otras acciones 
@@ -263,10 +275,10 @@ onMounted(async () => {
 .kanban {
   display: flex;
   flex-wrap: nowrap;
+  align-items: flex-start;
   padding: 10px;
   background-color: rgba(var(--v-theme-background), 1); /* Color de fondo */
   gap: 24px;
-  align-items: flex-start;
   overflow-x: auto;
   white-space: nowrap;
 }
@@ -274,21 +286,22 @@ onMounted(async () => {
 /* Estilo de la columna */
 .kanban-column {
   position: relative;
-  min-width: 300px;
   padding: 10px;
-  border-radius: 10px;
-  inline-size: 300px;
-  background-color: #F3F3F3;
   border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  background-color: #F3F3F3;
+  inline-size: 300px;
+  min-inline-size: 300px;
 }
+
 .icon-container {
-    min-width: 24px;
-    max-width: 24px;
-    max-height: 24px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    margin: 0px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  max-block-size: 24px;
+  max-inline-size: 24px;
+  min-inline-size: 24px;
 }
 
 
@@ -313,25 +326,28 @@ onMounted(async () => {
   margin-inline-start: 5px;
   text-transform: lowercase;
 }
+
 .column-title h2::first-letter {
-    text-transform: uppercase; 
+  text-transform: uppercase; 
 }
-.small-badge {
-  background-color: #525252;
-    border-radius: 50%;     
-    max-width: 14px;        
-    height: 14px;           
-    font-size: 10px;        
-    padding: 0;             
-    width: 14px;   
-    margin-top: -8px; 
-    color: white;
-    text-align: center;
+
+.small-badge {        
+  padding: 0;
+  border-radius: 50%;
+  background-color: #525252;        
+  block-size: 14px; 
+  color: white;           
+  font-size: 10px;             
+  inline-size: 14px;   
+  margin-block-start: -8px;     
+  max-inline-size: 14px;
+  text-align: center;
 }
+
 .label-info{
-  font-size: 12px;
   color: #4B465C;
-  margin-block-end: 0px !important;
+  font-size: 12px;
+  margin-block-end: 0 !important;
 }
 
 .column-info {
@@ -345,13 +361,15 @@ onMounted(async () => {
 }
 
 .kanban-item {
-  padding: 10px 14px;
   border: 1px solid #E5E7EB;
   border-radius: 10px;
   background-color: rgb(var(--v-theme-surface));
+  box-shadow: 0 2px 6px 0 rgba(82, 82, 82, 20%);
   margin-block-end: 10px;
-  box-shadow: 0px 2px 6px 0px rgba(82, 82, 82, 0.20);
+  padding-block: 10px;
+  padding-inline: 14px;
 }
+
 .kanban-details p{
   text-align: end;
 }
@@ -387,7 +405,7 @@ onMounted(async () => {
   padding: 0;
   margin: 0;
   color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
 }
 
@@ -404,7 +422,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-block-end: 0px;
+  margin-block-end: 0;
 
 }
 
