@@ -230,41 +230,47 @@ watch(() => props.isDialogVisible, async newValue => {
                       outlined
                     />
                   </VCol>
-                  <VCol
+                  <!--
+                    <VCol
                     cols="12"
                     md="6"
-                  >
+                    >
                     <AppSelect
-                      v-model="opportunity.stage_id"
-                      label="Estado del Cliente"
-                      placeholder="Selecciona un Estado"
-                      :items="stageOptions"
-                      item-text="label"
-                      item-value="value"
-                      outlined
+                    v-model="opportunity.stage_id"
+                    label="Estado del Cliente"
+                    placeholder="Selecciona un Estado"
+                    :items="stageOptions"
+                    item-text="label"
+                    item-value="value"
+                    outlined
                     />
-                  </VCol>
-                  <VCol
+                    </VCol> 
+                  -->
+                  <!--
+                    <VCol
                     cols="12"
                     md="6"
-                  >
+                    >
                     <AppSelect
-                      label="Tipo de Compra"
-                      placeholder="Selecciona un Tipo"
-                      :items="['CONTADO', 'CREDITO DIRECTO']"
-                      outlined
+                    label="Tipo de Compra"
+                    placeholder="Selecciona un Tipo"
+                    :items="['CONTADO', 'CREDITO DIRECTO']"
+                    outlined
                     />
-                  </VCol>
-                  <VCol
+                    </VCol> 
+                  -->
+                  <!--
+                    <VCol
                     cols="12"
                     md="6"
-                  >
+                    >
                     <AppTextField
-                      label="Precio de Negociacion"
-                      placeholder="Ingresa el Precio Final"
-                      outlined
+                    label="Precio de Negociacion"
+                    placeholder="Ingresa el Precio Final"
+                    outlined
                     />
-                  </VCol>
+                    </VCol> 
+                  -->
                   <!-- Descripción de la Oportunidad -->
                   <VCol cols="12">
                     <AppTextarea
