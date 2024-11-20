@@ -102,19 +102,37 @@ watch(() => props.property, newProperty => {
                 outlined
               />
             </VCol>
-            <VCol
+            <!--
+              <VCol
+              v-if="formProperty.property_type == 'DEPARTAMENT'"
               cols="12"
               md="6"
-            >
+              >
               <AppTextField
-                v-model="formProperty.departament.floor"
-                label="Numero de piso"
-                placeholder="..."
-                outlined
+              v-model="formProperty.departament.floor"
+              label="Numero de piso"
+              placeholder="..."
+              outlined
               />
-            </VCol>
+              </VCol> 
+            -->
+            <!--
+              <VCol
+              v-if="formProperty.property_type == 'PARK'"
+              cols="12"
+              md="6"
+              >
+              <AppTextField
+              v-model="formProperty.parking.floor"
+              label="piso"
+              placeholder="..."
+              outlined
+              />
+              </VCol> 
+            -->
             <VCol
               cols="12"
+
               md="6"
             >
               <AppTextField
@@ -125,6 +143,8 @@ watch(() => props.property, newProperty => {
               />
             </VCol>
             <VCol
+              v-if="formProperty.property_type == 'DEPARTAMENT'"
+
               cols="12"
               md="6"
             >
@@ -136,12 +156,43 @@ watch(() => props.property, newProperty => {
               />
             </VCol>
             <VCol
+              v-if="formProperty.property_type == 'DEPARTAMENT'"
+
               cols="12"
               md="6"
             >
               <AppTextField
                 v-model="formProperty.departament.number_bathrooms"
                 label="Numero de baños"
+                placeholder="..."
+                outlined
+              />
+            </VCol>
+            <VCol
+              v-if="formProperty.property_type == 'DEPARTAMENT'"
+
+              cols="12"
+              md="3"
+            >
+              <div class="d-flex items-center gap-x-2 py-7 px-1 ">
+                <span class="my-2">
+                  {{ formProperty.departament.is_balcony ? 'Con Terraza' : 'Sin Terraza' }}
+                </span>
+                <VCheckbox
+                  v-model="formProperty.departament.is_balcony" 
+                  :true-value="1"
+                  :false-value="0"
+                />
+              </div>
+            </VCol>
+            <VCol
+              v-if="formProperty.property_type == 'DEPARTAMENT' && formProperty.departament.is_balcony "
+              cols="12"
+              md="3"
+            >
+              <AppTextField
+                v-model="formProperty.departament.surface_balcony"
+                label="Superficie"
                 placeholder="..."
                 outlined
               />

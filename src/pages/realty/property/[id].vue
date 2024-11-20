@@ -67,6 +67,12 @@ onMounted(fetchProperty)
                     <VListItemTitle class="text-body-1">
                       <strong> Tipo de Propiedad: </strong> {{ property?.property_type }} 
                     </VListItemTitle>
+                    <VListItemTitle class="text-body-1">
+                      <strong> 
+                        {{ property?.property_type=='DEPARTAMENT' ? property.departament.is_balcony ? 'Con Terraza: ' : 'Sin Terraza': "" }}
+                      </strong> 
+                      {{ property?.property_type=='DEPARTAMENT' && property.departament.is_balcony ? property.departament.surface_balcony ? ': '+ property.departament.surface_balcony + 'm²' : '': "" }}
+                    </VListItemTitle>
                   </VListItem>
                 </VList>
               </div>

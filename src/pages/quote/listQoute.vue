@@ -13,6 +13,8 @@ const userData = useCookie('userAbilityRules').value
 
 // Data table options
 const itemsPerPage = ref(10)
+const status = ref('TODOS')
+
 const page = ref(1)
 const sortBy = ref()
 const orderBy = ref()
@@ -36,11 +38,11 @@ const headers = [
     key: 'amount',
   },
   {
-    title: 'Aprobación de Gerencia',
+    title: 'Gerencia',
     key: 'status',
   },
   {
-    title: 'Aprobación de Cliente',
+    title: 'Cliente',
     key: 'status_customer',
   },
   {
@@ -50,7 +52,9 @@ const headers = [
 ]
 
 const updateOptions = options => {
-  page.value = options.page  
+  page.value = options.page
+  status.value = options.status
+
 }
 
 const statusQuote = async (quoteId, statusquote) => {
@@ -77,6 +81,7 @@ const AllQuote =  ()=>{
   allQuotePaginate({
     page: page.value,
     itemsPerPage: itemsPerPage.value,
+    status: status.value,
     search: searchQuery.value,
   })
   console.log(quotes)
@@ -84,7 +89,7 @@ const AllQuote =  ()=>{
 
 const debouncedFetch = debounce(AllQuote, 300)
 
-watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
+watch([searchQuery, itemsPerPage, page, status], debouncedFetch, { immediate: true })
 </script>
 
 <template>
@@ -98,6 +103,16 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
             placeholder="Search .."
             density="compact"
           />
+          <div class="relative">
+            <!--
+              <div class="absolute bg-white border rounded shadow-md p-2 z-10  mx-2 hidden group-hover:block">
+              <AppSelect
+              v-model="status"
+              :items="['APPROVED', 'NOT_APPROVED', 'TODOS']"
+              />
+              </div> 
+            -->
+          </div>
           <div class="d-flex flex-row gap-4 align-center flex-wrap">
             <AppSelect
               v-model="itemsPerPage"
@@ -135,7 +150,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
       >
         <template #item.amount="{ item }">
           <div class="d-flex gap-x-2">
-            {{ formatCurrency(item.amount ) }} 
+            {{ formatCurrency(item.amount ) }}
           </div>
         </template>
         <template #item.status="{ item }">
@@ -148,7 +163,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
               true-value="APPROVED"
               false-value="NOT_APPROVED"
               :disabled="!userData.some(rule => rule.action === 'manage' && rule.subject === 'ADMINISTRADOR')"
-              @click="statusQuote(item.id, item.status)" 
+              @click="statusQuote(item.id, item.status)"
             >
               <VTooltip
                 activator="parent"
@@ -168,7 +183,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
               v-model="item.status_customer"
               true-value="APPROVED"
               false-value="NOT_APPROVED"
-              @click="statusQuoteCustomer(item.id, item.status_customer)" 
+              @click="statusQuoteCustomer(item.id, item.status_customer)"
             >
               <VTooltip
                 activator="parent"
@@ -180,7 +195,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
           </div>
         </template>
         <!-- Actions -->
-       
+
         <template #item.action="{ item }">
           <div class="d-flex items-center gap-x-2">
             <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">

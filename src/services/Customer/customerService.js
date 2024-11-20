@@ -1,7 +1,7 @@
 import { $api } from "@/utils/api"
 
 export const registerCustomer = async customerData =>{
-  return await $api('/customer/register', {
+  return await $api('/customer/register/prospect', {
     method: 'POST',
     body: customerData,
   })
