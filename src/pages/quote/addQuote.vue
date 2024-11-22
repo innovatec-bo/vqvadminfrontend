@@ -35,6 +35,14 @@ const quoteData = ref({
     price_contrato: null,
     property_type: PropertyType.DEPARTAMENT.value,
     property_type_name: PropertyType.DEPARTAMENT.label,
+  },
+  {
+    property_id: null,
+    price: null,
+    price_it: null,
+    price_contrato: null,
+    property_type: PropertyType.PARK.value,
+    property_type_name: PropertyType.PARK.label,
   }],
   differs_initial_fee: [],
   differs_balance: [],
@@ -156,6 +164,8 @@ watch(
   () => quoteData.value.customer_id,
   newCustomerId => {
     const selectedCustomer = customers.value.find(customer => customer.id == newCustomerId)
+
+    console.log(selectedCustomer)
     if (selectedCustomer) {
       quoteData.value.social_reason = selectedCustomer.name
       quoteData.value.email = selectedCustomer.email
@@ -165,7 +175,30 @@ watch(
       
       // Asignar property_id si no es null
       if (selectedCustomer.property_id !== null) {
-        quoteData.value.properties[0].property_id = selectedCustomer.property_id
+        if(selectedCustomer.property.property_type == 'PARK' ){
+          quoteData.value.properties[1].property_id = selectedCustomer.property_id
+          quoteData.value.properties[0].property_id= null,
+          quoteData.value.properties[0].price= null,
+          quoteData.value.properties[0].price_it= null,
+          quoteData.value.properties[0].price_contrato= null
+        }
+        if(selectedCustomer.property.property_type == 'DEPARTAMENT' ){
+          quoteData.value.properties[0].property_id = selectedCustomer.property_id
+          quoteData.value.properties[1].property_id= null,
+          quoteData.value.properties[1].price= null,
+          quoteData.value.properties[1].price_it= null,
+          quoteData.value.properties[1].price_contrato= null
+        }
+      }else{
+        quoteData.value.properties[1].property_id= null,
+        quoteData.value.properties[1].price= null,
+        quoteData.value.properties[1].price_it= null,
+        quoteData.value.properties[1].price_contrato= null,
+
+        quoteData.value.properties[0].property_id= null,
+        quoteData.value.properties[0].price= null,
+        quoteData.value.properties[0].price_it= null,
+        quoteData.value.properties[0].price_contrato= null
       }
     }
     quoteData.value.customer_id = newCustomerId
