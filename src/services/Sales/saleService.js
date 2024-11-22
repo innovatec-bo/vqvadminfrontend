@@ -27,6 +27,12 @@ export const changeStatusSale = async (id, saleData) =>{
   })
 }
 
+export const discardSale = async id =>{
+  return await $api(`/sale/${id}/discard`, {
+    method: 'PATCH',
+  })
+}
+
 export const updateSale = async (id, saleData) => {
   return await $api(`/sale/${id}`, {
     method: 'PATCH',

@@ -1,5 +1,6 @@
 <script setup>
 import { useQuote } from '@/composables/Quote/useQuote'
+import { StatusCustomerQuote } from '@/enums/StatusCustomerQuote'
 import ECommerceAddCustomerDrawer from '@/views/apps/ecommerce/ECommerceAddCustomerDrawer.vue'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import { debounce } from 'lodash'
@@ -13,20 +14,24 @@ const userData = useCookie('userAbilityRules').value
 
 // Data table options
 const itemsPerPage = ref(10)
-const status = ref('TODOS')
+const status = ref()
 
 const page = ref(1)
 const sortBy = ref()
 const orderBy = ref()
 
 const headers = [
-  {
-    title: 'NIT',
-    key: 'nit',
-  },
+  // {
+  //   title: 'NIT',
+  //   key: 'nit',
+  // },
   {
     title: 'Nombre',
     key: 'social_reason',
+  },
+  {
+    title: 'Propiedades',
+    key: 'properties',
   },
   {
     title: 'Celular',
@@ -54,7 +59,6 @@ const headers = [
 const updateOptions = options => {
   page.value = options.page
   status.value = options.status
-
 }
 
 const statusQuote = async (quoteId, statusquote) => {
@@ -96,23 +100,23 @@ watch([searchQuery, itemsPerPage, page, status], debouncedFetch, { immediate: tr
   <div>
     <VCard title="Lista de Cotizaciones">
       <VCardText>
+        <div class="my-2">
+          <AppSelect
+            v-model="status"
+            label="Estado de aprobación del cliente"
+            placeholder="Seleccione estado"
+            style="max-inline-size: 200px; min-inline-size: 200px;"
+
+            :items="Object.values(StatusCustomerQuote)"
+          />
+        </div>
         <div class="d-flex justify-space-between flex-wrap gap-y-4">
           <AppTextField
             v-model="searchQuery"
-            style="max-inline-size: 200px; min-inline-size: 200px;"
-            placeholder="Search .."
+            style="max-inline-size: 500px; min-inline-size: 500px;"
+            placeholder="Buscar por Nombre, Numero, Correo"
             density="compact"
           />
-          <div class="relative">
-            <!--
-              <div class="absolute bg-white border rounded shadow-md p-2 z-10  mx-2 hidden group-hover:block">
-              <AppSelect
-              v-model="status"
-              :items="['APPROVED', 'NOT_APPROVED', 'TODOS']"
-              />
-              </div> 
-            -->
-          </div>
           <div class="d-flex flex-row gap-4 align-center flex-wrap">
             <AppSelect
               v-model="itemsPerPage"
@@ -148,6 +152,15 @@ watch([searchQuery, itemsPerPage, page, status], debouncedFetch, { immediate: tr
         class="text-no-wrap"
         @update:options="updateOptions"
       >
+        <template #item.properties="{ item }">
+          <div
+            v-for="property in item.properties" 
+            :key="property.id"
+            class="d-flex gap-x-2"
+          >
+            {{ property.title }} | {{ property.code }} 
+          </div>
+        </template>
         <template #item.amount="{ item }">
           <div class="d-flex gap-x-2">
             {{ formatCurrency(item.amount ) }}
