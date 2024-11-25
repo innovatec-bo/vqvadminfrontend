@@ -1,4 +1,4 @@
-import { createSale, createSaleChangeStage, getSale, listSalesPaginated } from "@/services/Sales/saleService"
+import { createSale, createSaleChangeStage, discardSale, getSale, listSalesPaginated } from "@/services/Sales/saleService"
 import { showSuccessNotification } from "@/utils/notifications"
 
 export function useSales (){
@@ -25,6 +25,30 @@ export function useSales (){
         return { success: false, message: 'Validación fallida' }
       }
       showErrorToast('Error al crear la venta', 'Hubo un problema al crear la venta.')
+      
+      return { success: false, message: 'Error de actualización' }
+    }finally{
+      loadingSale.value=false
+    }
+  }
+
+  const SaleChangeStageDiscard = async id =>{
+    loadingSale.value = true
+    try{
+      const response = await discardSale(id)
+
+      showSuccessToast('Actualizacion Exitosa', 'La venta fue descartada')
+
+      console.log('venta: ', response)
+      sale.value = response.data
+    }catch(err){
+      console.log(err)
+      if(err.response && err.response.status == 422){
+        // showWarningToast('Validación fallida', 'Faltan datos por rellenar')
+        
+        // return { success: false, message: 'Validación fallida' }
+      }
+      showErrorToast('Error', 'Hubo un problema al actualizar la venta.')
       
       return { success: false, message: 'Error de actualización' }
     }finally{
@@ -78,6 +102,7 @@ export function useSales (){
       const response = await listSalesPaginated(pagination)
 
       sales.value = response.data.data
+      console.log(sales)
       totalSales.value = response.data.total
     }catch (error){
       console.log(error)
@@ -99,5 +124,6 @@ export function useSales (){
     generateSaleChangeStage,
     getSalebyId,
     AllSalesPaginated,
+    SaleChangeStageDiscard,
   }
 } 

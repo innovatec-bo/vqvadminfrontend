@@ -1,13 +1,12 @@
 <script setup>
-import { useConversation } from '@/composables/Customer/useConversation'
 import { useSales } from '@/composables/Sales/useSales'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import { debounce } from 'lodash'
+import Swal from 'sweetalert2'
 import { ref, watch } from 'vue'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
-const { AllSalesPaginate, totalConversations, conversations, updateConversationStatus } = useConversation()
-const { AllSalesPaginated, loadingSale, sales, totalSales } = useSales()
+const { AllSalesPaginated, SaleChangeStageDiscard, sales, totalSales } = useSales()
 
 // Data table options
 const searchQuery = ref('')
@@ -15,6 +14,7 @@ const itemsPerPage = ref(10)
 const page = ref(1)
 const sortBy = ref()
 const orderBy = ref()
+const userData = useCookie('userAbilityRules').value
 
 // Data table Headers (Reordered)
 const headers = [
@@ -22,7 +22,8 @@ const headers = [
   { title: 'Nit/CI', key: 'nit' },
   { title: 'Cliente', key: 'social_reason' },
   { title: 'Método de Pago', key: 'payment_method' },
-  { title: 'Total de Contrato', key: 'amount' },
+  { title: 'Total Contrato', key: 'amount' },
+  { title: 'Estado', key: 'status' },
   { title: 'Acción', key: 'action' },
 ]
 
@@ -39,10 +40,42 @@ const displayPaymentMethod = method => {
   return method
 }
 
+const displayStatus = status => {
+  if (status === 'SALE') {
+    return 'VENDIDO'
+  } else if (status === 'DISCARD') {
+    return 'CANCELADO'
+  } else if (status === 'DELIVERY') {
+    return 'ENTREGADO'
+  }
+  
+  return status
+}
+
 
 const updateOptions = options => {
   page.value = options.page
   itemsPerPage.value = options.itemsPerPage
+}
+
+const deleteSale = id => {
+  Swal.fire({
+    title: "Quieres dar de baja la venta?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "confirmar",
+  }).then(result => {
+    if (result.isConfirmed) {
+      SaleChangeStageDiscard(id)
+      AllSales()
+      Swal.fire({
+        text: "La Venta fue dado de baja",
+        icon: "success",
+      })
+    }
+  })
 }
 
 const AllSales = () => {
@@ -101,7 +134,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
                     v-for="property in item.properties"
                     :key="property.id"
                   >
-                    {{ property.title }} - {{ property.code }} ({{ property.surface }} m²)
+                    {{ property.title }} | {{ property.code }} | ({{ property.surface }} m²)
                   </li>
                 </ul>
               </div>
@@ -171,10 +204,12 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
         </template>
 
         <template #item.amount="{ item }">
-          <!-- {{ item.amount }} $ -->
           {{ formatCurrency(item.amount ) }}
         </template>
 
+        <template #item.status="{ item }">
+          {{ displayStatus(item.status ) }}
+        </template>
         <template #item.action="{ item }">
           <div class="d-flex items-center gap-x-2">
             <RouterLink :to="{ name: 'sale-id', params: { id: item.id } }">
@@ -182,6 +217,11 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
                 <VIcon icon="tabler-eye" />
               </IconBtn>
             </RouterLink>
+            <IconBtn
+              v-if="userData.some(rule => rule.action === 'manage' && rule.subject === 'ADMINISTRADOR')"
+              icon="tabler-trash"
+              @click="deleteSale(item.id)"
+            />
           </div>
         </template>
       </VDataTableServer>
