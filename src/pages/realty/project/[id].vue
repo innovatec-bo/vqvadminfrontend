@@ -2,6 +2,7 @@
 import ProjectEditDialog from '@/components/dialogs/project/ProjectEditDialog.vue'
 import { useProject } from '@/composables/Realty/useProject'
 import { useProperty } from '@/composables/Realty/useProperty'
+import { formatCurrency } from '@/utils/currencyFormatter'
 import { VDataTable } from 'vuetify/labs/VDataTable'
 
 const route = useRoute('owner-project-id')
@@ -131,7 +132,7 @@ function formatDate(dateString) {
           </template>
 
           <template #item.base_price="{ item }">
-            <span>$ {{ item.base_price }}</span>
+            <span> {{ formatCurrency( item.base_price) }}</span>
           </template>
 
          
@@ -155,7 +156,7 @@ function formatDate(dateString) {
                     class="font-weight-medium "
                     style=" padding-inline: 5px 30px;"
                   >
-                    $ {{ sumPrices() }}
+                    {{ formatCurrency( sumPrices()) }}
                   </td>
                 </tr>
               </tbody>

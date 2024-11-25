@@ -2,6 +2,7 @@
 import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
 import EditPropertyDialog from '@/components/realty/property/EditPropertyDialog.vue'
 import { useProperty } from '@/composables/Realty/useProperty'
+import { formatCurrency } from '@/utils/currencyFormatter'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import { debounce } from 'lodash'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
@@ -145,7 +146,7 @@ const handlePropertyUpdated = updatedProperty => {
         <!-- Price -->
         <template #item.base_price="{ item }">
           <div class="d-flex align-center gap-4">
-            <span class="text-capitalize">{{ item.base_price }} $ </span>
+            <span class="text-capitalize">{{ formatCurrency( item.base_price ) }}  </span>
           </div>
         </template>
 

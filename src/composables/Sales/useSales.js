@@ -1,4 +1,4 @@
-import { createSale, createSaleChangeStage, discardSale, getSale, listSalesPaginated } from "@/services/Sales/saleService"
+import { changeStageSignature, createSale, createSaleChangeStage, discardSale, getSale, listSalesPaginated } from "@/services/Sales/saleService"
 import { showSuccessNotification } from "@/utils/notifications"
 
 export function useSales (){
@@ -112,7 +112,30 @@ export function useSales (){
 
   }
 
-  
+  const SaleChangeSignature = async id =>{
+    loadingSale.value = true
+    try{
+      const response = await changeStageSignature(id)
+
+      showSuccessToast('Actualizacion Exitosa', 'La venta fue actualizada')
+
+      console.log('venta: ', response)
+      sale.value = response.data
+    }catch(err){
+      console.log(err)
+      if(err.response && err.response.status == 422){
+        // showWarningToast('Validación fallida', 'Faltan datos por rellenar')
+        
+        // return { success: false, message: 'Validación fallida' }
+      }
+      showErrorToast('Error', 'Hubo un problema al actualizar la venta.')
+      
+      return { success: false, message: 'Error de actualización' }
+    }finally{
+      loadingSale.value=false
+    }
+  }
+
   return{
     loadingSale,
     sales,
@@ -125,5 +148,6 @@ export function useSales (){
     getSalebyId,
     AllSalesPaginated,
     SaleChangeStageDiscard,
+    SaleChangeSignature,
   }
 } 
