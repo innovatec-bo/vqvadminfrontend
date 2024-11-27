@@ -1,8 +1,9 @@
+import { URL_MICROSERVICIO } from '@/utils/constants'
 import { createFetch } from '@vueuse/core'
 import { destr } from 'destr'
 
 export const useApi = createFetch({
-  baseUrl: 'http://verticalhomesia.nuna.tech:3000',
+  baseUrl: URL_MICROSERVICIO,
   fetchOptions: {
     headers: {
       Accept: 'application/json',

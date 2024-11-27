@@ -26,7 +26,7 @@ const props = defineProps({
 
 })
 
-const emit = defineEmits(['update:isDialogVisible', 'registerSale'])
+const emit = defineEmits(['update:isDialogVisible', 'registerSale', 'formCancelled'])
 const { generateSale, generateSaleChangeStage } = useSales()
 const loadingSale = ref(false)
 
@@ -35,6 +35,7 @@ const items = ['20', '30', '40', '50', '70', '80', '100']
 const selectedPercentage =  ref('30')
 
 const dialogVisibleUpdate = val => {
+  emit('formCancelled')
   emit('update:isDialogVisible', val)
 }
 

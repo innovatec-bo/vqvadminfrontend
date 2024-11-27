@@ -83,5 +83,6 @@ export function useWhatssap(){
     initializeConnectToWhatsapp,
     messages,
     loadingConnect,
+    clientId,
   }
 }

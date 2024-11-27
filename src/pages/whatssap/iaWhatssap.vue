@@ -7,7 +7,7 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 definePage({ meta: { layoutWrapperClasses: 'layout-content-height-fixed' } })
 
-const { isAuthenticated, errorMessage, loadingConnect, checkAuthStatus, initializeConnectToWhatsapp } = useWhatssap()
+const { clientId, isAuthenticated, errorMessage, loadingConnect, checkAuthStatus, initializeConnectToWhatsapp } = useWhatssap()
 
 // Estado de conexión del socket
 const isConnected = ref(false)
@@ -20,7 +20,6 @@ const messages = ref([])
 
 // Conectar al WebSocket al montar el componente
 onMounted(() => {
-
   const socket = connectSocket()
 
   // Manejar la conexión
@@ -35,20 +34,28 @@ onMounted(() => {
     console.log("Desconectado del WebSocket")
   })
 
-  // Recibir código QR
-  socket.on('qr-whatssap', qr => {
+  // Recibir eventos específicos para este cliente
+  socket.on(`qr-whatssap-${clientId}`, qr => {
     qrCode.value = qr
-    console.log("QR Code recibido")
+    console.log("QR Code recibido:", qr)
   })
-  socket.on('ready', () => {
+
+  socket.on(`ready-${clientId}`, data => {
     isAuthenticated.value = true
-    console.log('Autenticado con WhatsApp')
+    qrCode.value = null
+    console.log('Cliente autenticado:', data)
   })
+
+  socket.on(`message-${clientId}`, data => {
+    messages.value.push(data.msg)
+    console.log('Mensaje recibido:', data.msg)
+  })
+
   checkAuthStatus()
 })
 
 const requestQrCode = async () => {
-  console.log('solicitar QR')
+  console.log('Solicitando QR...')
   qrCode.value = await initializeConnectToWhatsapp()
 }
 
@@ -91,12 +98,12 @@ onBeforeUnmount(() => {
 
     <!-- Componentes hijos -->
     <QrView
-      v-if="!isAuthenticated && qrCode"
+      v-if="qrCode"
       :qr-code="qrCode"
       class="full-component"
     />
     <ChatComponent
-      v-if="isAuthenticated"
+      v-if="isAuthenticated && !qrCode"
       :messages="messages"
       class="full-component"
     />
@@ -112,8 +119,8 @@ onBeforeUnmount(() => {
 }
 
 .full-component {
-  overflow: auto; /* Asegura que el contenido pueda desplazarse si es necesario */
-  flex-grow: 1; /* El componente llenará el espacio restante */
+  overflow: auto;
+  flex-grow: 1;
   block-size: 100%;
   inline-size: 100%;
 }
