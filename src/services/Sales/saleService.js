@@ -27,6 +27,12 @@ export const changeStatusSale = async (id, saleData) =>{
   })
 }
 
+export const changeStageSignature = async id =>{
+  return await $api(`/sale/${id}/status/signature`, {
+    method: 'PATCH',
+  })
+}
+
 export const discardSale = async id =>{
   return await $api(`/sale/${id}/discard`, {
     method: 'PATCH',
