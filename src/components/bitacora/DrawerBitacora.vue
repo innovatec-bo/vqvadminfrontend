@@ -8,7 +8,7 @@ const props = defineProps({
     required: true,
   },
 
-  customer: { type: String, required: false },
+  customer: { type: String, required: true },
 })
 
 const emit = defineEmits([
@@ -19,7 +19,6 @@ const closeNavigationDrawer = () => {
   emit('update:isDrawerOpen', false)
  
 }
-
 
 const handleDrawerModelValueUpdate = val => {
   emit('update:isDrawerOpen', val)
@@ -35,16 +34,8 @@ const handleDrawerModelValueUpdate = val => {
     :model-value="props.isDrawerOpen"
     @update:model-value="handleDrawerModelValueUpdate"
   >
-    <!-- 👉 Title -->
-    <!--
-      <AppDrawerHeaderSection
-      title="Add User"
-      @cancel="closeNavigationDrawer"
-      /> 
-    -->
-
     <PerfectScrollbar :options="{ wheelPropagation: false }">
-      <BitacoraCustomer customer="1" />
+      <BitacoraCustomer :customer="customer" />
     </PerfectScrollbar>
   </VNavigationDrawer>
 </template>

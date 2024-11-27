@@ -26,7 +26,7 @@ const removeProduct = id => {
   emit('remove', id)
 }
 
-const items = ['20', '30', '40', '50', '80', '100']
+const items = ['20', '30', '40', '50', '70', '80', '100']
 
 const selectedPercentage =  ref('30')
 

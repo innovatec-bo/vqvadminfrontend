@@ -13,6 +13,18 @@ onMounted(async () => {
   await getBitacorabyId(props.customer)
 })
 
+watch(
+  () => props.customer,
+  async (newCustomer, oldCustomer) => {
+    if (newCustomer) {
+      console.log('Customer actualizado:', newCustomer)
+      await getBitacorabyId(newCustomer)
+    }
+  },
+  { immediate: true }, // Ejecuta el watch al inicializar
+)
+
+
 const getActivityType = typeId => {
   switch(typeId) {
   case 1: return 'Visita'
@@ -57,12 +69,6 @@ const getActivityType = typeId => {
                     <VChip v-if="log.properties.activity">                      
                       {{ getActivityType(log.properties.activity.type_activity_id) }}
                     </VChip>
-
-                    <!-- {{ log.properties }} -->
-                    <!--
-                      <span v-if="log.properties.procedure">
-                      </span> 
-                    -->
                   </div>
                 </VTimelineItem>
               </VTimeline>

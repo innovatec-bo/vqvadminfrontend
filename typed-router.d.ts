@@ -89,6 +89,7 @@ declare module 'vue-router/auto/routes' {
     'components-timeline': RouteRecordInfo<'components-timeline', '/components/timeline', Record<never, never>, Record<never, never>>,
     'components-tooltip': RouteRecordInfo<'components-tooltip', '/components/tooltip', Record<never, never>, Record<never, never>>,
     'conversation-list-conversation': RouteRecordInfo<'conversation-list-conversation', '/conversation/list-conversation', Record<never, never>, Record<never, never>>,
+    'customers-id': RouteRecordInfo<'customers-id', '/customers/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'customers-add-customer': RouteRecordInfo<'customers-add-customer', '/customers/addCustomer', Record<never, never>, Record<never, never>>,
     'customers-list-customers': RouteRecordInfo<'customers-list-customers', '/customers/listCustomers', Record<never, never>, Record<never, never>>,
     'dashboards-analytics': RouteRecordInfo<'dashboards-analytics', '/dashboards/analytics', Record<never, never>, Record<never, never>>,

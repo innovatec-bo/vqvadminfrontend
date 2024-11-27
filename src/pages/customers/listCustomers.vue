@@ -126,9 +126,13 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 
         <!-- Actions -->
         <template #item.action="{ item }">
-          <IconBtn>
-            <!-- <VIcon icon="tabler-edit" /> -->
-          </IconBtn>
+          <div class="d-flex items-center gap-x-2">
+            <RouterLink :to="{ name: 'customers-id', params: { id: item.id } }">
+              <IconBtn>
+                <VIcon icon="tabler-eye" />
+              </IconBtn>
+            </RouterLink>
+          </div>
         </template>
 
 
