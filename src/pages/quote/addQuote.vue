@@ -135,7 +135,7 @@ const generateCotization = async() =>{
 onMounted(async () => {
   await allCustomerPaginate({
     page: 1,
-    itemsPerPage: 100,
+    itemsPerPage: 1000,
   })
 })
 
