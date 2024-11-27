@@ -59,7 +59,7 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-block-end: 16px;
 }
 
 .breadcrumbs {

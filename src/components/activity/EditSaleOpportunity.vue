@@ -4,6 +4,8 @@ import poraIcon from '@/assets/icons/poraIcon.png'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProcess } from '@/composables/Process/useProcess'
 import { usePaymentPlans } from '@/composables/Sales/usePaymentPlans'
+import { useSales } from '@/composables/Sales/useSales'
+import { VIcon } from 'vuetify/lib/components/index.mjs'
 import DeliveryForm from '../sale/DeliveryForm.vue'
 import PaymentPlanEdit from '../sale/PaymentPlanEdit.vue'
 import PreSaleForm from '../sale/PreSaleForm.vue'
@@ -20,7 +22,7 @@ const emit = defineEmits(['updateStageId'])
 const { checkProcessForOpportunity } = useProcess()
 const { confirmPaymentPlans } = usePaymentPlans()
 const { changeStatusByOpportunity, loadingOpportunity } = useOpportunity()
-
+const { SaleChangeSignature } = useSales()
 
 const confirmDelivery = ref(false)
 const openEditPaymentPlan = ref(false)
@@ -77,6 +79,13 @@ const confirmPayment = async paymentplanId => {
   await confirmPaymentPlans( paymentplanId)
   emit('updateStageId', props.opportunity.id)
 }
+
+const confirmationSignature = async saleid => {
+  console.log('entra a firma')
+  await SaleChangeSignature( saleid)
+  emit('updateStageId', props.opportunity.id)
+}
+
 
 const changeStage = async opportunityId => {
   await changeStatusByOpportunity(opportunityId, 5, {})
@@ -143,33 +152,47 @@ const updateDeliveryDate = async opportunityId => {
         v-for="sale in props.opportunity.sales"
         :key="sale.id"
       >
-        <div
-          v-for="property in sale.properties"
-          :key="property.id"
-          class="d-flex align-center justify-between"
-        >
-          <VAvatar
-            size="50"
-            rounded
-          >
-            <img
-              :src="poraIcon"
-              alt="Logo pora"
-              style="border-radius: 30%;"
-            >
-          </VAvatar>
+        <VRow>
           <VCol
+            v-for="property in sale.properties"
+            :key="property.id"
+            class="d-flex align-center justify-between"
             cols="12"
-            md="7"
+            md="9"
           >
-            <VListItemTitle class="font-weight-medium">
-              {{ property.project_title }} | {{ property.title }}
-            </VListItemTitle>
-            <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
-              <span>$ {{ property.pivot_price }}</span>
-            </VListItemSubtitle>
+            <VAvatar
+              size="50"
+              rounded
+            >
+              <img
+                :src="poraIcon"
+                alt="Logo pora"
+                style="border-radius: 30%;"
+              >
+            </VAvatar>
+            <VCol cols="12">
+              <VListItemTitle class="font-weight-medium">
+                {{ property.project_title }} | {{ property.title }}
+              </VListItemTitle>
+              <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+                <span>$ {{ property.pivot_price }}</span>
+              </VListItemSubtitle>
+            </VCol>
           </VCol>
-        </div>
+          <VCheckbox
+            v-model="sale.confirmation_signature"
+            :true-value="1"
+            :false-value="0"
+            @change="confirmationSignature(sale.id)"
+          >
+            <VTooltip
+              activator="parent"
+              location="top"
+            >
+              Confirmar firma
+            </VTooltip>
+          </VCheckbox>
+        </VRow>
       </div>
     </div>
   </div>

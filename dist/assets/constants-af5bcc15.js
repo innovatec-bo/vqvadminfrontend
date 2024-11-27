@@ -1,0 +1,1 @@
+const s=31536e3,a="https://phplaravel-1171375-4944906.cloudwaysapps.com/",t="https://ia-canzza-vh-a7np8.ondigitalocean.app/",o=a+"api/",p="LAND",A="DEPARTAMENT";export{s as C,A as D,p as L,t as U,o as a};

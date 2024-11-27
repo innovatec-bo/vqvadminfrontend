@@ -1,6 +1,7 @@
 <script setup>
 import { useProperty } from '@/composables/Realty/useProperty'
 import { DEPARTAMENT } from '@/utils/constants'
+import { formatCurrency } from '@/utils/currencyFormatter'
 
 const route = useRoute('realty-property-id')
 const {  getPropertyId, property } = useProperty()
@@ -27,7 +28,7 @@ onMounted(fetchProperty)
     <VRow>
       <VCol
         cols="12"
-        lg="8"
+        lg="6"
       >
         <VCard class="overflow-visible course-details">
           <VCardText>
@@ -42,18 +43,26 @@ onMounted(fetchProperty)
                 Financiamiento
               </h5>
               <div class="border rounded mt-3 px-5 py-4">
-                <h5 class=" my-3">
-                  Precio: {{ property?.base_price }} 
-                </h5>
-                <h5 class=" my-3">
-                  Procentaje cuota inicial: {{ property?.percentaje_initial_fee }} %
-                </h5>
-                <h5 class=" my-3">
-                  Cuota Inicial: {{ property?.initial_fee }} %
-                </h5>
+                <h4 class=" my-3">
+                  Precio: {{ formatCurrency( property?.base_price) }} 
+                </h4>
+                <h4 class=" my-3">
+                  Procentaje cuota inicial: {{ property?.percentage_initial_fee }} %
+                </h4>
+                <h4 class=" my-3">
+                  Cuota Inicial: {{ formatCurrency( property?.initial_fee ) }} 
+                </h4>
               </div>
             </div>
-            <VDivider class="my-6" />
+          </VCardText>
+        </VCard>
+      </VCol>
+      <VCol
+        cols="12"
+        lg="6"
+      >
+        <VCard class="overflow-visible course-details">
+          <VCardText>
             <div class="d-flex gap-x-12 gap-y-5 flex-wrap">
               <div>
                 <VList class="card-list">

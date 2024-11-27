@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AddActivity: typeof import('./src/components/activity/AddActivity.vue')['default']
     AddAuthenticatorAppDialog: typeof import('./src/components/dialogs/AddAuthenticatorAppDialog.vue')['default']
     AddEditAddressDialog: typeof import('./src/components/dialogs/AddEditAddressDialog.vue')['default']
     AddEditPermissionDialog: typeof import('./src/components/dialogs/AddEditPermissionDialog.vue')['default']
