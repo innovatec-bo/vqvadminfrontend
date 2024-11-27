@@ -9,6 +9,11 @@ export const registerCustomer = async customerData =>{
 export const getCustomer = async id =>{
 
 }
+export const getPerfilCustomer = async id =>{
+  return await $api(`/customer/perfil/${id}`, {
+    method: 'GET',
+  })
+}
 export const  listCustomerPaginate = async pagination => {
   return await $api('customer/list-paginated', {
     method: 'GET',

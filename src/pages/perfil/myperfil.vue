@@ -1,7 +1,6 @@
 <script setup>
 import UserPanel from '@/components/user/UserPanel.vue'
 
-const route = useRoute('apps-user-view-id')
 const userTab = ref(null)
 
 const tabs = [
@@ -13,7 +12,6 @@ const tabs = [
     icon: 'tabler-lock',
     title: 'Seguridad',
   },
-
 ]
 
 const userData = useCookie('userData').value
