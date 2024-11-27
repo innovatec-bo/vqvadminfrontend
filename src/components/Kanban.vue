@@ -1,14 +1,21 @@
 <script setup>
+import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useSales } from '@/composables/Sales/useSales'
 import { formatCurrency } from '@/utils/currencyFormatter'
 import { onMounted, ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
+import AddActivity from './activity/AddActivity.vue'
 import TaskKanban from './opportunity/TaskKanban.vue'
 import PreSaleForm from './sale/PreSaleForm.vue'
 
-const { allOpportunityKanbanForUser, kanban, generateProspect } = useOpportunity()
+
+
+
+
+const { allOpportunityKanbanForUser, kanban, generateProspect, getOpportunitybyId, opportunity } = useOpportunity()
 const { loadingSale, sale, generateSale } = useSales()
+const { getallTypeActivities, typeActivities } = useActivity()
 
 const addNewItem = column => {
   column.items.push({
@@ -22,17 +29,91 @@ const addNewItem = column => {
   })
 }
 
+
+
 const selectedOpportunity  = ref(null)
 const isDialogVisible = ref(false)
+const isFormActivityVisible= ref(false)
 const originColumnTitle = ref(null)
 const destinationColumnTitle = ref(null)
+const formCancelled = ref(false)
 
 const isDialogVisiblePreSale = ref(false)
 
+const lastValidPosition = ref(null)
+
 const onDragStart = event => {
+  // Guarda la columna y el índice inicial del elemento
+  lastValidPosition.value = {
+    column: event.from.closest('.kanban-column'),
+    index: Array.from(event.from.children).indexOf(event.item),
+  }
   originColumnTitle.value = event.from.closest('.kanban-column').dataset.columnTitle
   console.log('Elemento arrastrado desde:', originColumnTitle.value)
 }
+
+
+const restoreLastPosition = event => {
+  // Obtener el item que está siendo movido (seguramente es el elemento que arrastraste)
+  const item = event.data
+
+  // Obtener las columnas de origen y destino
+  const originColumnTitle = event.from.closest('.kanban-column').dataset.columnTitle
+  const destinationColumnTitle = event.to.closest('.kanban-column').dataset.columnTitle
+
+  // Encontrar las columnas en el estado de los tableros (kanban)
+  const originColumn = kanban.value.find(board => board.title === originColumnTitle)
+  const destinationColumn = kanban.value.find(board => board.title === destinationColumnTitle)
+
+  if (originColumn && destinationColumn) {
+    // Encontramos el índice del item en la columna de destino
+    const itemIndexInDest = destinationColumn.items.findIndex(i => i.id === item.id)
+
+    if (itemIndexInDest !== -1) {
+      // Eliminar el item de la columna de destino
+      const [removedItem] = destinationColumn.items.splice(itemIndexInDest, 1)
+
+      console.log('Elemento eliminado de la columna de destino')
+
+      // Agregar el item a la columna de origen
+      originColumn.items.push(removedItem)
+      originColumn.items.sort((a, b) => a.id - b.id)
+      console.log('Elemento restaurado en la columna de origen')
+    } else {
+      console.log('Elemento no encontrado en la columna de destino')
+    }
+  } else {
+    console.log('No se encontraron las columnas de origen o destino')
+  }
+}
+
+
+const removeElement = data => {
+  // Buscamos el tablero que contiene el elemento
+  const board = kanban.value.find(board => board.items.some(item => item.id === data.id))
+
+  if (board) {
+    // Encontramos el índice del item dentro de los items del tablero
+    const itemIndex = board.items.findIndex(item => item.id === data.id)
+    
+    if (itemIndex !== -1) {
+      // Si encontramos el item, lo eliminamos
+      board.items.splice(itemIndex, 1)
+      console.log('Elemento eliminado')
+    } else {
+      console.log('Elemento no encontrado en el tablero')
+    }
+  } else {
+    console.log('El elemento no se encuentra en ningún tablero')
+  }
+}
+
+
+const handleFormCancelled = () => {
+  formCancelled.value= true
+}
+
+
 
 const onMove = event => {
   const originColumn = event.from.closest('.kanban-column').dataset.columnTitle
@@ -49,28 +130,44 @@ const onMove = event => {
   return true 
 }
 
-const onDragEnd = event => {
-  destinationColumnTitle.value = event.to.closest('.kanban-column').dataset.columnTitle
-  console.log('Elemento movido de', originColumnTitle.value, 'a', destinationColumnTitle.value)
-  if (originColumnTitle.value !== destinationColumnTitle.value) {
+const onDragEnd = async event => {
+  console.log(event)
+
+  const originColumnTitle = event.from.closest('.kanban-column').dataset.columnTitle
+  const destinationColumnTitle = event.to.closest('.kanban-column').dataset.columnTitle
+
+  if (!isMoveValid(originColumnTitle, destinationColumnTitle)) {
+    console.log(`Movimiento NO permitido de ${originColumnTitle} a ${destinationColumnTitle}`)
+  
+    return false 
+  }
+
+  console.log('Elemento movido de', originColumnTitle, 'a', destinationColumnTitle)
+  if (originColumnTitle !== destinationColumnTitle) {
     const item = event.data
-    switch (destinationColumnTitle.value) {
+    switch (destinationColumnTitle) {
     case 'LEAD':
       console.log('Movido a LEAD')
 
       break
     case 'PROSPECTO':
       console.log('Movido a PROSPECTO')
-      generateProspect(item.id, item)
+      selectedOpportunity.value = item
+      isFormActivityVisible.value = true
+
+      // generateProspect(item.id, item)
 
       break
     case 'PREVENTA':
       console.log('Movido a PREVENTA')
-      isDialogVisiblePreSale.value= true
 
       break
     case 'VENTA':
+      await getOpportunitybyId(item.id)
       console.log('Movido a VENTA')
+      isDialogVisiblePreSale.value= true
+      console.log(opportunity)
+      selectedOpportunity.value = opportunity.value
 
       break
     case 'ENTREGA':
@@ -82,6 +179,8 @@ const onDragEnd = event => {
       break
     }
   }
+  watch(formCancelled, newValue => newValue && restoreLastPosition(event))
+  formCancelled.value= false
 }
 
 const selectOpportunity = opportunity => {
@@ -91,11 +190,11 @@ const selectOpportunity = opportunity => {
 
 // Reglas para prevenir movimientos entre ciertas columnas
 const movementRules = {
-  'LEAD': ['LEAD', 'PROSPECTO', 'PREVENTA'], // LEAD no puede moverse directamente a VENTA
-  'PROSPECTO': ['PROSPECTO', 'PREVENTA'],
-  'PREVENTA': ['PREVENTA', 'VENTA'], 
-  'VENTA': ['VENTA', 'ENTREGA'], 
-  'ENTREGA': ['ENTREGA'], 
+  'LEAD': ['PROSPECTO', 'PREVENTA'], // LEAD no puede moverse directamente a VENTA
+  'PROSPECTO': ['PREVENTA'],
+  'PREVENTA': ['VENTA'], 
+  'VENTA': ['ENTREGA'], 
+  'ENTREGA': [], 
 }
 
 // Función para validar el movimiento
@@ -107,6 +206,7 @@ const isMoveValid = (fromColumn, toColumn) => {
 
 onMounted(async () => {
   await allOpportunityKanbanForUser() 
+  await getallTypeActivities()
 })
 </script>
 
@@ -158,8 +258,8 @@ onMounted(async () => {
         :group="{ name: column.name, pull: true, put: true }"
         class="kanban-items"
         @start="onDragStart"
-        @end="onDragEnd"
         @move="onMove"
+        @end="onDragEnd"
       >
         <div
           v-for="(item) in column.items"
@@ -267,7 +367,18 @@ onMounted(async () => {
     v-model:is-dialog-visible="isDialogVisible" 
     :opportunity-kanban="selectedOpportunity"
   />
-  <PreSaleForm v-model="isDialogVisiblePreSale" />
+  <PreSaleForm
+    v-model="isDialogVisiblePreSale"
+    :opportunity="selectedOpportunity"
+    stage="PRESALE"
+    @form-cancelled="handleFormCancelled"
+  />
+  <AddActivity
+    v-model:is-dialog-visible="isFormActivityVisible"
+    :opportunity-kanban="selectedOpportunity"
+    :type-activities="typeActivities"
+    @form-cancelled="handleFormCancelled"
+  />
 </template>
 
 <style>
@@ -275,7 +386,7 @@ onMounted(async () => {
 .kanban {
   display: flex;
   flex-wrap: nowrap;
-  align-items: flex-start;
+  align-items: stretch; /* Asegura que todas las columnas tengan el mismo alto */
   padding: 10px;
   background-color: rgba(var(--v-theme-background), 1); /* Color de fondo */
   gap: 24px;
@@ -283,9 +394,10 @@ onMounted(async () => {
   white-space: nowrap;
 }
 
-/* Estilo de la columna */
 .kanban-column {
-  position: relative;
+  display: flex;
+  flex-direction: column; /* Permite que las tareas se apilen verticalmente */
+  flex-grow: 1; /* Hace que las columnas crezcan para igualar el alto */
   padding: 10px;
   border: 1px solid #E5E7EB;
   border-radius: 10px;
@@ -293,6 +405,7 @@ onMounted(async () => {
   inline-size: 300px;
   min-inline-size: 300px;
 }
+
 
 .icon-container {
   display: flex;
@@ -357,8 +470,13 @@ onMounted(async () => {
 
 /* Items dentro de las columnas */
 .kanban-items {
-  margin-block-start: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre elementos */
+  min-block-size: 99%; /* Asegura que el espacio vacío siempre esté disponible */
 }
+
+
 
 .kanban-item {
   border: 1px solid #E5E7EB;

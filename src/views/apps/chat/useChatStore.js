@@ -12,8 +12,10 @@ export const useChatStore = defineStore('chat', {
   actions: {
     async fetchChats() {
       // Actualiza las URLs para que se ajusten a tu API
-      const { data } = await useApi(createUrl(`/whatssap/chats/${clientId}`))
-      
+      const { data } = await useApi(createUrl(`whatssap/chats/${clientId}`))
+
+      console.log('Este es el Data', data)
+
       const chatsContacts = data.value
 
       // Asigna los datos obtenidos a los estados
@@ -25,7 +27,7 @@ export const useChatStore = defineStore('chat', {
     async getChat(chat) {
       console.log(chat)
 
-      const { data } = await useApi(createUrl(`/whatssap/chat/${clientId}/${chat.user}@c.us`)) // Cambia la URL según sea necesario
+      const { data } = await useApi(createUrl(`whatssap/chat/${clientId}/${chat.user}@c.us`)) // Cambia la URL según sea necesario
       const activeChat = data.value // Asegúrate de que este contenga todos los mensajes y detalles
     
       this.activeChat = activeChat || null
@@ -36,7 +38,7 @@ export const useChatStore = defineStore('chat', {
       const contactId = this.activeChat?.contact?.id
 
       // Ajusta la URL y el cuerpo de la solicitud para que se ajusten a tu API
-      const response = await $api(`/whatssap/send-message`, {
+      const response = await $api(`whatssap/send-message`, {
         method: 'POST',
         body: { message, to: contactId, clientId: senderId },
       })
