@@ -53,7 +53,8 @@ const quoteData = ref({
 const isGeneralFormValid  = computed(() => {
   return quoteData.value.social_reason && 
          quoteData.value.nit &&
-         quoteData.value.email &&
+
+  //  quoteData.value.email &&
          quoteData.value.phone &&
          quoteData.value.amount &&
          quoteData.value.creation_date &&
