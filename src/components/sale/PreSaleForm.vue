@@ -81,7 +81,8 @@ const calculatedAmount = totalAmount => {
 const isGeneralFormValid = computed(() => {
   return salesData.value.social_reason && 
          salesData.value.nit &&
-         salesData.value.email &&
+
+  //  salesData.value.email &&
          salesData.value.phone &&
          salesData.value.amount &&  
          salesData.value.creation_date &&
@@ -340,7 +341,6 @@ watch(
             <AppTextField
               v-model="salesData.email"
               label="Correo *"
-              :rules="[requiredValidator]"
               placeholder="admin@gmail.com"
               type="email"
               outlined

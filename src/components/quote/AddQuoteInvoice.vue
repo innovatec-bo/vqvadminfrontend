@@ -148,7 +148,6 @@ const calculatedAmount = totalAmount => {
         >
           <AppTextField
             v-model="props.data.email"
-            :rules="[requiredValidator]"
             label="Correo *"
             placeholder="email@gmail.com"
             outlined
