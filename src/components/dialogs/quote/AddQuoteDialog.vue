@@ -2,12 +2,31 @@
 <script setup>
 import AddQuoteInvoice from '@/components/quote/AddQuoteInvoice.vue'
 import { useCustomer } from '@/composables/Customer/useCustomer'
+import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useQuote } from '@/composables/Quote/useQuote'
 import { PropertyType } from '@/enums/PropertyType'
-import { onMounted } from 'vue'
+import { StagesOpportunity } from '@/enums/StagesOpportunity'
+import { ref } from 'vue'
+
+const props = defineProps({
+  isDialogVisible: {
+    type: Boolean,
+    required: true,
+  },
+  opportunityKanban: {
+    type: String,
+    required: true,
+  },
+})
+
+const emit = defineEmits([
+  'update:isDialogVisible',
+  'submit',
+])
 
 const { generateQuote } = useQuote()
-const { allCustomerPaginate,  customers } = useCustomer()
+const { allCustomerPaginate } = useCustomer()
+const { getOpportunitybyId, opportunity } = useOpportunity()
 const loadingQuote = ref(false)
 
 const quoteData = ref({
@@ -121,23 +140,18 @@ const generateCotization = async() =>{
     
     return 
   }
-  loadingQuote.value = true
+
+  //loadingQuote.value = true
   try{
     console.log(quoteData)
     await generateQuote(quoteData.value)
+    await changeStatusByOpportunity(props.opportunityKanban.id, StagesOpportunity.PRESALE.value, {})
   } catch (error) {
     console.error('Error generando la venta:', error)
   } finally {
-    loadingQuote.value = false
+    // loadingQuote.value = false
   }
 }
-
-onMounted(async () => {
-  await allCustomerPaginate({
-    page: 1,
-    itemsPerPage: 1000,
-  })
-})
 
 watch(
   () => quoteData.value.properties,
@@ -161,90 +175,103 @@ watch(
 )
 
 watch(
-  () => quoteData.value.customer_id,
-  newCustomerId => {
-    const selectedCustomer = customers.value.find(customer => customer.id == newCustomerId)
+  () => props.isDialogVisible,
+  async newVal => {
+    if (newVal) {
+      console.log('El diálogo se ha abierto')
+      await getOpportunitybyId(props.opportunityKanban.id)
+      console.log('Datos de la oportunidad cargados:', opportunity.value)
 
-
-    console.log('Cliente Seleccionado: ', selectedCustomer)
-    if (selectedCustomer) {
-      quoteData.value.social_reason = selectedCustomer.name
-      quoteData.value.email = selectedCustomer.email
-      quoteData.value.phone = selectedCustomer.phone
-      quoteData.value.nit = selectedCustomer.ci
-      quoteData.value.opportunity_id = selectedCustomer.opportunity_id
+      if (opportunity.value) {
+        
+        quoteData.value.social_reason = opportunity.value.customer.name
+        quoteData.value.email = opportunity.value.customer.email
+        quoteData.value.phone = opportunity.value.customer.phone
+        quoteData.value.nit = opportunity.value.customer.ci
+        quoteData.value.opportunity_id = opportunity.value.id
       
-      // Asignar property_id si no es null
-      if (selectedCustomer.property_id !== null) {
-        if(selectedCustomer.property.property_type == 'PARK' ){
-          quoteData.value.properties[1].property_id = selectedCustomer.property_id
+        // Asignar property_id si no es null
+        if (opportunity.value.property_id !== null) {
+          if(opportunity.value.property.property_type === 'PARK' ){
+            quoteData.value.properties[0].property_id = opportunity.value.property_id
+            quoteData.value.properties[0].property_id= null,
+            quoteData.value.properties[0].price= null,
+            quoteData.value.properties[0].price_it= null,
+            quoteData.value.properties[0].price_contrato= null
+          }
+          if(opportunity.value.property.property_type === 'DEPARTAMENT' ){
+            quoteData.value.properties[0].property_id = opportunity.value.property_id
+            quoteData.value.properties[1].property_id= null,
+            quoteData.value.properties[1].price= null,
+            quoteData.value.properties[1].price_it= null,
+            quoteData.value.properties[1].price_contrato= null
+          }
+        }else{
+          quoteData.value.properties[1].property_id= null,
+          quoteData.value.properties[1].price= null,
+          quoteData.value.properties[1].price_it= null,
+          quoteData.value.properties[1].price_contrato= null,
+
           quoteData.value.properties[0].property_id= null,
           quoteData.value.properties[0].price= null,
           quoteData.value.properties[0].price_it= null,
           quoteData.value.properties[0].price_contrato= null
         }
-        if(selectedCustomer.property.property_type == 'DEPARTAMENT' ){
-          quoteData.value.properties[0].property_id = selectedCustomer.property_id
-          quoteData.value.properties[1].property_id= null,
-          quoteData.value.properties[1].price= null,
-          quoteData.value.properties[1].price_it= null,
-          quoteData.value.properties[1].price_contrato= null
-        }
-      }else{
-        quoteData.value.properties[1].property_id= null,
-        quoteData.value.properties[1].price= null,
-        quoteData.value.properties[1].price_it= null,
-        quoteData.value.properties[1].price_contrato= null,
-
-        quoteData.value.properties[0].property_id= null,
-        quoteData.value.properties[0].price= null,
-        quoteData.value.properties[0].price_it= null,
-        quoteData.value.properties[0].price_contrato= null
       }
+      quoteData.value.customer_id = props.opportunityKanban.customer_id
+      
     }
-    quoteData.value.customer_id = newCustomerId
+    
   },
 )
 </script>
 
 <template>
-  <VRow>
-    <VCol
-      cols="12"
-      md="9"
-    >
-      <AddQuoteInvoice
-        :data="quoteData"
-        @push="addProduct"
-        @remove="removeProduct"
-      />
-    </VCol>
-    <VCol
-      cols="12"
-      md="3"
-    >
-      <VCard class="mb-8">
-        <VCol cols="12">
-          <AppAutocomplete
-            v-model="quoteData.customer_id"
-            :rules="[requiredValidator]"
-            label="Clientes"
-            placeholder="Selecciona un Cliente"
-            :items="customers.map(customer => ({title:customer.name, value:customer.id}))"
-            outlined
-          />
-        </VCol>
-        <VCardText>
-          <VBtn
-            :loading="loadingQuote"
-            :disabled="!isFormValid || loadingQuote"
-            class="mb-2"
-            @click="generateCotization"
+  <VDialog
+    max-width="987"
+    :model-value="props.isDialogVisible"
+    persistent
+    :close-on-esc="false"
+    @update:model-value="(val) => $emit('update:isDialogVisible', val)"
+  >
+    <!-- Botón para cerrar el diálogo -->
+    <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
+
+    <VCard>
+      <VCardText>
+        <VRow>
+          <VCol
+            cols="12"
+            md="9"
           >
-            Guardar Cotización 
-          </VBtn>
-        </VCardText>
-      </VCard>
-    </vcol>
-  </VRow>
+            <AddQuoteInvoice
+              :data="quoteData"
+              @push="addProduct"
+              @remove="removeProduct"
+            />
+          </VCol>
+          <VCol
+            cols="12"
+            md="3"
+          >
+            <VBtn
+              :loading="loadingQuote"
+              :disabled="!isFormValid || loadingQuote"
+              color="primary"
+              @click="generateCotization"
+            >
+              Guardar Cotización
+            </VBtn>
+            <VBtn
+              text
+              color="secondary"
+              @click="$emit('update:isDialogVisible', false)"
+            >
+              Cancelar
+            </VBtn>
+          </VCol>
+        </VRow>
+      </VCardText>
+    </VCard>
+  </VDialog>
 </template>

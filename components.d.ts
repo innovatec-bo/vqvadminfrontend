@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    1AddQuoteDialog: typeof import('./src/components/dialogs/quote/1AddQuoteDialog.vue')['default']
     AddActivity: typeof import('./src/components/activity/AddActivity.vue')['default']
     AddAuthenticatorAppDialog: typeof import('./src/components/dialogs/AddAuthenticatorAppDialog.vue')['default']
     AddEditAddressDialog: typeof import('./src/components/dialogs/AddEditAddressDialog.vue')['default']
@@ -14,6 +15,7 @@ declare module 'vue' {
     AddEditRoleDialog: typeof import('./src/components/dialogs/AddEditRoleDialog.vue')['default']
     AddOportunity: typeof import('./src/components/opportunity/AddOportunity.vue')['default']
     AddPaymentMethodDialog: typeof import('./src/components/dialogs/AddPaymentMethodDialog.vue')['default']
+    AddQuoteDialog: typeof import('./src/components/dialogs/quote/AddQuoteDialog.vue')['default']
     AddQuoteInvoice: typeof import('./src/components/quote/AddQuoteInvoice.vue')['default']
     AppAutocomplete: typeof import('./src/@core/components/app-form-elements/AppAutocomplete.vue')['default']
     AppBarSearch: typeof import('./src/@core/components/AppBarSearch.vue')['default']

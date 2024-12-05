@@ -2,18 +2,16 @@
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useSales } from '@/composables/Sales/useSales'
+
 import { formatCurrency } from '@/utils/currencyFormatter'
 import { onMounted, ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
+import AddQuoteDialog from '../components/dialogs/quote/AddQuoteDialog.vue'
 import AddActivity from './activity/AddActivity.vue'
 import TaskKanban from './opportunity/TaskKanban.vue'
 import PreSaleForm from './sale/PreSaleForm.vue'
 
-
-
-
-
-const { allOpportunityKanbanForUser, kanban, generateProspect, getOpportunitybyId, opportunity } = useOpportunity()
+const { allOpportunityKanbanForUser, kanban, generateProspect, getOpportunitybyId, opportunity, changeStatusByOpportunity } = useOpportunity()
 const { loadingSale, sale, generateSale } = useSales()
 const { getallTypeActivities, typeActivities } = useActivity()
 
@@ -29,10 +27,9 @@ const addNewItem = column => {
   })
 }
 
-
-
 const selectedOpportunity  = ref(null)
 const isDialogVisible = ref(false)
+const isDialogVisibleAddQuoteInvoice = ref(false)
 const isFormActivityVisible= ref(false)
 const originColumnTitle = ref(null)
 const destinationColumnTitle = ref(null)
@@ -113,8 +110,6 @@ const handleFormCancelled = () => {
   formCancelled.value= true
 }
 
-
-
 const onMove = event => {
   const originColumn = event.from.closest('.kanban-column').dataset.columnTitle
   const destinationColumn = event.to.closest('.kanban-column').dataset.columnTitle
@@ -150,6 +145,8 @@ const onDragEnd = async event => {
       console.log('Movido a LEAD')
 
       break
+
+      //Al pasar a prospecto Se muestra modal
     case 'PROSPECTO':
       console.log('Movido a PROSPECTO')
       selectedOpportunity.value = item
@@ -160,8 +157,14 @@ const onDragEnd = async event => {
       break
     case 'PREVENTA':
       console.log('Movido a PREVENTA')
+      selectedOpportunity.value = item
+      isDialogVisibleAddQuoteInvoice.value= true
+
+      //await changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value, {})
 
       break
+
+      //Al pasar a venta , se muestra el modal de venta
     case 'VENTA':
       await getOpportunitybyId(item.id)
       console.log('Movido a VENTA')
@@ -324,8 +327,6 @@ onMounted(async () => {
           </div>
 
           <!-- Información del cliente -->
-          
-
           <!-- Detalles del proyecto -->
           <!--
             <div class="kanban-project-details">
@@ -365,6 +366,10 @@ onMounted(async () => {
 
   <TaskKanban 
     v-model:is-dialog-visible="isDialogVisible" 
+    :opportunity-kanban="selectedOpportunity"
+  />
+  <AddQuoteDialog
+    v-model:is-dialog-visible="isDialogVisibleAddQuoteInvoice"
     :opportunity-kanban="selectedOpportunity"
   />
   <PreSaleForm
