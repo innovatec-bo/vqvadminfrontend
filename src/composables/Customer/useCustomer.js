@@ -1,4 +1,4 @@
-import { listCustomerPaginate, registerCustomer } from '@/services/Customer/customerService'
+import { getPerfilCustomer, listCustomerPaginate, registerCustomer } from '@/services/Customer/customerService'
 
 // eslint-disable-next-line case-police/string-check
 import { createThread } from '@/services/OpenAi/openAIService'
@@ -75,7 +75,17 @@ export function useCustomer(){
     }
   }
 
+  const getPerfilCutomerbyId = async id => {
+    try{
+      const response = await getPerfilCustomer(id)
 
+      customer.value = response.data
+      console.log(quote.value)
+      
+    }catch(error){
+      console.error(error)
+    }
+  }
 
   
   return {
@@ -86,6 +96,7 @@ export function useCustomer(){
     totalCustomers: computed(()=> totalCustomers.value),
     addCustomer,
     allCustomerPaginate,
+    getPerfilCutomerbyId,
   }
 }
 
