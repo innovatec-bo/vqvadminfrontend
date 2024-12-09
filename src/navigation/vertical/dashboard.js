@@ -21,4 +21,11 @@ export default [
     subject: ['ASESOR', 'ADMINISTRADOR'],
 
   },
+  {
+    title: 'Bitacora',
+    icon: { icon: 'tabler-smart-home' },
+    to: 'system-log-list',
+    subject: ['ADMINISTRADOR'],
+
+  },
 ]
