@@ -1,18 +1,20 @@
 <script setup>
-import FlatPickr from 'vue-flatpickr-component'
-import { useTheme } from 'vuetify'
+import { useConfigStore } from '@core/stores/config';
+import flatpickr from "flatpickr";
+import { Spanish } from "flatpickr/dist/l10n/es.js";
+import FlatPickr from 'vue-flatpickr-component';
+import { useTheme } from 'vuetify';
 import {
   VField,
   filterFieldProps,
   makeVFieldProps,
-} from 'vuetify/lib/components/VField/VField'
+} from 'vuetify/lib/components/VField/VField';
 import {
   VInput,
   makeVInputProps,
-} from 'vuetify/lib/components/VInput/VInput'
-
-import { filterInputAttrs } from 'vuetify/lib/util/helpers'
-import { useConfigStore } from '@core/stores/config'
+} from 'vuetify/lib/components/VInput/VInput';
+import { filterInputAttrs } from 'vuetify/lib/util/helpers';
+flatpickr.localize(Spanish);
 
 const props = defineProps({
   autofocus: Boolean,
