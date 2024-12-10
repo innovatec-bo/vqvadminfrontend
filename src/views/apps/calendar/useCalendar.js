@@ -1,9 +1,10 @@
+import { useCalendarStore } from '@/views/apps/calendar/useCalendarStore'
+import { useConfigStore } from '@core/stores/config'
+import esLocale from "@fullcalendar/core/locales/es"
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import { useConfigStore } from '@core/stores/config'
-import { useCalendarStore } from '@/views/apps/calendar/useCalendarStore'
 
 export const blankEvent = {
   title: '',
@@ -20,9 +21,14 @@ export const blankEvent = {
     guests: [],
     location: '',
     description: '',
+    customer: {
+      customerId: null,
+      customerName: ''
+    },
   },
 }
-export const useCalendar = (event, isEventHandlerSidebarActive, isLeftSidebarOpen) => {
+
+export const useCalendar = (event, isEventHandlerSidebarActive, isLeftSidebarOpen, isLoading) => {
   const configStore = useConfigStore()
 
   // 👉 Store
@@ -32,19 +38,20 @@ export const useCalendar = (event, isEventHandlerSidebarActive, isLeftSidebarOpe
   const refCalendar = ref()
 
 
+  const userId = useCookie('userData').value.id
+
   // 👉 Calendar colors
   const calendarsColor = {
-    Business: 'primary',
-    Holiday: 'success',
-    Personal: 'error',
-    Family: 'warning',
-    ETC: 'info',
+    1: 'info',
+    2: 'success',
+    3: 'secondary',
+    4: 'warning',
   }
 
 
   // ℹ️ Extract event data from event API
   const extractEventDataFromEventApi = eventApi => {
-    const { id, title, start, end, url, extendedProps: { calendar, guests, location, description }, allDay } = eventApi
+    const { id, title, start, end, url, extendedProps: { calendar, guests, location, description, customer: { customerId, customerName } }, allDay } = eventApi
     
     return {
       id,
@@ -57,32 +64,48 @@ export const useCalendar = (event, isEventHandlerSidebarActive, isLeftSidebarOpe
         guests,
         location,
         description,
+        customer: {
+          customerId,
+          customerName
+        }
       },
       allDay,
     }
   }
 
+  
   if (typeof process !== 'undefined' && process.server)
     store.fetchEvents()
 
 
   // 👉 Fetch events
   const fetchEvents = (info, successCallback) => {
+    isLoading.value = true
     // If there's no info => Don't make useless API call
     if (!info)
       return
-    store.fetchEvents()
+    store.fetchEvents(userId)
       .then(r => {
         successCallback(r.map(e => ({
           ...e,
-
-          // Convert string representation of date to Date object
-          start: new Date(e.start),
-          end: new Date(e.end),
+          title: e.title,
+          start: e.scheduled_at,
+          end: e.scheduled_at,
+          extendedProps: {
+            activityId: e.id,
+            calendar: e.type_activity_id,
+            description: e.description,
+            customer: {
+              customerId: e.opportunity_id,
+              customerName: e.name_opportunity
+            }
+          }
         })))
       })
       .catch(e => {
-        console.error('Error occurred while fetching calendar events', e)
+        showWarningToast('Se produjo un error al obtener los eventos del calendario')
+      }).finally(() => {
+        isLoading.value = false
       })
   }
 
@@ -141,20 +164,44 @@ export const useCalendar = (event, isEventHandlerSidebarActive, isLeftSidebarOpe
 
   // 👉 Add event
   const addEvent = _event => {
-    store.addEvent(_event)
-      .then(() => {
+    isLoading.value = true
+    const data = {
+      title: _event.title,
+      description: _event.extendedProps.description,
+      type_activity_id: _event.extendedProps.calendar,
+      opportunity_id: _event.extendedProps.customer.customerId,
+      assigned_to: userId,
+      scheduled_at: _event.start
+    }
+
+    store.addEvent(data)
+      .then((response) => {
+        showSuccessToast('Actividad creada correctamente', response?.data?.message)
         refetchEvents()
+      }).catch((e) => {
+        showWarningToast('Error al crear una nueva actividad')
+      }).finally(() => {
+        isLoading.value = false
       })
   }
 
 
   // 👉 Update event
   const updateEvent = _event => {
-    store.updateEvent(_event)
-      .then(r => {
-        const propsToUpdate = ['id', 'title', 'url']
-        const extendedPropsToUpdate = ['calendar', 'guests', 'location', 'description']
+    const data = {
+      id: _event.id,
+      title: _event.title,
+      description: _event.extendedProps.description,
+      type_activity: _event.extendedProps.calendar,
+      opportunity_id: _event.extendedProps.customer.customerId,
+      name_opportunity: _event.extendedProps.customer.customerName,
+      scheduled_at: _event.start,
+    }
 
+    store.updateEvent(data)
+      .then(r => {
+        const propsToUpdate = ['id', 'title', 'start', 'customer']
+        const extendedPropsToUpdate = ['calendar', 'description']
         updateEventInCalendar(r, propsToUpdate, extendedPropsToUpdate)
       })
     refetchEvents()
@@ -163,8 +210,36 @@ export const useCalendar = (event, isEventHandlerSidebarActive, isLeftSidebarOpe
 
   // 👉 Remove event
   const removeEvent = eventId => {
-    store.removeEvent(eventId).then(() => {
+    store.changeStatusEvent(eventId).then(() => {
       removeEventInCalendar(eventId)
+    })
+  }
+
+
+  // 👉 Completed event
+  const completedEvent = eventId => {
+    isLoading.value = true
+    store.changeStatusEvent({id: eventId, state_activity: "COMPLETED"}).then((response) => {
+      showSuccessToast('Actividad finalizada correctamente', response?.data?.message)
+      removeEventInCalendar(eventId)
+    }).catch((e) => {
+      showWarningToast('Error al intentar finalizar la actividad')
+    }).finally(() => {
+      isLoading.value = false
+    })
+  }
+
+
+  // 👉 Cancelled event
+  const cancelledEvent = eventId => {
+    isLoading.value = true
+    store.changeStatusEvent({id: eventId, state_activity: "CANCELLED"}).then((response) => {
+      showSuccessToast('Actividad cancelada correctamente', response?.data?.message)
+      removeEventInCalendar(eventId)
+    }).catch((e) => {
+      showWarningToast('Error al intentar cancelar la actividad')
+    }).finally(() => {
+      isLoading.value = false
     })
   }
 
@@ -178,6 +253,8 @@ export const useCalendar = (event, isEventHandlerSidebarActive, isLeftSidebarOpe
       end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
     },
     events: fetchEvents,
+
+    locale: esLocale,
 
     // ❗ We need this to be true because when its false and event is allDay event and end date is same as start data then Full calendar will set end to null
     forceEventDuration: true,
@@ -283,6 +360,8 @@ export const useCalendar = (event, isEventHandlerSidebarActive, isLeftSidebarOpe
     addEvent,
     updateEvent,
     removeEvent,
+    completedEvent,
+    cancelledEvent,
     jumpToDate,
   }
 }

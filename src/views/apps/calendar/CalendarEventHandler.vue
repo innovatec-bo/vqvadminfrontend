@@ -1,13 +1,16 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { VForm } from 'vuetify/components/VForm'
-import { useCalendarStore } from './useCalendarStore'
+import { useCustomer } from '@/composables/Customer/useCustomer'
 import avatar1 from '@images/avatars/avatar-1.png'
 import avatar2 from '@images/avatars/avatar-2.png'
 import avatar3 from '@images/avatars/avatar-3.png'
 import avatar5 from '@images/avatars/avatar-5.png'
 import avatar6 from '@images/avatars/avatar-6.png'
 import avatar7 from '@images/avatars/avatar-7.png'
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { VForm } from 'vuetify/components/VForm'
+import { useCalendarStore } from './useCalendarStore'
+
+const { allCustomerPaginate, customers } = useCustomer()
 
 // 👉 store
 const props = defineProps({
@@ -26,6 +29,8 @@ const emit = defineEmits([
   'addEvent',
   'updateEvent',
   'removeEvent',
+  'completedEvent',
+  'cancelledEvent'
 ])
 
 const store = useCalendarStore()
@@ -33,6 +38,13 @@ const refForm = ref()
 
 // 👉 Event
 const event = ref(JSON.parse(JSON.stringify(props.event)))
+
+onMounted(async () => {
+  await allCustomerPaginate({
+    page: 1,
+    itemsPerPage: 1000,
+  })
+})
 
 const resetEvent = () => {
   event.value = JSON.parse(JSON.stringify(props.event))
@@ -50,13 +62,20 @@ const removeEvent = () => {
   emit('update:isDrawerOpen', false)
 }
 
+const cancelledEvent = () => {
+  emit('cancelledEvent', String(event.value.id))
+
+  // Close drawer
+  emit('update:isDrawerOpen', false)
+}
+
 const handleSubmit = () => {
   refForm.value?.validate().then(({ valid }) => {
     if (valid) {
 
       // If id exist on id => Update event
       if ('id' in event.value)
-        emit('updateEvent', event.value)
+        emit('completedEvent', String(event.value.id))
 
       // Else => add new event
       else
@@ -147,10 +166,10 @@ const dialogModelValueUpdate = val => {
   >
     <!-- 👉 Header -->
     <AppDrawerHeaderSection
-      :title="event.id ? 'Update Event' : 'Add Event'"
+      :title="event.id ? 'Actualizar Actividad' : 'Nueva Actividad'"
       @cancel="$emit('update:isDrawerOpen', false)"
     >
-      <template #beforeClose>
+      <!-- <template #beforeClose>
         <IconBtn
           v-show="event.id"
           @click="removeEvent"
@@ -160,7 +179,7 @@ const dialogModelValueUpdate = val => {
             icon="tabler-trash"
           />
         </IconBtn>
-      </template>
+      </template> -->
     </AppDrawerHeaderSection>
 
     <PerfectScrollbar :options="{ wheelPropagation: false }">
@@ -172,13 +191,27 @@ const dialogModelValueUpdate = val => {
             @submit.prevent="handleSubmit"
           >
             <VRow>
+              <!-- 👉 Customer -->
+              <VCol cols="12">
+                <AppAutocomplete
+                  v-model="event.extendedProps.customer.customerId"
+                  :rules="[requiredValidator]"
+                  label="Cliente"
+                  placeholder="Selecciona un Cliente"
+                  :items="customers.map(customer => ({title:customer.name, value:customer.id}))"
+                  outlined
+                  :disabled="event.id && true"
+                />
+              </VCol>
+
               <!-- 👉 Title -->
               <VCol cols="12">
                 <AppTextField
                   v-model="event.title"
-                  label="Title"
-                  placeholder="Meeting with Jane"
+                  label="Título de la actividad"
+                  placeholder="Título de la actividad"
                   :rules="[requiredValidator]"
+                  :disabled="event.id && true"
                 />
               </VCol>
 
@@ -186,12 +219,13 @@ const dialogModelValueUpdate = val => {
               <VCol cols="12">
                 <AppSelect
                   v-model="event.extendedProps.calendar"
-                  label="Label"
-                  placeholder="Select Event Label"
+                  label="Tipo de actividad"
+                  placeholder="Seleccione una actividad"
                   :rules="[requiredValidator]"
                   :items="store.availableCalendars"
                   :item-title="item => item.label"
-                  :item-value="item => item.label"
+                  :item-value="item => item.value"
+                  :disabled="event.id && true"
                 >
                   <template #selection="{ item }">
                     <div
@@ -217,14 +251,15 @@ const dialogModelValueUpdate = val => {
                   :key="JSON.stringify(startDateTimePickerConfig)"
                   v-model="event.start"
                   :rules="[requiredValidator]"
-                  label="Start date"
-                  placeholder="Select Date"
+                  label="Fecha y hora"
+                  placeholder="Seleccione fecha y hora"
                   :config="startDateTimePickerConfig"
+                  :disabled="event.id && true"
                 />
               </VCol>
 
               <!-- 👉 End date -->
-              <VCol cols="12">
+              <!-- <VCol cols="12">
                 <AppDateTimePicker
                   :key="JSON.stringify(endDateTimePickerConfig)"
                   v-model="event.end"
@@ -233,18 +268,18 @@ const dialogModelValueUpdate = val => {
                   placeholder="Select End Date"
                   :config="endDateTimePickerConfig"
                 />
-              </VCol>
+              </VCol> -->
 
               <!-- 👉 All day -->
-              <VCol cols="12">
+              <!-- <VCol cols="12">
                 <VSwitch
                   v-model="event.allDay"
                   label="All day"
                 />
-              </VCol>
+              </VCol> -->
 
               <!-- 👉 Event URL -->
-              <VCol cols="12">
+              <!-- <VCol cols="12">
                 <AppTextField
                   v-model="event.url"
                   label="Event URL"
@@ -252,10 +287,10 @@ const dialogModelValueUpdate = val => {
                   :rules="[urlValidator]"
                   type="url"
                 />
-              </VCol>
+              </VCol> -->
 
               <!-- 👉 Guests -->
-              <VCol cols="12">
+              <!-- <VCol cols="12">
                 <AppSelect
                   v-model="event.extendedProps.guests"
                   label="Guests"
@@ -267,23 +302,23 @@ const dialogModelValueUpdate = val => {
                   multiple
                   eager
                 />
-              </VCol>
+              </VCol> -->
 
               <!-- 👉 Location -->
-              <VCol cols="12">
+              <!-- <VCol cols="12">
                 <AppTextField
                   v-model="event.extendedProps.location"
                   label="Location"
                   placeholder="Meeting room"
                 />
-              </VCol>
+              </VCol> -->
 
               <!-- 👉 Description -->
               <VCol cols="12">
                 <AppTextarea
                   v-model="event.extendedProps.description"
-                  label="Description"
-                  placeholder="Meeting description"
+                  label="Descripción de la actividad"
+                  :disabled="event.id && true"
                 />
               </VCol>
 
@@ -293,14 +328,15 @@ const dialogModelValueUpdate = val => {
                   type="submit"
                   class="me-3"
                 >
-                  Submit
+                {{event.id ? "Finalizar" : "Registrar"}}
                 </VBtn>
                 <VBtn
+                  v-if="event.id"
                   variant="outlined"
-                  color="secondary"
-                  @click="onCancel"
+                  color="error"
+                  @click="cancelledEvent"
                 >
-                  Cancel
+                  Cancelar
                 </VBtn>
               </VCol>
             </VRow>
