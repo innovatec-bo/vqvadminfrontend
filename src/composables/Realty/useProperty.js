@@ -182,12 +182,12 @@ export function useProperty() {
   }
 
   
-  const propertiesAvailbles = async type =>{
+  const propertiesAvailbles = async () =>{
     try{
-      const response = await getPropertiesAvailable(type)
+      const response = await getPropertiesAvailable()
 
       properties.value  = response.data
-      console.log('propertyfortype ', response.data)
+      console.log('properties: ', response.data)
 
       return  response.data
 

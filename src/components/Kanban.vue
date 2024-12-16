@@ -2,7 +2,7 @@
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useSales } from '@/composables/Sales/useSales'
-
+import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import { formatCurrency } from '@/utils/currencyFormatter'
 import { onMounted, ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
@@ -84,6 +84,16 @@ const restoreLastPosition = event => {
   }
 }
 
+const openMissingModal = async element => {
+
+}
+
+const markDelivered = async element => {
+  console.log(element)
+
+  await changeStatusByOpportunity(element.id, StagesOpportunity.FINISHED.value, {})
+  removeElement(element)
+}
 
 const removeElement = data => {
   // Buscamos el tablero que contiene el elemento
@@ -238,7 +248,7 @@ onMounted(async () => {
             <!-- Establecemos un ancho del 100% -->
 
             <VIcon
-              icon="tabler-plus"
+              icon="tabler-arrows-vertical"
               class="icon-small"
             />
           </VBtn>
@@ -270,11 +280,42 @@ onMounted(async () => {
           class="kanban-item"
           @click="selectOpportunity(item)"
         >
-          <div>
-            <p style="margin-block-end:5px;">
-              <strong>{{ item.name }}</strong>
-            </p>
+          <div
+            class="d-flex align-center justify-space-between"
+            style="gap: 10px;"
+          > 
+            <!-- Contenedor del 70% -->
+            <div style="flex: 7;">
+              <p style="margin: 0;">
+                <strong>{{ item.name }}</strong>
+              </p>
+            </div>
+
+            <!-- Contenedor del 30% -->
+            <div>
+              <VBtn
+                v-if="item.stage !=='VENTA' && item.stage!== 'ENTREGA'"
+                color="warning"
+                title="Dar de Baja"
+                class="button-task"
+                @click.stop
+                @click.prevent="openMissingModal(item)"
+              >
+                <VIcon icon="tabler-trash" />
+              </VBtn>
+              <VBtn
+                v-if="item.stage=== 'ENTREGA'"
+                color="success"
+                title="Completar Oportunidad"
+                class="button-task"
+                @click.stop
+                @click.prevent="markDelivered(item)"
+              >
+                <VIcon icon="tabler-check" />
+              </VBtn>
+            </div>
           </div>
+
           <div class="kanban-header">
             <div class="d-flex gap-1">
               <div>
@@ -325,7 +366,6 @@ onMounted(async () => {
               </p>
             </div>
           </div>
-
           <!-- Información del cliente -->
           <!-- Detalles del proyecto -->
           <!--
@@ -348,16 +388,18 @@ onMounted(async () => {
             </div> 
           -->
 
+          
+           
           <!--
-            Footer con comentarios y otras acciones 
             <div class="kanban-footer">
-            <div class="icon-section">
-            <IconBtn>
-            <VIcon icon="tabler-message" />
-            <span>{{ item.cantComments }}</span>
-            </IconBtn>
-            </div>
-            </div>
+            <VBtn
+            color="warning"
+            title="Agregar Actividad"
+            class="button-task"
+            >
+            <VIcon icon="tabler-trash" />
+            </VBtn>
+            </div> 
           -->
         </div>
       </VueDraggable>
@@ -421,6 +463,17 @@ onMounted(async () => {
   max-inline-size: 24px;
   min-inline-size: 24px;
 }
+
+.button-task {
+  display: flex;
+  align-items: center;
+  padding: 1;
+  max-block-size: 25px;
+  max-inline-size: 25px;
+  min-inline-size: 25px;
+}
+
+
 
 
 /* Encabezado de la columna */
