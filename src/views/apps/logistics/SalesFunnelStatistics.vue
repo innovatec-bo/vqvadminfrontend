@@ -49,13 +49,7 @@ const config = ref({
       borderRadius: 7,
     },
   },
-  labels: [
-    'Oportunidad',
-    'Prospecto',
-    'Preventa',
-    'Venta',
-    'Entrega',
-  ],
+  labels: [],
   colors: [
     chartColors.bar.series1,
     chartColors.bar.series2,
@@ -92,7 +86,7 @@ const config = ref({
     onDatasetHover: { highlightDataSeries: false },
   },
   xaxis: {
-    categories: ['5', '4', '3', '2', '1'],
+    categories: ['Lead', 'Prospecto', 'Preventa', 'Venta', 'Entrega'],
     axisBorder: { show: false },
     axisTicks: { show: false },
     labels: {
@@ -117,7 +111,7 @@ const config = ref({
 
 const topicsData = ref([
   {
-    title: 'Oportunidad',
+    title: 'Lead',
     value: props.data.total_leads,
     color: chartColors.bar.series1,
   },
@@ -153,7 +147,7 @@ watch(() => props.data, (newData) => {
     ]
 
     topicsData.value = [
-      { title: 'Oportunidad', value: newData.total_leads, color: chartColors.bar.series1 },
+      { title: 'Lead', value: newData.total_leads, color: chartColors.bar.series1 },
       { title: 'Prospecto', value: newData.total_prospect, color: chartColors.bar.series2 },
       { title: 'Preventa', value: newData.total_presales, color: chartColors.bar.series3 },
       { title: 'Venta', value: newData.total_sales, color: chartColors.bar.series4 },

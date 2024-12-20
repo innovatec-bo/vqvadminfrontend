@@ -24,11 +24,7 @@ const chartColors = {
   },
 }
 
-const series = ref([
-  props.data?.total_property_available,
-  props.data?.total_property_sale,
-  props.data?.total_property_delivery,
-])
+const series = ref([])
 
 const config = ref({
   chart: {
@@ -59,7 +55,7 @@ const config = ref({
             label: 'Total',
             color: labelColor,
             formatter() {
-              return `${props.data.total_property} Unidades`;
+              return `${props.data.total_property || 0} Unidades`;
             },
           },
         },
@@ -105,18 +101,18 @@ const config = ref({
   }],
 })
 
-// Actualiza las series y la configuración al cambiar props.data
-watch(() => props.data, (newData) => {
+const updateChartData = (data) => {
     series.value = [
-      newData?.total_property_available,
-      newData?.total_property_sale,
-      newData?.total_property_delivery,
+        data.total_property_available || 0,
+        data.total_property_sale || 0,
+        data.total_property_delivery || 0,
     ]
+}
 
-    config.value.plotOptions.pie.donut.labels.total.formatter = () =>
-      `${newData?.total_property} unidades`
+watch(() => props.data, (newData) => {
+    updateChartData(newData)
   },
-  { deep: true }
+  { immediate: true, deep: true }
 )
 </script>
 

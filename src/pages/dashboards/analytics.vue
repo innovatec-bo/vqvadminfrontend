@@ -26,6 +26,7 @@ const { getallProjects, projects } = useProject()
 
 const panel = ref(0)
 const project = ref(1)
+const projectList = ref([])
 const selectedRange = ref('lastWeek')
 const rawDateRange = ref('')
 const dateRange = ref(getLastWeekRange())
@@ -45,7 +46,7 @@ const handleFilter = () => {
 
 const loadAnalyticsData = () => {
   if (dateRange?.value?.length == 2) {
-    fetchAnalyticsData(formatDate(dateRange.value[0]), formatDate(dateRange.value[1]))
+    fetchAnalyticsData(formatDate(dateRange.value[0]), formatDate(dateRange.value[1]), project.value)
   }
 }
 
@@ -73,7 +74,9 @@ watch(() => selectedRange.value, (newSelectedRange) => {
 }, { deep: true });
 
 onMounted(() => {
-  getallProjects({ itemsPerPage: 10, page: 1 })
+  getallProjects({ itemsPerPage: 10, page: 1 }).then(() => {
+    projectList.value = [{ id: 0, title: 'TODOS' }, ...projects.value];
+  });
   loadAnalyticsData()
 });
 </script>
@@ -95,7 +98,7 @@ onMounted(() => {
                     v-model="project"
                     label="Por proyecto"
                     placeholder="Seleccione una opción"
-                    :items="projects"
+                    :items="projectList"
                     :item-title="item => item.title"
                     :item-value="item => item.id"
                     :config="{ position: 'auto right' }"

@@ -160,22 +160,24 @@ const config = ref({
 })
 
 const updateChartData = (data) => {
-  const users = data?.total_prospect?.map((item) => item.user.name)
-  const leadData = data?.total_prospect?.map((item) => item.lead_count)
-  const prospectData = data?.total_prospect?.map((item) => item.prospect_count)
-  const presaleData = data?.total_prospect?.map((item) => item.presale_count)
-  const saleData = data?.total_prospect?.map((item) => item.sale_count)
-  const deliveryData = data?.total_prospect?.map((item) => item.delivery_count)
+    if(data?.total_prospect) {
+        const users = data.total_prospect?.map((item) => item.user.name)
+        const leadData = data.total_prospect?.map((item) => item.lead_count)
+        const prospectData = data.total_prospect?.map((item) => item.prospect_count)
+        const presaleData = data.total_prospect?.map((item) => item.presale_count)
+        const saleData = data.total_prospect?.map((item) => item.sale_count)
+        const deliveryData = data.total_prospect?.map((item) => item.delivery_count)
 
-  series.value = [
-    { name: 'Oportunidad', type: 'column', data: leadData },
-    { name: 'Prospecto', type: 'line', data: prospectData },
-    { name: 'Preventa', type: 'line', data: presaleData },
-    { name: 'Venta', type: 'line', data: saleData },
-    { name: 'Entrega', type: 'line', data: deliveryData },
-  ]
+        config.value.xaxis.categories = users
 
-  config.value.xaxis.categories = users
+        series.value = [
+            { name: 'Lead', type: 'column', data: leadData },
+            { name: 'Prospecto', type: 'line', data: prospectData },
+            { name: 'Preventa', type: 'line', data: presaleData },
+            { name: 'Venta', type: 'line', data: saleData },
+            { name: 'Entrega', type: 'line', data: deliveryData },
+        ]
+    }
 }
 
 watch(() => props.data, (newData) => {
@@ -194,7 +196,7 @@ watch(() => props.data, (newData) => {
       title="Reporte por vendedores"
     >
     </VCardItem>
-    <VCardText>
+    <VCardText v-if="data?.total_prospect">
       <VueApexCharts
         id="shipment-statistics"
         type="line"
