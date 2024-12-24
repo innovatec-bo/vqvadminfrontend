@@ -1,29 +1,29 @@
 import { $api } from "@/utils/api"
 
-export const getLogisticsCardStatistics = async (startDate, endDate, projectId) => {
+export const getLogisticsCardStatistics = async (params) => {
     return await $api(`/dashboard/general`, {
         method: 'GET',
-        params: { project_id: projectId, fromDate: startDate, toDate: endDate }
+        params: params
     })
 }
 
-export const getSalesFunnelStatistics = async (startDate, endDate, projectId) => {
+export const getSalesFunnelStatistics = async (params) => {
     return await $api(`/dashboard/sale`, {
         method: 'GET',
-        params: { project_id: projectId, fromDate: startDate, toDate: endDate }
+        params: params
     })
 }
 
-export const getProductStatusStatistics = async (startDate, endDate, projectId) => {
+export const getProductStatusStatistics = async (params) => {
     return await $api(`/dashboard/properties`, {
         method: 'GET',
-        params: { project_id: projectId, fromDate: startDate, toDate: endDate }
+        params: params
     })
 }
 
-export const getSellerSalesStatistics = async (startDate, endDate, projectId) => {
+export const getSellerSalesStatistics = async (params) => {
     return await $api(`/dashboard/seller`, {
         method: 'GET',
-        params: { project_id: projectId, fromDate: startDate, toDate: endDate }
+        params: params
     })
 }

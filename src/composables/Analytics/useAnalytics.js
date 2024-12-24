@@ -13,12 +13,14 @@ export function useAnalytics() {
     isLoading.value = true;
     error.value = null;
 
+    const params = { fromDate: startDate, toDate: endDate, project_id: projectId}
+
     try {
       const [logisticsCardRes, salesFunnelRes, productStatusRes, sellerSalesRes] = await Promise.all([
-        getLogisticsCardStatistics(startDate, endDate, projectId),
-        getSalesFunnelStatistics(startDate, endDate, projectId),
-        getProductStatusStatistics(startDate, endDate, projectId),
-        getSellerSalesStatistics(startDate, endDate, projectId),
+        getLogisticsCardStatistics(params),
+        getSalesFunnelStatistics(params),
+        getProductStatusStatistics(params),
+        getSellerSalesStatistics(params),
       ]);
 
       logisticsCardData.value = logisticsCardRes.data

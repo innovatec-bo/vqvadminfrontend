@@ -1,4 +1,5 @@
 <script setup>
+import { formatCurrency } from '@/utils/currencyFormatter';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -19,7 +20,7 @@ const updateLogisticData = (data) => {
     {
       icon: 'tabler-users-group',
       color: 'primary',
-      title: 'Total de oportunidades',
+      title: 'Total de leads',
       value: data.total_leads || 0,
       isHover: false,
     },
@@ -35,7 +36,8 @@ const updateLogisticData = (data) => {
       color: 'primary',
       title: 'Total de ventas',
       value: data.total_sales || 0,
-      isHover: false,
+      amount: formatCurrency(data.total_amount_sale || 0),
+      isHover: false, 
     },
     {
       icon: 'tabler-clock-record',
@@ -55,7 +57,7 @@ watch(() => props.data, (newData) => {
 </script>
 
 <template>
-  <VRow>
+  <VRow class="match-height match-height-cards">
     <VCol
       v-for="(data, index) in logisticData"
       :key="index"
@@ -84,9 +86,14 @@ watch(() => props.data, (newData) => {
                   size="28"
                 />
               </VAvatar>
-              <h5 class="text-h5 font-weight-medium">
+              <div class="gap-y-2">
+                <h5 class="text-h5 font-weight-medium">
                 {{ data.value }}
               </h5>
+              <div class="v-list-item-subtitle">
+                {{ data.amount }}
+              </div>
+              </div>
             </div>
             <div class="text-body-1">
               {{ data.title }}
@@ -110,5 +117,8 @@ watch(() => props.data, (newData) => {
   @include mixins.elevation(12);
 
   transition: all 0.1s ease-out;
+}
+.match-height-cards > div > div, .match-height-cards > div > div > div{
+  height: 100% !important;
 }
 </style>
