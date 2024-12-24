@@ -20,7 +20,7 @@ export const redirects = [
 
       // Comprobar si el usuario tiene el rol de 'admin' o 'ASESOR'
       if (userRoles.includes('ADMINISTRADOR')) {
-        return { name: 'dashboards-crm' }
+        return { name: 'dashboards-analytics' }
       }
 
       if (userRoles.includes('ASESOR')) {
