@@ -69,7 +69,7 @@ declare global {
   const emailValidator: typeof import('./src/@core/utils/validators.js')['emailValidator']
   const extendRef: typeof import('@vueuse/core')['extendRef']
   const formatCurrency: typeof import('./src/utils/currencyFormatter.js')['formatCurrency']
-  const formatDate: typeof import('./src/@core/utils/formatters.js')['formatDate']
+  const formatDate: typeof import('./src/utils/dateFormatter.js')['formatDate']
   const formatDateToMonthShort: typeof import('./src/@core/utils/formatters.js')['formatDateToMonthShort']
   const formatNumber: typeof import('./src/utils/numberFormatter.js')['formatNumber']
   const getActivePinia: typeof import('pinia')['getActivePinia']
@@ -458,6 +458,7 @@ declare module 'vue' {
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
     readonly formatCurrency: UnwrapRef<typeof import('./src/utils/currencyFormatter.js')['formatCurrency']>
     readonly formatDate: UnwrapRef<typeof import('./src/@core/utils/formatters.js')['formatDate']>
+    readonly formatDate: UnwrapRef<typeof import('./src/utils/dateFormatter.js')['formatDate']>
     readonly formatDateToMonthShort: UnwrapRef<typeof import('./src/@core/utils/formatters.js')['formatDateToMonthShort']>
     readonly formatNumber: UnwrapRef<typeof import('./src/utils/numberFormatter.js')['formatNumber']>
     readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
@@ -478,7 +479,6 @@ declare module 'vue' {
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
     readonly isRef: UnwrapRef<typeof import('vue')['isRef']>
     readonly isToday: UnwrapRef<typeof import('./src/@core/utils/helpers.js')['isToday']>
-    readonly kFormatter: UnwrapRef<typeof import('./src/@core/utils/formatters.js')['kFormatter']>
     readonly lengthValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['lengthValidator']>
     readonly logicAnd: UnwrapRef<typeof import('@vueuse/math')['logicAnd']>
     readonly logicNot: UnwrapRef<typeof import('@vueuse/math')['logicNot']>

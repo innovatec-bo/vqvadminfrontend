@@ -1,42 +1,63 @@
 <script setup>
-const logisticData = ref([
-  {
-    icon: 'tabler-car',
-    color: 'primary',
-    title: 'On route vehicles',
-    value: 42,
-    change: 18.2,
-    isHover: false,
+import { formatCurrency } from '@/utils/currencyFormatter';
+import { ref, watch } from 'vue';
+
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
   },
-  {
-    icon: 'tabler-alert-triangle',
-    color: 'warning',
-    title: 'Vehicles with errors',
-    value: 8,
-    change: -8.7,
-    isHover: false,
-  },
-  {
-    icon: 'tabler-git-fork',
-    color: 'error',
-    title: 'Deviated from route',
-    value: 27,
-    change: 4.3,
-    isHover: false,
-  },
-  {
-    icon: 'tabler-clock-hour-12',
-    color: 'info',
-    title: 'Late vehicles',
-    value: 13,
-    change: -2.5,
-    isHover: false,
-  },
-])
+  isLoading: {
+    type: Boolean,
+    required: true, 
+  }
+})
+
+const logisticData = ref([])
+
+const updateLogisticData = (data) => {
+  logisticData.value = [
+    {
+      icon: 'tabler-users-group',
+      color: 'primary',
+      title: 'Total de leads',
+      value: data.total_leads || 0,
+      isHover: false,
+    },
+    {
+      icon: 'tabler-exchange ',
+      color: 'primary',
+      title: 'Total de prospectos',
+      value: data.total_prospect || 0,
+      isHover: false,
+    },
+    {
+      icon: 'tabler-coins',
+      color: 'primary',
+      title: 'Total de ventas',
+      value: data.total_sales || 0,
+      amount: formatCurrency(data.total_amount_sale || 0),
+      isHover: false, 
+    },
+    {
+      icon: 'tabler-clock-record',
+      color: 'primary',
+      title: 'Promedio de cierre',
+      value: `${data.average_closure_time || 0} dias`,
+      isHover: false,
+    },
+  ]
+}
+
+updateLogisticData(props.data)
+
+watch(() => props.data, (newData) => {
+  updateLogisticData(newData)
+})
 </script>
 
 <template>
-  <VRow>
+  <VRow class="match-height match-height-cards">
     <VCol
       v-for="(data, index) in logisticData"
       :key="index"
@@ -45,11 +66,13 @@ const logisticData = ref([
       sm="6"
     >
       <div>
-        <VCard
+        <AppCardActions
           class="logistics-card-statistics cursor-pointer"
           :style="data.isHover ? { 'border-block-end': `2px solid rgba(var(--v-theme-${data.color}))` } : { 'border-block-end': `2px solid rgba(var(--v-theme-${data.color}), var(--v-disabled-opacity))` }"
           @mouseenter="data.isHover = true"
           @mouseleave="data.isHover = false"
+          v-model:loading="props.isLoading"
+          noActions
         >
           <VCardText>
             <div class="d-flex align-center gap-x-4 mb-2">
@@ -63,21 +86,25 @@ const logisticData = ref([
                   size="28"
                 />
               </VAvatar>
-              <h5 class="text-h5 font-weight-medium">
+              <div class="gap-y-2">
+                <h5 class="text-h5 font-weight-medium">
                 {{ data.value }}
               </h5>
+              <div class="v-list-item-subtitle">
+                {{ data.amount }}
+              </div>
+              </div>
             </div>
             <div class="text-body-1">
               {{ data.title }}
             </div>
-            <div class="d-flex gap-x-2">
+            <div class="d-flex gap-x-2" v-if="data.change">
               <h6 class="text-h6 font-weight-medium">
                 {{ (data.change > 0) ? '+' : '' }} {{ data.change }}%
               </h6>
-              <span class="text-disabled">than last week</span>
             </div>
           </VCardText>
-        </VCard>
+        </AppCardActions>
       </div>
     </VCol>
   </VRow>
@@ -90,5 +117,8 @@ const logisticData = ref([
   @include mixins.elevation(12);
 
   transition: all 0.1s ease-out;
+}
+.match-height-cards > div > div, .match-height-cards > div > div > div{
+  height: 100% !important;
 }
 </style>
