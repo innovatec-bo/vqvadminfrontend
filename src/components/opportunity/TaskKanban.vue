@@ -86,6 +86,7 @@ const saveData = async () => {
       ci: opportunity.value.customer.ci,
       cod_phone: opportunity.value.cod_phone,
       phone: opportunity.value.customer.phone,
+      type_customer: opportunity.value.customer.type_customer,
     },
   }
 
@@ -230,6 +231,25 @@ watch(() => props.isDialogVisible, async newValue => {
                       outlined
                     />
                   </VCol>
+                  <VCol cols="6">
+                    <AppSelect
+                      v-model="opportunity.customer.type_customer"
+                      label="Tipo de Cliente"
+                      :items="[
+                        'Olvidadizo', 
+                        'Familiar',
+                        'Decidido',
+                        'Indeciso',
+                        'Exigente',
+                        'Referido',
+                        'Inversionista',
+                        'Recuperado',
+                        'Curioso',
+                      ]"
+                      placeholder="Tipo de Cliente"
+                      outlined
+                    />
+                  </VCol>
                   <!--
                     <VCol
                     cols="12"
@@ -282,6 +302,7 @@ watch(() => props.isDialogVisible, async newValue => {
                       outlined
                     />
                   </VCol>
+                
 
                   <!-- Botones de Acción -->
                   <VCol

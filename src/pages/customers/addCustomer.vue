@@ -13,6 +13,8 @@ const customerForm = ref({
   email: null,
   ci: null,
   description: null,
+  // eslint-disable-next-line camelcase
+  type_customer: null,
 })
 
 // Referencia para el formulario
@@ -127,7 +129,7 @@ const registerCustomer = async () => {
                 </VCol>
                 <VCol
                   cols="12"
-                  md="6"
+                  md="4"
                 >
                   <AppTextField
                     v-model="customerForm.email"
@@ -138,12 +140,29 @@ const registerCustomer = async () => {
                 </VCol>
                 <VCol
                   cols="12"
-                  md="6"
+                  md="4"
                 >
                   <AppTextField
                     v-model="customerForm.ci"
                     label="CI (Opcional)"
                     placeholder="0123-4567"
+                  />
+                </VCol>
+                <VCol md="4">
+                  <AppSelect
+                    v-model="customerForm.type_customer"
+                    label="Tipo de cliente"
+                    :items="[
+                      'Olvidadizo', 
+                      'Familiar',
+                      'Decidido',
+                      'Indeciso',
+                      'Exigente',
+                      'Referido',
+                      'Inversionista',
+                      'Recuperado',
+                      'Curioso',
+                    ]"
                   />
                 </VCol>
                 <VCol>

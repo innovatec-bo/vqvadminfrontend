@@ -39,6 +39,8 @@ const saveData = async () => {
       ci: opportunity.value.customer.ci,
       cod_phone: opportunity.value.customer.cod_phone.replace(/\+/g, ''),
       phone: opportunity.value.customer.phone,
+      type_customer: opportunity.value.customer.type_customer,
+
     },
   }
 
@@ -161,12 +163,31 @@ watch(() => props.isDialogVisible, async newValue => {
                 outlined
               />
             </VCol>
-            <VCol cols="12">
+            <VCol cols="6">
               <AppAutocomplete
                 v-model="opportunity.property_id"
                 label="Departamento de Interés"
                 placeholder="Selecciona un Departamento"
                 :items="properties.map(property => ({title:property.title, value:property.id}))"
+                outlined
+              />
+            </VCol>
+            <VCol cols="6">
+              <AppSelect
+                v-model="opportunity.customer.type_customer"
+                label="Tipo de Cliente"
+                :items="[
+                  'Olvidadizo', 
+                  'Familiar',
+                  'Decidido',
+                  'Indeciso',
+                  'Exigente',
+                  'Referido',
+                  'Inversionista',
+                  'Recuperado',
+                  'Curioso',
+                ]"
+                placeholder="Tipo de Cliente"
                 outlined
               />
             </VCol>

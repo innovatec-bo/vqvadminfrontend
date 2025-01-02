@@ -36,6 +36,10 @@ const headers = [
     key: 'email',
   },
   {
+    title: 'Tipo',
+    key: 'type_customer',
+  },
+  {
     title: 'Ultima Oportunidad',
     key: 'lastOpportunity',
   },

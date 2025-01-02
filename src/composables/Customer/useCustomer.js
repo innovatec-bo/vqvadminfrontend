@@ -1,7 +1,6 @@
 import { getPerfilCustomer, listCustomerPaginate, registerCustomer } from '@/services/Customer/customerService'
 
 // eslint-disable-next-line case-police/string-check
-import { createThread } from '@/services/OpenAi/openAIService'
 import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -33,6 +32,8 @@ export function useCustomer(){
         thread: thread.id,
         email: data.email,
         ci: data.ci,
+        // eslint-disable-next-line camelcase
+        type_customer: data.type_customer,
         // eslint-disable-next-line camelcase
         cod_phone: data.countryCode.replace(/\+/g, ''),
         description: data.description,
