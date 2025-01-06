@@ -9,7 +9,7 @@ import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
 const searchQuery = ref('')
 const isAddCustomerDrawerOpen = ref(false)
-const { allQuotePaginate, totalQuotes, quotes, changeStatusQuotes, changeStatusQuotesCustomer } = useQuote()
+const { allQuotePaginate, exportQuoteExcel, totalQuotes, quotes, changeStatusQuotes, changeStatusQuotesCustomer } = useQuote()
 const userData = useCookie('userAbilityRules').value
 
 // Data table options
@@ -71,6 +71,11 @@ const statusQuote = async (quoteId, statusquote) => {
   onMounted()
 }
 
+const ExportExcell = async ()=>{
+  await exportQuoteExcel()
+}
+
+
 const statusQuoteCustomer = async (quoteId, statusquote) => {
   const newStatus = statusquote === 'APPROVED' ? 'NOT_APPROVED' : 'APPROVED'
 
@@ -127,6 +132,7 @@ watch([searchQuery, itemsPerPage, page, status], debouncedFetch, { immediate: tr
               prepend-icon="tabler-screen-share"
               variant="tonal"
               color="secondary"
+              @click="ExportExcell"
             >
               Export
             </VBtn>

@@ -1,4 +1,4 @@
-import { changeStageSignature, createSale, createSaleChangeStage, discardSale, getSale, listSalesPaginated } from "@/services/Sales/saleService"
+import { changeStageSignature, createSale, createSaleChangeStage, discardSale, exportSale, getSale, listSalesPaginated } from "@/services/Sales/saleService"
 import { showSuccessNotification } from "@/utils/notifications"
 
 export function useSales (){
@@ -136,6 +136,33 @@ export function useSales (){
     }
   }
 
+  const exportSaleExcel = async () => {
+    try{
+      const response = await exportSale()
+        
+      if (!(response instanceof Blob)) {
+        throw new Error('Respuesta inválida del servidor con el BLOB')
+      }
+  
+      const blob = new Blob([response], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+  
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+  
+      link.href = url
+      link.setAttribute('download', 'ventas.xlsx') 
+      document.body.appendChild(link)
+      link.click()
+  
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(link)
+    }catch(error){
+      console.error('Error en exportación:', error)
+    }
+  }
+
   return{
     loadingSale,
     sales,
@@ -149,5 +176,6 @@ export function useSales (){
     AllSalesPaginated,
     SaleChangeStageDiscard,
     SaleChangeSignature,
+    exportSaleExcel,
   }
 } 

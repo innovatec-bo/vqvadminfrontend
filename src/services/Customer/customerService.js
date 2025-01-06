@@ -20,3 +20,10 @@ export const  listCustomerPaginate = async pagination => {
     params: pagination,
   })
 }
+
+export const exportCustomer = async () => {
+  return await $api(`/export/customer`, {
+    method: 'GET',
+    responseType: 'blob',
+  })
+}

@@ -6,7 +6,7 @@ import Swal from 'sweetalert2'
 import { ref, watch } from 'vue'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
-const { AllSalesPaginated, SaleChangeStageDiscard, sales, totalSales } = useSales()
+const { AllSalesPaginated, exportSaleExcel, SaleChangeStageDiscard, sales, totalSales } = useSales()
 
 // Data table options
 const searchQuery = ref('')
@@ -86,6 +86,11 @@ const AllSales = () => {
   })
 }
 
+const ExportExcell = async ()=>{
+  await exportSaleExcel()
+}
+
+
 const debouncedFetch = debounce(AllSales, 300)
 
 watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
@@ -102,6 +107,15 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
             placeholder="Buscar..."
             density="compact"
           />
+          <VBtn
+            prepend-icon="tabler-screen-share"
+            variant="tonal"
+            color="secondary"
+            class="mx-3"
+            @click="ExportExcell"
+          >
+            Export
+          </VBtn>
           <div class="d-flex flex-row gap-4 align-center flex-wrap">
             <AppSelect
               v-model="itemsPerPage"
