@@ -1,4 +1,5 @@
 <script setup>
+import ChangePassword from '@/components/perfil/changePassword.vue'
 import UserPanel from '@/components/user/UserPanel.vue'
 
 const userTab = ref(null)
@@ -48,21 +49,20 @@ const userData = useCookie('userData').value
           <span>{{ tab.title }}</span>
         </VTab>
       </VTabs>
-      <!-- 
-        <VWindow
+      
+      <VWindow
         v-model="userTab"
         class="mt-6 disable-tab-transition"
         :touch="false"
-        >
+      >
         <VWindowItem>
-        <UserTabAccount />
+          <UserTabAccount />
         </VWindowItem>
 
         <VWindowItem>
-        <UserTabSecurity />
+          <ChangePassword />
         </VWindowItem>
-        </VWindow> 
-      -->
+      </VWindow>
     </VCol>
   </VRow>
   <VCard v-else>
