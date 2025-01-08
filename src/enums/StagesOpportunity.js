@@ -23,6 +23,10 @@ export const StagesOpportunity = {
     value: 6,
     label: 'PERDIDA',
   },
+  FINISHED: {
+    value: 7,
+    label: 'COMPLETADA',
+  },
 }
 export const getStageValue = stage => {
   return StagesOpportunity[stage]?.value ?? null

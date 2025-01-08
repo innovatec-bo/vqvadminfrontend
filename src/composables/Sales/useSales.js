@@ -1,11 +1,13 @@
 import { changeStageSignature, createSale, createSaleChangeStage, discardSale, exportSale, getSale, listSalesPaginated } from "@/services/Sales/saleService"
 import { showSuccessNotification } from "@/utils/notifications"
+import { useRouter } from "vue-router"
 
 export function useSales (){
   const loadingSale = ref(false)
   const sales = ref([])
   const totalSales = ref(0)
   const error = ref(null)
+  const router = useRouter()
   const sale = ref(null)
 
   const generateSaleChangeStage = async saleData =>{
@@ -65,6 +67,7 @@ export function useSales (){
       
       console.log('venta: ', response)
       sale.value = response.data
+      router.push(`/sale/${sale.value.id}`)
     }catch(err){
       if(err.response && err.response.status == 422){
         showWarningToast('Validación fallida', 'Faltan datos por rellenar')

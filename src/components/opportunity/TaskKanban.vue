@@ -1,5 +1,6 @@
 <!-- eslint-disable camelcase -->
 <script setup>
+import poraIcon from '@/assets/icons/poraIcon.png'
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProperty } from '@/composables/Realty/useProperty'
@@ -23,9 +24,9 @@ const stageOptions = Object.values(StagesOpportunity).map(stage => ({
 const { allProperty, properties } = useProperty()
 
 const { getallTypeActivities, typeActivities, registerActivity, loadingActivity, changeStatusActivity } = useActivity()
-const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity } = useOpportunity()
+const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity, changeStatusByOpportunity } = useOpportunity()
 
-const navigationTab = ref('Informacion')
+
 
 const newActivity = ref({
   title: null,
@@ -40,7 +41,14 @@ const dialogVisibleUpdate = () => {
   emit('update:isDialogVisible', false)
 }
 
-const tabItems = ['Informacion', 'Agregar Actividad', 'Lista de Actividades']
+const tabItems = ref([
+  { title: 'Informacion', value: 'information' },
+  { title: 'Agregar Actividad', value: 'add_activity' },
+  { title: 'Lista de Actividades', value: 'activity_list' },
+])
+
+const navigationTab = ref(tabItems.value[0].value)
+
 
 // Cargar las propiedades cuando se abra el diálogo
 const fetchProperties = async () => {
@@ -57,6 +65,7 @@ const fetchOpportunityData = async () => {
     await getOpportunitybyId(props.opportunityKanban.id)
   }
 }
+
 
 const addActivity = async () => {
   await registerActivity(newActivity.value)
@@ -101,14 +110,43 @@ const confirmActivity = async activityId => {
   dialogVisibleUpdate()
 }
 
-// Vigilar el estado del diálogo y cargar las propiedades cuando se abra
+// Función para actualizar tabItems con el orden deseado
+const updateTabItems = () => {
+  const tabs = []
+
+  // Orden deseado: Ventas, Cotizaciones, Información, Agregar Actividad, Lista de Actividades
+  if (props.opportunityKanban.stage === StagesOpportunity.DELIVERY.label) {
+    tabs.push({ title: 'Entrega', value: 'delivery' })
+  }
+  if (props.opportunityKanban.stage === StagesOpportunity.SALE.label) {
+    tabs.push({ title: 'Ventas', value: 'sales' })
+  }
+  if (props.opportunityKanban.stage === StagesOpportunity.PRESALE.label) {
+    tabs.push({ title: 'Cotizaciones', value: 'quotations' })
+  }
+
+
+  // Agregar las tabs comunes
+  tabs.push(
+    { title: 'Informacion', value: 'information' },
+    { title: 'Agregar Actividad', value: 'add_activity' },
+    { title: 'Lista de Actividades', value: 'activity_list' },
+  )
+
+  // Actualizar el valor de tabItems
+  tabItems.value = tabs
+  navigationTab.value = tabItems.value[0].value
+}
+
+// Vigilar el estado del diálogo y actualizar tabItems cuando sea necesario
 watch(() => props.isDialogVisible, async newValue => {
-  if (newValue === true) {
-    fetchOpportunityData()
-    allTypeActivity()
-    newActivity.value.opportunity_id = props.opportunityKanban?.id ?? null
-    newActivity.value.assigned_to = props.opportunityKanban?.user_id ?? null
-    await fetchProperties() 
+  if (newValue) {
+    await fetchOpportunityData()
+    updateTabItems()
+    await allProperty({ page: 1, itemsPerPage: 100 })
+    await getallTypeActivities()
+
+    
   }
 })
 </script>
@@ -127,17 +165,18 @@ watch(() => props.isDialogVisible, async newValue => {
       <VTabs v-model="navigationTab">
         <VTab
           v-for="item in tabItems"
-          :key="item"
+          :key="item.value"
+          :value="item.value"
         >
-          {{ item }}
+          {{ item.title }}
         </VTab>
       </VTabs>
 
       <!-- Contenidos de las pestañas -->
       <VWindow v-model="navigationTab">
-        <!-- Pestaña 1: Información -->
+        <!-- Información -->
         <VWindowItem
-          :value="tabItems[0]"
+          value="information"
           style="max-block-size: 90vh; overflow-y: auto;"
         >
           <VCard title="Información del Cliente y Oportunidad">
@@ -331,9 +370,9 @@ watch(() => props.isDialogVisible, async newValue => {
             </VCardText>
           </VCard>
         </VWindowItem>
-        <!-- Pestaña 2: Agregar Actividad -->
+        <!-- Agregar Actividad -->
         <VWindowItem
-          :value="tabItems[1]"
+          value="add_activity"
           style="max-block-size: 90vh; overflow-y: auto;"
         >
           <VCardItem>
@@ -404,9 +443,9 @@ watch(() => props.isDialogVisible, async newValue => {
             </VCardText>
           </VCardItem>
         </VWindowItem>
-        <!-- Pestaña 3: Lista de Actividades -->
+        <!-- Lista de Actividades -->
         <VWindowItem
-          :value="tabItems[2]"
+          value="activity_list"
           style="max-block-size: 90vh; overflow-y: auto;"
         >
           <VCardItem>
@@ -438,6 +477,481 @@ watch(() => props.isDialogVisible, async newValue => {
               </template>
             </VDataTable>
           </VCardItem>
+        </VWindowItem>
+        <!-- Cotizaciones -->
+        <VWindowItem
+          value="quotations"
+          style="max-block-size: 90vh; overflow-y: auto;"
+        >
+          <VCard>
+            <VCardTitle class="d-flex justify-space-between align-center">
+              <span class="text-h3 font-weight-medium">Cotizaciones</span>
+              <!-- Botón para agregar nueva cotización -->
+              <RouterLink
+                :to="{ name: 'quote-add-quote' }"
+                class="text-white"
+              >
+                <VBtn
+                  color="primary"
+                  variant="outlined"
+                  size="small"
+                >
+                  <VIcon icon="tabler-plus" />
+                  Agregar nueva cotización
+                </VBtn>
+              </RouterLink>
+            </VCardTitle>
+            <VCardText>
+              <div>
+                <!-- Tabla de cotizaciones -->
+                <div v-if="opportunity.quotes && opportunity.quotes.length > 0">
+                  <VTable
+                    density="compact"
+                    class="text-no-wrap"
+                  >
+                    <thead>
+                      <tr>
+                        <th>Propiedad</th>
+                        <th>Fecha</th>
+                        <th>Monto</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="item in opportunity.quotes"
+                        :key="item.id"
+                      >
+                        <!-- Propiedad -->
+                        <td>{{ item.properties[0].title }}</td>
+                
+                        <!-- Fecha -->
+                        <td>{{ item.created_at }}</td>
+                
+                        <!-- Monto -->
+                        <td>{{ formatCurrency(item.amount) }}</td>
+                
+                        <!-- Acciones -->
+                        <td>
+                          <VRow class="d-flex align-center gap-2">
+                            <!-- Checkbox de aprobación interna -->
+                            <VCheckbox
+                              v-model="item.status"
+                              true-value="APPROVED"
+                              false-value="NOT_APPROVED"
+                              disabled
+                            />
+                    
+                            <!-- Checkbox de aprobación del cliente -->
+                            <VCheckbox
+                              v-model="item.status_customer"
+                              true-value="APPROVED"
+                              false-value="NOT_APPROVED"
+                              @click="statusQuoteCustomer(item.id, item.status_customer)"
+                            >
+                              <VTooltip
+                                activator="parent"
+                                location="top"
+                              >
+                                {{
+                                  item.status_customer === "NOT_APPROVED"
+                                    ? "No aprobado por cliente"
+                                    : "Aprobado por cliente"
+                                }}
+                              </VTooltip>
+                            </VCheckbox>
+                    
+                            <!-- Enlace para ver la cotización -->
+                            <RouterLink :to="{ name: 'quote-id', params: { id: item.id } }">
+                              <VBtn
+                                icon
+                                variant="plain"
+                              >
+                                <VIcon icon="tabler-eye" />
+                              </VBtn>
+                            </RouterLink>
+                          </VRow>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </VTable>
+                </div>
+
+                <!-- Mensaje si no hay cotizaciones -->
+                <div
+                  v-else
+                  class="text-center my-5"
+                >
+                  <span>No hay procedimientos disponibles.</span>
+                </div>
+              </div>
+            </VCardText>
+          </VCard>
+        </VWindowItem>
+        <!-- Ventas -->
+        <VWindowItem
+          value="sales"
+          style="max-block-size: 90vh; overflow-y: auto;"
+        >
+          <!-- Propiedades -->
+          <div class="my-5">
+            <span style="font-size: 14px; font-weight: 500;">
+              Propiedades
+            </span> 
+            <div v-if="opportunity.sales.length > 0">
+              <div
+                v-for="sale in opportunity.sales"
+                :key="sale.id"
+              >
+                <VRow>
+                  <VCol
+                    v-for="property in sale.properties"
+                    :key="property.id"
+                    class="d-flex align-center justify-between"
+                    cols="12"
+                    md="9"
+                  >
+                    <VAvatar
+                      size="50"
+                      rounded
+                    >
+                      <img
+                        :src="poraIcon"
+                        alt="Logo pora"
+                        style="border-radius: 30%;"
+                      >
+                    </VAvatar>
+                    <VCol cols="12">
+                      <VListItemTitle class="font-weight-medium">
+                        {{ property.project_title }} | {{ property.title }}
+                      </VListItemTitle>
+                      <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+                        <span>$ {{ property.pivot_price }}</span>
+                      </VListItemSubtitle>
+                    </VCol>
+                  </VCol>
+                  <VCheckbox
+                    v-model="sale.confirmation_signature"
+                    :true-value="1"
+                    :false-value="0"
+                    @change="confirmationSignature(sale.id)"
+                  >
+                    <VTooltip
+                      activator="parent"
+                      location="top"
+                    >
+                      Confirmar firma
+                    </VTooltip>
+                  </VCheckbox>
+                </VRow>
+              </div>
+            </div>
+          </div>
+
+          <!-- Anticipo -->
+          <div class="mb-4">
+            <span style="font-size: 14px; font-weight: 500; ">
+              Anticipo
+            </span> 
+            <VTable
+              v-if="opportunity.initial_payments && opportunity.initial_payments.length > 0"
+              density="compact"
+              class="text-no-wrap my-2"
+              style="font-size: 12px;"
+            >
+              <thead>
+                <tr>
+                  <th>
+                    Propiedad
+                  </th>
+                  <th>
+                    Fecha
+                  </th>
+                  <th>
+                    Monto
+                  </th>
+                  <th>
+                    Action
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr
+                  v-for="item in opportunity.initial_payments"
+                  :key="item.id"
+                >
+                  <td>
+                    {{ item.property_title }}
+                  </td>
+                  <td>
+                    {{ item.date }}
+                  </td>
+                  <td>
+                    {{ item.amount }}
+                  </td>
+                  <td>
+                    <VRow>
+                      <VCheckbox
+                        v-model="item.is_paid"
+                        :true-value="1"
+                        :false-value="0"
+                        :disabled="item.is_paid === 1"
+                        @change="confirmPayment(item.id)"
+                      >
+                        <VTooltip
+                          activator="parent"
+                          location="top"
+                        >
+                          Confirmar Pago
+                        </VTooltip>
+                      </VCheckbox>
+                      <div 
+                        v-if="item.is_paid === 0"
+                        fill-dot
+                        style="cursor: pointer;"
+                        @click="editPaymentPlan(item)"
+                      >
+                        <VIcon
+                
+                          size="25"
+                          icon="tabler-edit"
+                        />
+                      </div>
+                    </VRow>
+                  </td>
+                </tr>
+              </tbody>
+            </VTable>
+          </div>
+
+          <!-- saldo -->
+          <div>
+            <span style="font-size: 14px; font-weight: 500; ">
+              Saldos
+            </span> 
+            <VTable
+              v-if="opportunity.balance_payments && opportunity.balance_payments.length > 0"
+              density="compact"
+              class="text-no-wrap my-2"
+              style="font-size: 12px;"
+            >
+              <thead>
+                <tr>
+                  <th>
+                    Propiedad
+                  </th>
+                  <th>
+                    Fecha
+                  </th>
+                  <th>
+                    Monto
+                  </th>
+                  <th>
+                    Action
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr
+                  v-for="item in opportunity.balance_payments"
+                  :key="item.id"
+                >
+                  <td>
+                    {{ item.property_title }}
+                  </td>
+                  <td>
+                    {{ item.date }}
+                  </td>
+                  <td>
+                    {{ item.amount }}
+                  </td>
+                  <td>
+                    <VRow>
+                      <VCheckbox
+                        v-model="item.is_paid"
+                        :true-value="1"
+                        :false-value="0"
+                        :disabled="item.is_paid === 1"
+                        @change="confirmPayment(item.id)"
+                      > 
+                        <VTooltip
+                          activator="parent"
+                          location="top"
+                        >
+                          Confirmar Pago
+                        </VTooltip>
+                      </VCheckbox> 
+                      <div 
+                        v-if="item.is_paid === 0"
+                        fill-dot
+                        style="cursor: pointer;"
+                        @click="editPaymentPlan(item)"
+                      >
+                        <VIcon
+                          size="25"
+                          icon="tabler-edit"
+                        />
+                      </div>
+                    </VRow>
+                  </td>
+                </tr>
+              </tbody>
+            </VTable>
+          </div>
+
+          <!-- procesos  -->
+          <div class="my-5">
+            <span style="font-size: 14px; font-weight: 500; ">
+              Procesos
+            </span> 
+     
+            <div
+              v-if="opportunity.procedure && opportunity.procedure.length > 0"
+              class="d-flex flex-wrap gap-2 my-5"
+            >
+              <div
+                v-for="procedure in opportunity.procedure"
+                :key="procedure.id"
+              >
+                <VChip
+                  :color="procedure.pivot.is_check ? 'primary' : 'secondary'"
+                  variant="outlined"
+                  class="my-1"
+                  style="cursor: pointer;"
+                  fill-dot
+                  @click="markProcedureAsDone(procedure)" 
+                >
+                  <VIcon
+                    v-if="procedure.pivot.is_check"
+                    icon="tabler-check"
+                    class="mr-2"
+                  />
+                  {{ procedure.title }}
+                </VChip>
+                <VTooltip
+                  activator="parent"
+                  location="top"
+                >
+                  {{ procedure.pivot.is_check? 'Deshacer Proceso': 'Confirmar Proceso' }}
+                </VTooltip>
+              </div>
+            </div>
+            <div v-else>
+              <span>No hay procedimientos disponibles.</span>
+            </div>
+          </div>
+
+          <!-- Botón pasar estado -->
+          <VCardText class="d-flex  mt-4">
+            <VBtn
+              color="primary"
+              variant="tonal"
+              class="mx-auto"
+              size="small"
+              @click="openSaleForm"
+            >
+              Generar Venta
+            </VBtn> 
+          </VCardText>
+        </VWindowItem>
+        <!-- Entregas -->
+        <VWindowItem
+          value="delivery"
+          style="max-block-size: 90vh; overflow-y: auto;"
+        >
+          <!-- Propiedades -->
+          <div class="my-5">
+            <span style="font-size: 14px; font-weight: 500;">
+              Propiedades
+            </span> 
+            <div v-if="opportunity.sales.length > 0">
+              <div
+                v-for="sale in opportunity.sales"
+                :key="sale.id"
+              >
+                <div
+                  v-for="property in sale.properties"
+                  :key="property.id"
+                  class="d-flex align-center justify-between"
+                >
+                  <VAvatar
+                    size="50"
+                    rounded
+                  >
+                    <img
+                      :src="poraIcon"
+                      alt="Logo pora"
+                      style="border-radius: 30%;"
+                    >
+                  </VAvatar>
+                  <VCol
+                    cols="12"
+                    md="7"
+                  >
+                    <VListItemTitle class="font-weight-medium">
+                      {{ property.project_title }} | {{ property.title }}
+                    </VListItemTitle>
+                    <VListItemSubtitle class="text-disabled d-flex justify-between mt-1">
+                      <span> {{ formatCurrency(property.pivot_price ) }} </span>
+                    </VListItemSubtitle>
+                  </VCol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- procesos  -->
+          <div class="my-5">
+            <span style="font-size: 14px; font-weight: 500; ">
+              Procesos
+            </span> 
+     
+            <div
+              v-if="opportunity.procedure && opportunity.procedure.length > 0"
+              class="d-flex flex-wrap gap-2 my-5"
+            >
+              <div
+                v-for="procedure in opportunity.procedure"
+                :key="procedure.id"
+              >
+                <VChip
+                  :color="procedure.pivot.is_check ? 'primary' : 'secondary'"
+                  variant="outlined"
+                  class="my-1"
+                  style="cursor: pointer;"
+                  fill-dot
+                  @click="markProcedureAsDone(procedure.id, procedure.pivot.is_check)" 
+                >
+                  <VIcon
+                    v-if="procedure.pivot.is_check"
+                    icon="tabler-check"
+                    class="mr-2"
+                  />
+                  {{ procedure.title }}
+                </VChip>
+                <VTooltip
+                  activator="parent"
+                  location="top"
+                >
+                  {{ procedure.pivot.is_check? 'Deshacer Proceso': 'Confirmar Proceso' }}
+                </VTooltip>
+              </div>
+            </div>
+            <div v-else>
+              <span>No hay procedimientos disponibles.</span>
+            </div>
+          </div>
+ 
+          <!-- Botón Generar Cotización -->
+          <VCardText class="d-flex justify-center mt-4">
+            <VBtn
+              color="primary"
+              size="small"
+            >
+              Finalizar Oportunidad
+            </VBtn>
+          </VCardText>
         </VWindowItem>
       </VWindow>
     </VCard>

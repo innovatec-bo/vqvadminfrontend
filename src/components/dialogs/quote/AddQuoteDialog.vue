@@ -1,7 +1,6 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import AddQuoteInvoice from '@/components/quote/AddQuoteInvoice.vue'
-import { useCustomer } from '@/composables/Customer/useCustomer'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useQuote } from '@/composables/Quote/useQuote'
 import { PropertyType } from '@/enums/PropertyType'
@@ -25,8 +24,7 @@ const emit = defineEmits([
 ])
 
 const { generateQuote } = useQuote()
-const { allCustomerPaginate } = useCustomer()
-const { getOpportunitybyId, opportunity } = useOpportunity()
+const { getOpportunitybyId, opportunity, changeStatusByOpportunity } = useOpportunity()
 const loadingQuote = ref(false)
 
 const quoteData = ref({
@@ -72,7 +70,8 @@ const quoteData = ref({
 const isGeneralFormValid  = computed(() => {
   return quoteData.value.social_reason && 
          quoteData.value.nit &&
-         quoteData.value.email &&
+
+  //  quoteData.value.email &&
          quoteData.value.phone &&
          quoteData.value.amount &&
          quoteData.value.creation_date &&
@@ -141,7 +140,7 @@ const generateCotization = async() =>{
     return 
   }
 
-  //loadingQuote.value = true
+  loadingQuote.value = true
   try{
     console.log(quoteData)
     await generateQuote(quoteData.value)
@@ -149,7 +148,7 @@ const generateCotization = async() =>{
   } catch (error) {
     console.error('Error generando la venta:', error)
   } finally {
-    // loadingQuote.value = false
+    loadingQuote.value = false
   }
 }
 
@@ -181,9 +180,8 @@ watch(
       console.log('El diálogo se ha abierto')
       await getOpportunitybyId(props.opportunityKanban.id)
       console.log('Datos de la oportunidad cargados:', opportunity.value)
-
-      if (opportunity.value) {
-        
+      quoteData.value.customer_id = opportunity.value.customer.id
+      if (opportunity.value) {        
         quoteData.value.social_reason = opportunity.value.customer.name
         quoteData.value.email = opportunity.value.customer.email
         quoteData.value.phone = opportunity.value.customer.phone
@@ -218,8 +216,6 @@ watch(
           quoteData.value.properties[0].price_contrato= null
         }
       }
-      quoteData.value.customer_id = props.opportunityKanban.customer_id
-      
     }
     
   },

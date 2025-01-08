@@ -387,6 +387,9 @@
     "showSuccessToast": true,
     "showWarningToast": true,
     "formatCurrency": true,
-    "formatNumber": true
+    "formatNumber": true,
+    "DirectiveBinding": true,
+    "MaybeRef": true,
+    "MaybeRefOrGetter": true
   }
 }
