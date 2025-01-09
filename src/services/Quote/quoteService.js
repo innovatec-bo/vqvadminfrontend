@@ -28,6 +28,11 @@ export const  listQuotePaginate = async pagination => {
   })
 }
 
+export const exportQuote = async () => {
+  return await $api(`/export/quote`, {
+    method: 'GET',
+  })
+}
 
 export const getQuote = async id => {
   return await $api(`/quote/${id}`, {

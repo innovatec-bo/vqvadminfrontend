@@ -1,4 +1,4 @@
-import { forgotPassword, login, resetPassword, verifyToken } from "@/services/Auth/authServices"
+import { changePassword, forgotPassword, login, verifyToken } from "@/services/Auth/authServices"
 import { showWarningNotification } from "@/utils/notifications"
 import { useAbility } from "@casl/vue"
 import { useRouter } from "vue-router"
@@ -160,17 +160,23 @@ export function useAuth() {
     }
   }
 
-  const resetUserPassword = async data => {
+  const resetUserPassword = async userData => {
+    console.log(userData)
     loading.value = true
     error.value = null
     try {
-      const response =await resetPassword(data)
+      const response = await changePassword(userData)
 
       console.log(response)
-      await router.push('/login')
+      showSuccessNotification('contraseña actualizada exitosamente', '')
+
     } catch (err) {
-      console.log(err)
-      error.value = 'Password reset failed: ' + err.message
+      if (err.response && err.response._data) {
+        showWarningNotification('ERROR', err.response._data.message)
+      } else {
+        error.value = err.message
+        alert(err.message)
+      }
     } finally {
       loading.value = false
     }

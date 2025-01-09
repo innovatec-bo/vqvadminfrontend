@@ -50,4 +50,9 @@ export const getPropertiesAvailable = async () => {
   })
 }
 
+export const exportProperty = async () => {
+  return await $api(`/export/property`, {
+    method: 'GET',
+  })
+}
 

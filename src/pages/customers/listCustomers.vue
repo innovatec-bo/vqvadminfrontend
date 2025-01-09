@@ -9,7 +9,7 @@ import { VDataTableServer } from 'vuetify/labs/VDataTable'
 const searchQuery = ref('')
 const isAddCustomerDrawerOpen = ref(false)
 
-const { allCustomerPaginate, totalCustomers, customers } = useCustomer()
+const { allCustomerPaginate, exportCustomerExcel, totalCustomers, customers } = useCustomer()
 
 // Data table options
 const itemsPerPage = ref(10)
@@ -36,6 +36,10 @@ const headers = [
     key: 'email',
   },
   {
+    title: 'Tipo',
+    key: 'type_customer',
+  },
+  {
     title: 'Ultima Oportunidad',
     key: 'lastOpportunity',
   },
@@ -51,6 +55,10 @@ const AllCustomer =  ()=>{
     itemsPerPage: itemsPerPage.value,
     search: searchQuery.value,
   })
+}
+
+const ExportExcell = async ()=>{
+  await exportCustomerExcel()
 }
 
 const updateOptions = options => {
@@ -85,6 +93,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
               prepend-icon="tabler-screen-share"
               variant="tonal"
               color="secondary"
+              @click="ExportExcell"
             >
               Export
             </VBtn>

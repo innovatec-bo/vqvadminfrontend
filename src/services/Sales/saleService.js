@@ -52,6 +52,12 @@ export const getSaleByOpportunity = async id => {
   })
 }
 
+export const exportSale = async () => {
+  return await $api(`/export/sale`, {
+    method: 'GET',
+  })
+}
+
 export const listSalesPaginated = async pagination =>{
   return await $api('sales/list-paginated', {
     method: 'GET',

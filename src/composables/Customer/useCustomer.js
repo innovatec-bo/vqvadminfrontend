@@ -1,4 +1,4 @@
-import { getPerfilCustomer, listCustomerPaginate, registerCustomer } from '@/services/Customer/customerService'
+import { exportCustomer, getPerfilCustomer, listCustomerPaginate, registerCustomer } from '@/services/Customer/customerService'
 
 // eslint-disable-next-line case-police/string-check
 import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
@@ -32,6 +32,8 @@ export function useCustomer(){
         // thread: thread.id,
         email: data.email,
         ci: data.ci,
+        // eslint-disable-next-line camelcase
+        type_customer: data.type_customer,
         // eslint-disable-next-line camelcase
         cod_phone: data.countryCode.replace(/\+/g, ''),
         description: data.description,
@@ -86,6 +88,32 @@ export function useCustomer(){
     }
   }
 
+  const exportCustomerExcel = async () => {
+    try{
+      const response = await exportCustomer()
+      
+      if (!(response instanceof Blob)) {
+        throw new Error('Respuesta inválida del servidor con el BLOB')
+      }
+
+      const blob = new Blob([response], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+
+      link.href = url
+      link.setAttribute('download', 'clientes.xlsx') 
+      document.body.appendChild(link)
+      link.click()
+
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(link)
+    }catch(error){
+      console.error('Error en exportación:', error)
+    }
+  }
   
   return {
     loading,
@@ -96,6 +124,7 @@ export function useCustomer(){
     addCustomer,
     allCustomerPaginate,
     getPerfilCutomerbyId,
+    exportCustomerExcel,
   }
 }
 

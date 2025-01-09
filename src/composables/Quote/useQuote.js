@@ -1,4 +1,4 @@
-import { changeStatus, changeStatusCustomer, getQuote, listQuotePaginate, registerQuote } from "@/services/Quote/quoteService"
+import { changeStatus, changeStatusCustomer, exportQuote, getQuote, listQuotePaginate, registerQuote } from "@/services/Quote/quoteService"
 import { showSuccessNotification, showWarningNotification } from "@/utils/notifications"
 import { useRouter } from "vue-router"
 
@@ -91,6 +91,34 @@ export function useQuote() {
       loadingQuote.value = false
     }
   }
+
+  const exportQuoteExcel = async () => {
+    try{
+      const response = await exportQuote()
+        
+      if (!(response instanceof Blob)) {
+        throw new Error('Respuesta inválida del servidor con el BLOB')
+      }
+  
+      const blob = new Blob([response], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+  
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+  
+      link.href = url
+      link.setAttribute('download', 'cotizaciones.xlsx') 
+      document.body.appendChild(link)
+      link.click()
+  
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(link)
+    }catch(error){
+      console.error('Error en exportación:', error)
+    }
+  }
+
   
   return {
     changeStatusQuotes,
@@ -102,5 +130,6 @@ export function useQuote() {
     totalQuotes: computed(()=> totalQuotes.value),
     generateQuote,
     allQuotePaginate,
+    exportQuoteExcel,
   }
 }

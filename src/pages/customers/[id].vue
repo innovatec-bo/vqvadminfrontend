@@ -118,6 +118,14 @@ onMounted(() => {
                 </h6>
               </VListItemTitle>
             </VListItem>
+            <VListItem>
+              <VListItemTitle>
+                <h6 class="text-h6">
+                  Tipo de Cliente:
+                  <span class="text-body-1">{{ customer.customer.type_customer }}</span>
+                </h6>
+              </VListItemTitle>
+            </VListItem>
           </VList>
         </VCardText>
         <!-- 👉 Edit and Suspend button -->

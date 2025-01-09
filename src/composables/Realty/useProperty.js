@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { allProperties, allPropertiesProject, deletePropertyById, getPropertiesAvailable, getPropertiesForType, getPropertyById, registerProperty, updateProperty } from '@/services/Realty/propertyService'
+import { allProperties, allPropertiesProject, deletePropertyById, exportProperty, getPropertiesAvailable, getPropertiesForType, getPropertyById, registerProperty, updateProperty } from '@/services/Realty/propertyService'
 import { showErrorToast, showSuccessNotification, showSuccessToast, showWarningToast } from '@/utils/notifications'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -196,6 +196,33 @@ export function useProperty() {
     }
   }
   
+  const exportPropertyExcel = async () => {
+    try{
+      const response = await exportProperty()
+        
+      if (!(response instanceof Blob)) {
+        throw new Error('Respuesta inválida del servidor con el BLOB')
+      }
+  
+      const blob = new Blob([response], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+  
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+  
+      link.href = url
+      link.setAttribute('download', 'propiedades.xlsx') 
+      document.body.appendChild(link)
+      link.click()
+  
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(link)
+    }catch(error){
+      console.error('Error en exportación:', error)
+    }
+  }
+  
   return {
     loadingProperty,
     error,
@@ -210,7 +237,7 @@ export function useProperty() {
     properties: computed(() => properties.value),
     property,
     totalProperties: computed(() => totalProperties.value),
-
+    exportPropertyExcel,
   }
 }
 

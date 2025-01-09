@@ -7,7 +7,7 @@ import { paginationMeta } from '@api-utils/paginationMeta'
 import { debounce } from 'lodash'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
-const { allProperty, properties, property, totalProperties, removeProperty } = useProperty()
+const { allProperty, exportPropertyExcel,  properties, property, totalProperties, removeProperty } = useProperty()
 
 const searchQuery = ref()
 const itemsPerPage = ref(20)
@@ -96,6 +96,11 @@ const handlePropertyUpdated = updatedProperty => {
     properties.value[index] = { ...updatedProperty }
   }
 }
+
+
+const ExportExcell = async ()=>{
+  await exportPropertyExcel()
+}
 </script>
 
 <template>
@@ -124,6 +129,14 @@ const handlePropertyUpdated = updatedProperty => {
             density="compact"
             style="inline-size: 12.5rem;"
           />
+          <VBtn
+            prepend-icon="tabler-screen-share"
+            variant="tonal"
+            color="secondary"
+            @click="ExportExcell"
+          >
+            Export
+          </VBtn>
           <RouterLink :to="{ name: 'realty-property-register' }">
             <VBtn>
               Agregar Propiedad
