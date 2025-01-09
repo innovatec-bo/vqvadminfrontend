@@ -23,13 +23,13 @@ export function useCustomer(){
     loading.value = true
     error.value = null
     try {
-      const thread = await createThread()
+      // const thread = await createThread()
 
       const customerData = {
         name: data.name,
         phone: data.phone,
 
-        thread: thread.id,
+        // thread: thread.id,
         email: data.email,
         ci: data.ci,
         // eslint-disable-next-line camelcase
