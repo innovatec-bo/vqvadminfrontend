@@ -27,3 +27,10 @@ export const getSellerSalesStatistics = async (params) => {
         params: params
     })
 }
+
+export const getSellerActivityStatistics = async (params) => {
+    return await $api(`/dashboard/activities`, {
+        method: 'GET',
+        params: params
+    })
+}

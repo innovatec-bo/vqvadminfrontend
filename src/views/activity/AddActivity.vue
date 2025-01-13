@@ -345,13 +345,8 @@ const formatDate = dateString => {
           </VWindow>
         </VCardText>
       </VCard>
-      <VCard
-        v-else
-        title="Reporte de Actividades"
-      >
-        <SellerReport />
+      <SellerReport />
         <!-- <BitacoraCustomer customer="1" /> -->
-      </VCard>
     </VCol>
 
     <!-- Second VCard (Customer History) -->
