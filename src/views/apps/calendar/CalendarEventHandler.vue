@@ -10,7 +10,7 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 import { VForm } from 'vuetify/components/VForm'
 import { useCalendarStore } from './useCalendarStore'
 
-const { allCustomerPaginate, customers } = useCustomer()
+const { searchCustomers, customers } = useCustomer()
 
 // 👉 store
 const props = defineProps({
@@ -39,12 +39,12 @@ const refForm = ref()
 // 👉 Event
 const event = ref(JSON.parse(JSON.stringify(props.event)))
 
-onMounted(async () => {
-  await allCustomerPaginate({
-    page: 1,
-    itemsPerPage: 1000,
-  })
-})
+// onMounted(async () => {
+//   await allCustomerPaginate({
+//     page: 1,
+//     itemsPerPage: 1000,
+//   })
+// })
 
 const resetEvent = () => {
   event.value = JSON.parse(JSON.stringify(props.event))
@@ -153,6 +153,12 @@ const endDateTimePickerConfig = computed(() => {
 const dialogModelValueUpdate = val => {
   emit('update:isDrawerOpen', val)
 }
+
+const handleCustomerSearch = useDebounceFn(async (query) => {
+  if (query.trim()) {
+    await searchCustomers(query)
+  }
+}, 300)
 </script>
 
 <template>
@@ -201,6 +207,7 @@ const dialogModelValueUpdate = val => {
                   :items="customers.map(customer => ({title:customer.name, value:customer.id}))"
                   outlined
                   :disabled="event.id && true"
+                  @update:search="handleCustomerSearch"
                 />
               </VCol>
 
