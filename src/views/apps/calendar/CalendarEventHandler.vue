@@ -10,7 +10,7 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 import { VForm } from 'vuetify/components/VForm'
 import { useCalendarStore } from './useCalendarStore'
 
-const { searchCustomers, customers } = useCustomer()
+const { searchCustomers, customers, loading } = useCustomer()
 
 // 👉 store
 const props = defineProps({
@@ -208,6 +208,8 @@ const handleCustomerSearch = useDebounceFn(async (query) => {
                   outlined
                   :disabled="event.id && true"
                   @update:search="handleCustomerSearch"
+                  :loading="loading"
+                  clearable
                 />
               </VCol>
 

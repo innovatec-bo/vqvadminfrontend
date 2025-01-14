@@ -116,6 +116,8 @@ export function useCustomer(){
   }
 
   const searchCustomers = async (query) => {
+    loading.value = true
+    
     try {
       const response = await listCustomerPaginate({
         search: query,
@@ -127,6 +129,8 @@ export function useCustomer(){
       totalCustomers.value = response.data.total
     } catch (err) {
       console.error('Error en búsqueda de clientes:', err)
+    } finally {
+      loading.value = false
     }
   }
   
