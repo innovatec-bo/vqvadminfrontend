@@ -174,8 +174,8 @@ const formatDate = dateString => {
 </script>
 
 <template>
-  <VRow class="d-flex justify-space-between">
-    <VCol cols="12">
+  <VRow class="">
+    <VCol cols="12" v-if="activitiesData?.opportunity_id && true">
       <VCard v-if="isDrawerOpen">               
         <VCardText>
           <VWindow class="mx-2 my-2">
@@ -345,8 +345,14 @@ const formatDate = dateString => {
           </VWindow>
         </VCardText>
       </VCard>
-      <SellerReport />
         <!-- <BitacoraCustomer customer="1" /> -->
+    </VCol>
+
+    <VCol       
+      cols="12"
+      md="12"
+    >
+      <SellerReport />
     </VCol>
 
     <!-- Second VCard (Customer History) -->
