@@ -65,20 +65,14 @@ const quoteData = ref({
   differs_balance: [],
 })
 
-// const requiredValidator = value => !!value || 'Este campo es requerido'
-
 const isGeneralFormValid  = computed(() => {
   return quoteData.value.social_reason && 
          quoteData.value.nit &&
-
-  //  quoteData.value.email &&
          quoteData.value.phone &&
          quoteData.value.amount &&
          quoteData.value.creation_date &&
          quoteData.value.expiration_date &&
          quoteData.value.payment_method &&
-
-  //  quoteData.value.balance &&
          quoteData.value.customer_id 
 })
 
@@ -191,7 +185,7 @@ watch(
         // Asignar property_id si no es null
         if (opportunity.value.property_id !== null) {
           if(opportunity.value.property.property_type === 'PARK' ){
-            quoteData.value.properties[0].property_id = opportunity.value.property_id
+            quoteData.value.properties[1].property_id = opportunity.value.property_id
             quoteData.value.properties[0].property_id= null,
             quoteData.value.properties[0].price= null,
             quoteData.value.properties[0].price_it= null,
@@ -236,10 +230,7 @@ watch(
     <VCard>
       <VCardText>
         <VRow>
-          <VCol
-            cols="12"
-            md="9"
-          >
+          <VCol cols="12">
             <AddQuoteInvoice
               :data="quoteData"
               @push="addProduct"
@@ -248,19 +239,19 @@ watch(
           </VCol>
           <VCol
             cols="12"
-            md="3"
+            class="d-flex justify-end align-center gap-x-4"
           >
             <VBtn
               :loading="loadingQuote"
-              :disabled="!isFormValid || loadingQuote"
+              :disabled="loadingQuote"
               color="primary"
               @click="generateCotization"
             >
-              Guardar Cotización
-            </VBtn>
+              Guardar Cotizaciónasa
+            </VBtn> 
             <VBtn
               text
-              color="secondary"
+              color="error"
               @click="$emit('update:isDialogVisible', false)"
             >
               Cancelar

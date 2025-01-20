@@ -1,7 +1,6 @@
 <script setup>
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
-import { useSales } from '@/composables/Sales/useSales'
 import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import { formatCurrency } from '@/utils/currencyFormatter'
 import { onMounted, ref } from 'vue'
@@ -11,32 +10,16 @@ import AddActivity from './activity/AddActivity.vue'
 import TaskKanban from './opportunity/TaskKanban.vue'
 import PreSaleForm from './sale/PreSaleForm.vue'
 
-const { allOpportunityKanbanForUser, kanban, generateProspect, getOpportunitybyId, opportunity, changeStatusByOpportunity } = useOpportunity()
-const { loadingSale, sale, generateSale } = useSales()
+const { allOpportunityKanbanForUser, kanban, getOpportunitybyId, opportunity, changeStatusByOpportunity } = useOpportunity()
 const { getallTypeActivities, typeActivities } = useActivity()
-
-const addNewItem = column => {
-  column.items.push({
-    id: Date.now(),
-    project: 'Nuevo Proyecto',
-    client: 'Nuevo Cliente',
-    visitDate: new Date().toISOString().substring(0, 10),
-    price: 0,
-    status: 'Nuevo',
-    details: 'Sin detalles',
-  })
-}
 
 const selectedOpportunity  = ref(null)
 const isDialogVisible = ref(false)
 const isDialogVisibleAddQuoteInvoice = ref(false)
 const isFormActivityVisible= ref(false)
 const originColumnTitle = ref(null)
-const destinationColumnTitle = ref(null)
 const formCancelled = ref(false)
-
 const isDialogVisiblePreSale = ref(false)
-
 const lastValidPosition = ref(null)
 
 const onDragStart = event => {
@@ -88,11 +71,11 @@ const openMissingModal = async element => {
 
 }
 
-const markDelivered = async element => {
-  console.log(element)
+const changeStatus = async (element, stage) => {
+  console.log('change sattus entro qqui')
+  await changeStatusByOpportunity(element.id, stage, {})
 
-  await changeStatusByOpportunity(element.id, StagesOpportunity.FINISHED.value, {})
-  removeElement(element)
+  // removeElement(element)
 }
 
 const removeElement = data => {
@@ -162,15 +145,15 @@ const onDragEnd = async event => {
       selectedOpportunity.value = item
       isFormActivityVisible.value = true
 
-      // generateProspect(item.id, item)
 
       break
     case 'PREVENTA':
       console.log('Movido a PREVENTA')
       selectedOpportunity.value = item
-      isDialogVisibleAddQuoteInvoice.value= true
 
-      //await changeStatusByOpportunity(opportunityId, StagesOpportunity.PRESALE.value, {})
+      // isDialogVisibleAddQuoteInvoice.value= true
+
+      changeStatus(selectedOpportunity.value, StagesOpportunity.PRESALE.value)
 
       break
 
@@ -185,7 +168,7 @@ const onDragEnd = async event => {
       break
     case 'ENTREGA':
       console.log('Movido a ENTREGA')
-
+      changeStatus(selectedOpportunity.value, StagesOpportunity.DELIVERY.value)
       break
     default:
       console.log('Movimiento a una columna no definida')
@@ -234,37 +217,35 @@ onMounted(async () => {
       <div class="kanban-column-header">
         <div class="column-title">
           <h2>{{ column.title }}</h2>
-          <span class="small-badge">{{ column.items.length }}</span>
+          <span class="small-badge">{{ column.items.length }} </span>
         </div>
-        <div
+        <!--
+          <div
           class="d-flex justify-end gap-2"
           style="flex: 0 1 30%; "
-        >
-          <VBtn
-            color="white"
-            title="Agregar Actividad"
-            class="icon-container"
           >
-            <!-- Establecemos un ancho del 100% -->
-
-            <VIcon
-              icon="tabler-arrows-vertical"
-              class="icon-small"
-            />
+          <VBtn
+          color="white"
+          title="Agregar Actividad"
+          class="icon-container"
+          >
+          <VIcon
+          icon="tabler-arrows-vertical"
+          class="icon-small"
+          />
           </VBtn>
           <VBtn
-            color="white"
-            title="Agregar Actividad"
-            class="icon-container"
+          color="white"
+          title="Agregar Actividad"
+          class="icon-container"
           >
-            <!-- Establecemos un ancho del 100% -->
-
-            <VIcon
-              icon="tabler-plus"
-              class="icon-small"
-            />
+          <VIcon
+          icon="tabler-plus"
+          class="icon-small"
+          />
           </VBtn>
-        </div>
+          </div> 
+        -->
       </div>
       <VueDraggable
         v-model="column.items"
@@ -281,35 +262,45 @@ onMounted(async () => {
           @click="selectOpportunity(item)"
         >
           <div
-            class="d-flex align-center justify-space-between"
-            style="gap: 10px;"
+            class="d-flex align-center"
+            style="gap: 10px; margin-block-end: 10px;"
           > 
             <!-- Contenedor del 70% -->
             <div style="flex: 7;">
-              <p style="margin: 0;">
+              <p style="margin: 0; font-size: small;">
                 <strong>{{ item.name }}</strong>
               </p>
+              <span style="margin: 0; font-size: small;">{{ item.type_customer }}</span>
             </div>
 
-            <!-- Contenedor del 30% -->
-            <div>
+            <div
+              class="d-flex align-center justify-end gap-2"
+              style="flex: 0 1 30%; "
+            >
               <VBtn
                 v-if="item.stage !=='VENTA' && item.stage!== 'ENTREGA'"
                 color="warning"
+                class="icon-container"
                 title="Dar de Baja"
-                class="button-task"
+                variant="tonal"
                 @click.stop
                 @click.prevent="openMissingModal(item)"
               >
-                <VIcon icon="tabler-trash" />
+                <!-- Establecemos un ancho del 100% -->
+
+                <VIcon
+                  icon="tabler-trash"
+                  class="icon-small"
+                />
               </VBtn>
               <VBtn
                 v-if="item.stage=== 'ENTREGA'"
                 color="success"
                 title="Completar Oportunidad"
-                class="button-task"
+                class="icon-container"
+                variant="tonal"
                 @click.stop
-                @click.prevent="markDelivered(item)"
+                @click.prevent="changeStatus(item, StagesOpportunity.FINISHED.value)"
               >
                 <VIcon icon="tabler-check" />
               </VBtn>
@@ -326,6 +317,7 @@ onMounted(async () => {
                   <span
                     v-if="item.property"
                     class="label-name"
+                    style="font-size: small;"
                   >
                     {{ item.project + ' | '+ item.property }}  
 
@@ -337,14 +329,14 @@ onMounted(async () => {
                   >
                     <VChip
                       class="d-flex justify-center align-center"
-                      style="display: inline-flex; border-radius: 4px; block-size: 36px; inline-size: 36px;"
+                      style="display: inline-flex; border-radius: 4px; block-size: 30px; inline-size: 30px;"
                     >
                       <VIcon
-                        size="25"
+                        size="20"
                         icon="tabler-home"
                       />
                     </VChip>
-                    <strong>
+                    <strong style="font-size: small;">
                       Indefinido
                     </strong>
                   </span>
@@ -359,48 +351,14 @@ onMounted(async () => {
             </div>
             <div class="kanban-details">
               <p class="label-info">
+                <!-- todo: añadir la variable created_at o updated_at -->
                 10 de octubre 2024
               </p>
-              <p style="color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); font-size: 0.9rem;font-weight: 700; ">
+              <p style="color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)); font-size: small;font-weight: 700; ">
                 {{ item.phone }}
               </p>
             </div>
           </div>
-          <!-- Información del cliente -->
-          <!-- Detalles del proyecto -->
-          <!--
-            <div class="kanban-project-details">
-            <p
-            v-if="item.status === 'Cumplido'"
-            class="status"
-            >
-            Cumplido
-            </p>
-            <div class="checklist">
-            <p>
-            {{ item.lastActivity?.title || ' ' }} 
-            <VIcon
-            v-if="item.lastActivity"
-            icon="tabler-check"
-            />
-            </p>
-            </div>
-            </div> 
-          -->
-
-          
-           
-          <!--
-            <div class="kanban-footer">
-            <VBtn
-            color="warning"
-            title="Agregar Actividad"
-            class="button-task"
-            >
-            <VIcon icon="tabler-trash" />
-            </VBtn>
-            </div> 
-          -->
         </div>
       </VueDraggable>
     </div>
@@ -409,6 +367,7 @@ onMounted(async () => {
   <TaskKanban 
     v-model:is-dialog-visible="isDialogVisible" 
     :opportunity-kanban="selectedOpportunity"
+    @form-cancelled="handleFormCancelled"
   />
   <AddQuoteDialog
     v-model:is-dialog-visible="isDialogVisibleAddQuoteInvoice"
@@ -467,10 +426,10 @@ onMounted(async () => {
 .button-task {
   display: flex;
   align-items: center;
-  padding: 1;
-  max-block-size: 25px;
-  max-inline-size: 25px;
-  min-inline-size: 25px;
+  padding: 0;
+  max-block-size: 24px;
+  max-inline-size: 24px;
+  min-inline-size: 24px;
 }
 
 
@@ -504,14 +463,14 @@ onMounted(async () => {
 
 .small-badge {        
   padding: 0;
-  border-radius: 50%;
+  border-radius: 20%;
   background-color: #525252;        
   block-size: 14px; 
   color: white;           
   font-size: 10px;             
-  inline-size: 14px;   
+  inline-size: 20px;   
   margin-block-start: -8px;     
-  max-inline-size: 14px;
+  max-inline-size: 20px;
   text-align: center;
 }
 

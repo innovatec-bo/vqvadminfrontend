@@ -91,7 +91,10 @@ export function useOpportunity (){
 
       console.log('Oportunidad actualizada: ', response)
       opportunity.value = response.data
-      showSuccessNotification('¡Oportunidad avanzó a una nueva etapa!', 'La oportunidad ha avanzado exitosamente a la siguiente fase.')
+      showSuccessNotification('¡Oportunidad avanzó a una nueva etapa!',
+
+        //  'La oportunidad ha avanzado exitosamente a la siguiente fase.'
+      )
     }catch (err){
       console.log(err)
       if(err.response && err.response.status== 500){
