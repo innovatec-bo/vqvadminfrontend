@@ -114,6 +114,25 @@ export function useCustomer(){
       console.error('Error en exportación:', error)
     }
   }
+
+  const searchCustomers = async (query) => {
+    loading.value = true
+    
+    try {
+      const response = await listCustomerPaginate({
+        search: query,
+        page: 1,
+        itemsPerPage: 10,
+      })
+  
+      customers.value = response.data.data
+      totalCustomers.value = response.data.total
+    } catch (err) {
+      console.error('Error en búsqueda de clientes:', err)
+    } finally {
+      loading.value = false
+    }
+  }
   
   return {
     loading,
@@ -125,6 +144,7 @@ export function useCustomer(){
     allCustomerPaginate,
     getPerfilCutomerbyId,
     exportCustomerExcel,
+    searchCustomers,
   }
 }
 
