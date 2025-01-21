@@ -8,42 +8,22 @@ import CustomerSale from '@/views/customer/customerSale.vue'
 
 const userTab = ref(null)
 const route = useRoute()
-const {  getPerfilCutomerbyId, customer } = useCustomer()
+const {  getPerfilCutomerbyId, customer, loading } = useCustomer()
 
 const tabs = [
-  {
-    icon: 'tabler-users',
-    title: 'Oportunidades',
-  },
-  {
-    icon: 'tabler-star',
-    title: 'Actividades',
-  },
-  {
-    icon: 'tabler-currency-dollar',
-    title: 'Cotizaciones',
-  },
-  {
-    icon: 'tabler-cash',
-    title: 'ventas',
-  },
-  {
-    icon: 'tabler-table',
-    title: 'Bitacora',
-  },
+  { icon: 'tabler-users', title: 'Oportunidades' },
+  { icon: 'tabler-star', title: 'Actividades'  },
+  { icon: 'tabler-currency-dollar', title: 'Cotizaciones'  },
+  { icon: 'tabler-cash', title: 'ventas'  },
+  { icon: 'tabler-table', title: 'Bitacora'  },
 ]
 
 const loadCustomer = async () => {
   try {
     await getPerfilCutomerbyId(route.params.id)
-   
   } catch (error) {
     console.error('Error al obtener la cotización:', error)
   }
-}
-
-const updateNewProperty = () => {
-  console.log('Se escucho el evento en EditProspectOpportunity')
 }
 
 onMounted(() => {
@@ -194,7 +174,7 @@ onMounted(() => {
   </VRow>
   <VCard v-else>
     <VCardTitle class="text-center">
-      No User Found
+      {{ loading ? 'Cargando' : 'Cliente no encontrado' }}
     </VCardTitle>
   </VCard>
 </template>
