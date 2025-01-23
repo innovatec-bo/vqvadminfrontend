@@ -251,7 +251,7 @@ console.log(quote)
                 <td style="font-size: 13px;">
                   {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada,' : 'Orientación sur': "" }}
                   {{ property.number_bedrooms ? property.number_bedrooms + ' Dormitorio(s)' : '' }}
-                  {{ property.property_type=='DEPARTAMENT' ? property.is_balcony ? ', Terraza' : ', Sin Terraza': "" }}
+                  {{ property.property_type=='DEPARTAMENT' ? property.is_balcony ? ', Terraza' : '': "" }}
                   {{ property.property_type=='DEPARTAMENT' && property.is_balcony ? property.surface_balcony ? ': '+ property.surface_balcony + 'm²' : '': "" }}
 
                   {{ property.cover ? property.cover : '' }}

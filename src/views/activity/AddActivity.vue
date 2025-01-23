@@ -175,7 +175,10 @@ const formatDate = dateString => {
 
 <template>
   <VRow class="">
-    <VCol cols="12" v-if="activitiesData?.opportunity_id && true">
+    <VCol
+      v-if="activitiesData?.opportunity_id && true"
+      cols="12"
+    >
       <VCard v-if="isDrawerOpen">               
         <VCardText>
           <VWindow class="mx-2 my-2">
@@ -206,7 +209,6 @@ const formatDate = dateString => {
                       <br>
                       <span style="font-size: 12px; font-weight: 500;">
                         {{ props.activitiesData.description }} 
-                        {{ opportunity.customer_id }} 
 
                       </span>
                     </div>
@@ -345,7 +347,7 @@ const formatDate = dateString => {
           </VWindow>
         </VCardText>
       </VCard>
-        <!-- <BitacoraCustomer customer="1" /> -->
+      <!-- <BitacoraCustomer customer="1" /> -->
     </VCol>
 
     <VCol       

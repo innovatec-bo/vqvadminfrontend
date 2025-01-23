@@ -78,13 +78,15 @@ export function useCustomer(){
 
   const getPerfilCutomerbyId = async id => {
     try{
+      loading.value = true
+
       const response = await getPerfilCustomer(id)
 
       customer.value = response.data
-      console.log(quote.value)
-      
     }catch(error){
       console.error(error)
+    } finally {
+      loading.value = false
     }
   }
 
@@ -115,7 +117,7 @@ export function useCustomer(){
     }
   }
 
-  const searchCustomers = async (query) => {
+  const searchCustomers = async query => {
     loading.value = true
     
     try {

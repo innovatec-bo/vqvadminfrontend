@@ -73,7 +73,7 @@ const statusQuoteCustomer = async (quoteId, statusquote) => {
             style="font-size: 14px;"
           >
             <RouterLink
-              :to="{ name: 'apps-ecommerce-customer-details-id', params: { id: 1 } }"
+              :to="{ name: 'customers-id', params: { id: props.opportunity.customer.id } }"
               class="font-weight-base"
             >
               {{ props.opportunity.customer.name }}

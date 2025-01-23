@@ -6,7 +6,7 @@ import Swal from 'sweetalert2'
 import { ref, watch } from 'vue'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
-const { AllSalesPaginated, exportSaleExcel, SaleChangeStageDiscard, sales, totalSales } = useSales()
+const { AllSalesPaginated, exportSaleExcel, SaleChangeStageDiscard, SaleChangeSignature, sales, totalSales } = useSales()
 
 // Data table options
 const searchQuery = ref('')
@@ -24,6 +24,7 @@ const headers = [
   { title: 'Método de Pago', key: 'payment_method' },
   { title: 'Total Contrato', key: 'amount' },
   { title: 'Estado', key: 'status' },
+  { title: 'Firma', key: 'confirmation_signature' },
   { title: 'Acción', key: 'action' },
 ]
 
@@ -86,10 +87,14 @@ const AllSales = () => {
   })
 }
 
+const confirmationSignature = async saleid => {
+  console.log('entra a firma')
+  await SaleChangeSignature( saleid)
+}
+
 const ExportExcell = async ()=>{
   await exportSaleExcel()
 }
-
 
 const debouncedFetch = debounce(AllSales, 300)
 
@@ -223,6 +228,21 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 
         <template #item.status="{ item }">
           {{ displayStatus(item.status ) }}
+        </template>
+        <template #item.confirmation_signature="{ item }">
+          <VCheckbox
+            v-model="item.confirmation_signature"
+            :true-value="1"
+            :false-value="0"
+            @change="confirmationSignature(item.id)"
+          >
+            <VTooltip
+              activator="parent"
+              location="top"
+            >
+              Confirmar firma
+            </VTooltip>
+          </VCheckbox>
         </template>
         <template #item.action="{ item }">
           <div class="d-flex items-center gap-x-2">
