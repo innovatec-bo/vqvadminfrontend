@@ -141,12 +141,11 @@ watch(searchQuery, newValue => {
 <template>
   <VRow
     class="match-height"
-    style=" display: flex;block-size: 100vh;"
   >
     <VCol
       cols="12"
       md="4"
-      style="display: flex; flex-direction: column;"
+      style="display: flex; flex-direction: column; block-size: 100vh;"
     >
       <VCard class="flex-grow-1">
         <VCardTitle class="d-flex justify-between align-center flex-wrap">

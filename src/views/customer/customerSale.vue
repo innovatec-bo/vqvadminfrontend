@@ -1,5 +1,6 @@
 <script setup>
 import { usePaymentPlans } from '@/composables/Sales/usePaymentPlans'
+import { useSales } from '@/composables/Sales/useSales'
 
 const props = defineProps({
   sales: {
@@ -9,6 +10,7 @@ const props = defineProps({
 })
 
 const { confirmPaymentPlans } = usePaymentPlans()
+const {  SaleChangeSignature } = useSales()
 
 const confirmPayment = async paymentplanId => {
   console.log(paymentplanId)
@@ -16,6 +18,10 @@ const confirmPayment = async paymentplanId => {
   emit('updateStageId', props.opportunity.id)
 }
 
+const confirmationSignature = async saleid => {
+  console.log('entra a firma')
+  await SaleChangeSignature( saleid)
+}
 
 const displayPaymentMethod = method => {
   if (method === 'CASH') {
@@ -70,6 +76,7 @@ const displayStatus = status => {
               <th>
                 Fecha
               </th>
+             
               <th>
                 Accion
               </th>
@@ -105,6 +112,7 @@ const displayStatus = status => {
               <td>
                 {{ item.creation_date }}
               </td>
+            
               <td>
                 <div class="d-flex items-center gap-x-2">
                   <RouterLink :to="{ name: 'sale-id', params: { id: item.id } }">
@@ -112,6 +120,19 @@ const displayStatus = status => {
                       <VIcon icon="tabler-eye" />
                     </IconBtn>
                   </RouterLink>
+                  <VCheckbox
+                    v-model="item.confirmation_signature"
+                    :true-value="1"
+                    :false-value="0"
+                    @change="confirmationSignature(item.id)"
+                  >
+                    <VTooltip
+                      activator="parent"
+                      location="top"
+                    >
+                      Confirmar firma
+                    </VTooltip>
+                  </VCheckbox>
                 </div>
               </td>
             </tr>
@@ -125,7 +146,7 @@ const displayStatus = status => {
     :key="item.id"
     class="my-5"
   >
-    <VCard>
+    <VCard v-if="item.status != 'DISCARD'">
       <VCardText>
         <h3>
           Venta: {{ item.id }}

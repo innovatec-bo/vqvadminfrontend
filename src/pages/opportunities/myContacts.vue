@@ -24,13 +24,15 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
           >
             {{ filter }}
           </button>
-          <VBtn
+          <!--
+            <VBtn
             color="primary"
             title="Agregar Actividad"
             @click="isDialogVisibleAddOpportunity = true"
-          >
+            >
             Agregar Oportunidad
-          </VBtn>
+            </VBtn> 
+          -->
         </div>
       </div>
 

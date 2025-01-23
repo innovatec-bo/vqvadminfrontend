@@ -9,8 +9,8 @@ export const URL_MICROSERVICIO= 'https://nuna-properties-ia-production.up.railwa
 // export const URL_MICROSERVICIO= 'http://localhost:3000/'
 
 // Servidor de QA
-// export const URL_BACKEND = 'https://salesprop.nuna.tech/nuna_properties_backend/public/index.php/'
-// export const URL_MICROSERVICIO= 'https://nuna-properties-ia-production-c86d.up.railway.app/'
+export const URL_BACKEND = 'https://salesprop.nuna.tech/nuna_properties_backend/public/index.php/'
+export const URL_MICROSERVICIO= 'https://nuna-properties-ia-production-c86d.up.railway.app/'
 
 export const URL_ADMIN =  URL_BACKEND +'api/' 
 

@@ -66,7 +66,7 @@ const loadSale = async () => {
         phone: sale.value.customer.phone,
         nit: sale.value.nit,
         address: sale.value.quote_address,
-        workplace: sale.value.customer.workplace,
+        workplace: sale.value.workplace,
         email: sale.value.customer.email,
       },
       observations: sale.value.observations,
@@ -245,9 +245,9 @@ onBeforeMount(loadSale)
                   </template>
                 </td>
                 <td style="font-size: 13px;">
-                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada,' : 'Orientación sur': "" }}
+                  {{ property.property_type=='DEPARTAMENT' ? property.isfacade ? 'En fachada,' : 'Orientación sur,': "" }}
                   {{ property.number_bedrooms ? property.number_bedrooms + ' Dormitorios' : '' }}
-                  {{ property.property_type=='DEPARTAMENT' ? property.is_balcony ? ', Balcon' : ', Sin Balcon': "" }}
+                  {{ property.property_type=='DEPARTAMENT' ? property.is_balcony ? ', Terraza' : '': "" }}
                   {{ property.property_type=='DEPARTAMENT' ? property.surface_balcony ? ': '+ property.surface_balcony + 'm²' : '': "" }}
 
                   {{ property.cover ? property.cover : '' }}

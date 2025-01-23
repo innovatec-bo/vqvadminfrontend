@@ -1,4 +1,4 @@
-import { getLogisticsCardStatistics, getProductStatusStatistics, getSalesFunnelStatistics, getSellerSalesStatistics } from '@/services/Analytics/analyticsService';
+import { getLogisticsCardStatistics, getProductStatusStatistics, getSalesFunnelStatistics, getSellerActivityStatistics, getSellerSalesStatistics } from '@/services/Analytics/analyticsService';
 import { ref } from 'vue';
 
 export function useAnalytics() {
@@ -6,6 +6,8 @@ export function useAnalytics() {
   const salesFunnelData = ref([])
   const productStatusData = ref([])
   const sellerSalesData = ref([])
+  const pastSellerActivityData = ref([])
+  const futureSellerActivityData = ref([])
   const isLoading = ref(false)
   const error = ref(null)
 
@@ -27,6 +29,46 @@ export function useAnalytics() {
       salesFunnelData.value = salesFunnelRes.data
       productStatusData.value = productStatusRes.data
       sellerSalesData.value = sellerSalesRes.data
+    } catch (err) {
+      error.value = 'Error fetching analytics data.'
+      console.error(err)
+    } finally {
+      isLoading.value = false
+    }
+  };
+
+  const fetchPastSellerActivity = async (startDate, endDate, projectId, sellerId) => {
+    isLoading.value = true;
+    error.value = null;
+
+    const params = { fromDate: startDate, toDate: endDate, project_id: projectId, asesor_id: sellerId }
+
+    try {
+      const [pastSellerActivityRes] = await Promise.all([
+        getSellerActivityStatistics(params),
+      ]);
+
+      pastSellerActivityData.value = pastSellerActivityRes.data
+    } catch (err) {
+      error.value = 'Error fetching analytics data.'
+      console.error(err)
+    } finally {
+      isLoading.value = false
+    }
+  };
+
+  const fetchFutureSellerActivity = async (startDate, endDate, projectId, sellerId) => {
+    isLoading.value = true;
+    error.value = null;
+
+    const params = { fromDate: startDate, toDate: endDate, project_id: projectId, asesor_id: sellerId }
+
+    try {
+      const [futureSellerActivityRes] = await Promise.all([
+        getSellerActivityStatistics(params),
+      ]);
+
+      futureSellerActivityData.value = futureSellerActivityRes.data
     } catch (err) {
       error.value = 'Error fetching analytics data.'
       console.error(err)
@@ -76,11 +118,15 @@ export function useAnalytics() {
   };
 
   return {
+    pastSellerActivityData,
+    futureSellerActivityData,
     logisticsCardData,
     salesFunnelData,
     productStatusData,
     sellerSalesData,
     fetchAnalyticsData,
+    fetchPastSellerActivity,
+    fetchFutureSellerActivity,
     getLastMonthRange,
     getCurrentMonthRange,
     getLastWeekRange,
