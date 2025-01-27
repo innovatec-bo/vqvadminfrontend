@@ -20,7 +20,7 @@ export const allTypeActivities= async  ()=>{
 }
 
 export const changeStatus = async (id, data)=> {
-  return await $api(`/activity/${id}/status`, {
+  return await $api(`/activity/${id}/change_status_activity`, {
     method: 'PATCH',
     body: data,
   })

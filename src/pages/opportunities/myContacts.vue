@@ -1,17 +1,14 @@
 <script setup>
 import Kanban from '@/components/Kanban.vue'
-import AddOportunity from '@/components/opportunity/AddOportunity.vue'
 
 const isDialogVisibleAddOpportunity = ref(false)
 const selectedDateRange = ref([new Date(2024, 9, 10), new Date(2024, 10, 10)]) // Rango de fechas
-// const filters = ref(['Todos', 'OGA', 'PORA']) // Opciones de filtro
 const filters = ref(['Todos', 'PORA']) // Opciones de filtro
-
-const selectedFilter = ref('Todos') // Filtro seleccionado
+const selectedFilter = ref('Todos') 
 </script>
 
 <template>
-  <div class="body-kanban">
+  <div class="">
     <!-- Barra de herramientas (encima del Kanban) -->
     <div class="toolbar">
       <div class="breadcrumbs">
@@ -62,7 +59,7 @@ const selectedFilter = ref('Todos') // Filtro seleccionado
       <Kanban />
     </div>
   </div>
-  <AddOportunity v-model:is-dialog-visible="isDialogVisibleAddOpportunity" />
+  <!-- <AddOportunity v-model:is-dialog-visible="isDialogVisibleAddOpportunity" /> -->
 </template>
 
 <style scoped>

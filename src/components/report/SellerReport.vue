@@ -1,6 +1,8 @@
 <script setup>
-import { useAnalytics } from '@/composables/Analytics/useAnalytics';
-import { formatDate } from '@/utils/dateFormatter';
+import { useAnalytics } from '@/composables/Analytics/useAnalytics'
+import { formatDate } from '@/utils/dateFormatter'
+import { formatDateTime } from '@/utils/datetimeFormatter'
+
 const { pastSellerActivityData, futureSellerActivityData, fetchPastSellerActivity, fetchFutureSellerActivity, isLoading, error } = useAnalytics()
 
 const headingColor = 'rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))'
@@ -8,10 +10,11 @@ const labelColor = 'rgba(var(--v-theme-on-background), var(--v-medium-emphasis-o
 
 const userData = useCookie('userData').value
 
-const calculatePercentage = (value, total) => (total > 0 ? Math.round((value / total) * 100) : 0);
+const calculatePercentage = (value, total) => (total > 0 ? Math.round((value / total) * 100) : 0)
 
 const mapTypeData = computed(() => {
-  const total = futureSellerActivityData.value.total_activity || 0;
+  const total = futureSellerActivityData.value.total_activity || 0
+  
   return [
     {
       title: 'Visita',
@@ -37,8 +40,8 @@ const mapTypeData = computed(() => {
       progress: calculatePercentage(futureSellerActivityData.value.total_activity_other, total),
       color: 'warning',
     },
-  ];
-});
+  ]
+})
 
 const statusActivitiesChartSeries = computed(() => [
   pastSellerActivityData.value.total_activity_pending || 0,
@@ -72,7 +75,7 @@ const statusActivitiesChartConfig = {
             fontWeight: 500,
             offsetY: -15,
             formatter(val) {
-              return `${Number.parseInt(val)} Actividades`;
+              return `${Number.parseInt(val)} Actividades`
             },
           },
           name: { offsetY: 30 },
@@ -83,7 +86,7 @@ const statusActivitiesChartConfig = {
             label: 'Total',
             color: labelColor,
             formatter() {
-              return `${pastSellerActivityData.value.total_activity || 0} Actividades`;
+              return `${pastSellerActivityData.value.total_activity || 0} Actividades`
             },
           },
         },
@@ -148,7 +151,7 @@ const typeActivitiesChartConfig = {
             fontWeight: 500,
             offsetY: -15,
             formatter(val) {
-              return `${Number.parseInt(val)} Actividades`;
+              return `${Number.parseInt(val)} Actividades`
             },
           },
           name: { offsetY: 30 },
@@ -159,7 +162,7 @@ const typeActivitiesChartConfig = {
             label: 'Total',
             color: labelColor,
             formatter() {
-              return `${pastSellerActivityData.value.total_activity || 0} Actividades`;
+              return `${pastSellerActivityData.value.total_activity || 0} Actividades`
             },
           },
         },
@@ -208,7 +211,7 @@ const typeActivitiesChartConfig = {
 
 const loadSellerActivityStatistics = () => {
   fetchPastSellerActivity("2024-01-01", formatDate(new Date()), 0, userData.id)
-  fetchFutureSellerActivity(formatDate(new Date()), formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1))), 0, userData.id)
+  fetchFutureSellerActivity(formatDateTime(new Date()), formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1))), 0, userData.id)
 }
 
 onMounted(() => {
@@ -218,12 +221,12 @@ onMounted(() => {
 
 <template>
   <VRow>
-    <VCol cols="12" md="12">
-      <AppCardActions noActions >
-        <VCardItem
-          title="Actividades futuras"
-        >
-        </VCardItem>
+    <VCol
+      cols="12"
+      md="12"
+    >
+      <AppCardActions no-actions>
+        <VCardItem title="Actividades futuras" />
         <VCardText>
           <VRow>
             <VCol
@@ -233,7 +236,7 @@ onMounted(() => {
               md="3"
             >
               <div class="d-flex align-center gap-1">
-                <div >
+                <div>
                   <VProgressCircular
                     v-model="item.progress"
                     :size="54"
@@ -256,12 +259,12 @@ onMounted(() => {
         </VCardText>
       </AppCardActions>
     </VCol>
-    <VCol cols="12" md="6">
-      <AppCardActions noActions >
-        <VCardItem
-          title="Reporte por estado"
-        >
-        </VCardItem>
+    <VCol
+      cols="12"
+      md="6"
+    >
+      <AppCardActions no-actions>
+        <VCardItem title="Reporte por estado" />
         <VCardText>
           <VueApexCharts
             type="donut"
@@ -272,12 +275,12 @@ onMounted(() => {
         </VCardText>
       </AppCardActions>
     </VCol>
-    <VCol cols="12" md="6">
-      <AppCardActions noActions >
-        <VCardItem
-          title="Reporte por tipo"
-        >
-        </VCardItem>
+    <VCol
+      cols="12"
+      md="6"
+    >
+      <AppCardActions no-actions>
+        <VCardItem title="Reporte por tipo" />
         <VCardText>
           <VueApexCharts
             type="donut"

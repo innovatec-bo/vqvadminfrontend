@@ -9,7 +9,7 @@ const props = defineProps({
   opportunityKanban: { type: Object, required: true },
 })
 
-const emit = defineEmits(['update:isDialogVisible', 'update:newProperty'])
+const emit = defineEmits(['update:isDialogVisible', 'update:newProperty',  'refreshCustomer'])
 
 const stageOptions = Object.values(StagesOpportunity).map(stage => ({
   title: stage.label,
@@ -52,6 +52,7 @@ const saveData = async () => {
     emit('update:newProperty', opportunity.value.property_id)
   }
   emit('update:isDialogVisible', false)
+  emit('refreshCustomer') 
 }
 
 const fetchOpportunityData = async () => {

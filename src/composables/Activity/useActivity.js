@@ -20,7 +20,7 @@ export function useActivity() {
       const response =await register(data)
 
       activity.value= response.data
-      showSuccessNotification('Cita agendada correctamente', response.data.message)
+      showSuccessNotification('Actividad agendada correctamente', response.data.message)
     } catch (err) {
       //todo: mejorar los mensajes de error
       console.log(err)

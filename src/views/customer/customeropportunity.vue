@@ -1,6 +1,10 @@
 <script setup>
+import EditCustomerDialog from '@/components/customer/EditCustomerDialog.vue'
+import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProcess } from '@/composables/Process/useProcess'
+import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import { formatCurrency } from '@/utils/currencyFormatter'
+import Swal from 'sweetalert2'
 
 const props = defineProps({
   opportunities: {
@@ -13,7 +17,17 @@ const emit = defineEmits([
   'refreshCustomer',
 ])
 
+const opencustomerDialog = ref(false)
+const selectOpportunity = ref()
+
+
+const opencustomer = item =>{
+  selectOpportunity.value = item 
+  opencustomerDialog.value = true
+}
+
 const { checkProcessForOpportunity } = useProcess()
+const { changeStatusByOpportunity } = useOpportunity()
 
 const markProcedureAsDone = async (procedureId, opportunityId, isChecked) => {
   console.log(`Procedimiento ${procedureId} marcado como: ${isChecked ? 'realizado' : 'no realizado'}`)
@@ -29,6 +43,28 @@ const getOpportunityLabel = (index, total) => {
   if (index === total - 1) return 'Primera oportunidad'
   
   return `${total - index}ª oportunidad`
+}
+
+const openMissingModal = async element => {
+  Swal.fire({
+    title: "Quieres dar de baja la oportunidad ?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "confirmar",
+  }).then(result => {
+    if (result.isConfirmed) {
+      changeStatusByOpportunity(element.id, StagesOpportunity.LOSS.value, {})
+      
+      closeNavigationDrawer()
+      emit('refreshCustomer') 
+      Swal.fire({
+        text: "La oportunidad fue dada de baja",
+        icon: "success",
+      })
+    }
+  })
 }
 </script>
 
@@ -66,7 +102,7 @@ const getOpportunityLabel = (index, total) => {
               {{ item.property.title }}  |   {{ formatCurrency( item.property.base_price ) }} |   {{ item.property.surface }} m2 
             </span>
 
-            <div class="my-5">
+            <div class="mt-5">
               <h3 class="my-1">
                 Procesos
               </h3>
@@ -105,9 +141,33 @@ const getOpportunityLabel = (index, total) => {
                 <span>No hay procedimientos disponibles.</span>
               </div>
             </div>
+            <div
+              v-if="item.stage.id != StagesOpportunity.LOSS.value && item.stage.id != StagesOpportunity.FINISHED.value"
+              class="d-flex justify-end"
+            >
+              <VBtn
+                variant="elevated"
+                class="me-4"
+                @click="opencustomer(item)"
+              >
+                Editar
+              </VBtn>
+              <VBtn
+                variant="tonal"
+                color="error"
+                @click="openMissingModal(item)"
+              >
+                Dar de baja
+              </VBtn>
+            </div>
           </div>
         </VCardText>
       </VCard>
     </VCol>
   </VRow>
+  <EditCustomerDialog
+    v-model:is-dialog-visible="opencustomerDialog"
+    :opportunity-kanban="selectOpportunity"
+    @refresh-customer="$emit('refreshCustomer')" 
+  />
 </template>
