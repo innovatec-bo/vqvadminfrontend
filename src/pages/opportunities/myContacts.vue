@@ -5,6 +5,7 @@ const isDialogVisibleAddOpportunity = ref(false)
 const selectedDateRange = ref([new Date(2024, 9, 10), new Date(2024, 10, 10)]) // Rango de fechas
 const filters = ref(['Todos', 'PORA']) // Opciones de filtro
 const selectedFilter = ref('Todos') 
+let searchTerm = ref()
 </script>
 
 <template>

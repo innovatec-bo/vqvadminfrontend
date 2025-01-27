@@ -1,3 +1,9 @@
+/* stylelint-disable liberty/use-logical-spec */
+/* stylelint-disable order/properties-order */
+/* stylelint-disable liberty/use-logical-spec */
+/* stylelint-disable alpha-value-notation */
+/* stylelint-disable comment-empty-line-before */
+/* stylelint-disable alpha-value-notation */
 <script setup>
 import { useActivity } from '@/composables/Activity/useActivity'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
@@ -10,6 +16,10 @@ import AddQuoteDialog from '../components/dialogs/quote/AddQuoteDialog.vue'
 import AddActivity from './activity/AddActivity.vue'
 import TaskKanban from './opportunity/TaskKanban.vue'
 import PreSaleForm from './sale/PreSaleForm.vue'
+
+
+const searchTerm = ref('')
+
 
 const { allOpportunityKanbanForUser, kanban, getOpportunitybyId, opportunity, changeStatusByOpportunity } = useOpportunity()
 const { getallTypeActivities, typeActivities } = useActivity()
@@ -267,12 +277,66 @@ onMounted(async () => {
 const refreshKanban = async() => {
   await allOpportunityKanbanForUser() 
 }
+
+const cleanSearch = () => {
+  searchTerm.value= ''
+}
+
+// **Filtrado del Kanban**
+const filteredKanban = computed(() => {
+  if (!searchTerm.value.trim()) return kanban.value
+
+  return kanban.value.map(column => {
+    // Separar elementos filtrados y no filtrados
+    const filteredItems = column.items
+      .map(item => ({
+        ...item,
+        isFiltered: (
+          (item.name?.toLowerCase() || '').includes(searchTerm.value.toLowerCase()) ||
+          (item.type_customer?.toLowerCase() || '').includes(searchTerm.value.toLowerCase()) ||
+          (item.phone || '').includes(searchTerm.value) ||
+          (item.property?.toLowerCase() || '').includes(searchTerm.value.toLowerCase())
+        ),
+        isNotFiltered: false, // Los filtrados no deben tener esta bandera
+      }))
+      .filter(item => item.isFiltered) // Mantiene solo los filtrados
+
+    const remainingItems = column.items
+      .map(item => ({
+        ...item,
+        isFiltered: false,
+        isNotFiltered: true, // Agregar bandera para elementos NO filtrados
+      }))
+      .filter(item => !filteredItems.some(filteredItem => filteredItem.id === item.id)) // Mantiene los NO filtrados
+
+    return { 
+      ...column, 
+      items: [...filteredItems, ...remainingItems], // Primero los filtrados, luego los no filtrados
+    }
+  })
+})
 </script>
 
 <template>
+  <div class="kanban-header-container">
+    <div class="search-container">
+      <AppTextField
+        v-model="searchTerm"
+        class="search-input"
+        placeholder="Buscar..."
+        density="compact"
+      />
+      <VBtn
+        class="clear-search-btn"
+        icon="tabler-filter-x"
+        @click="cleanSearch"
+      />
+    </div>
+  </div>
+
   <div class="kanban">
     <div
-      v-for="(column, index) in kanban"
+      v-for="(column, index) in filteredKanban"
       :key="index"
       class="kanban-column"
       :data-column-title="column.title"
@@ -295,6 +359,10 @@ const refreshKanban = async() => {
           v-for="(item) in column.items"
           :key="item.id"
           class="kanban-item"
+          :class="{ 
+            'filtered-item': item.isFiltered, 
+            'not-filtered-item': item.isNotFiltered 
+          }"
           @click="selectOpportunity(item)"
         >
           <div
@@ -616,5 +684,43 @@ button {
   margin-block-start: 10px;
   padding-block: 8px;
   padding-inline: 16px;
+}
+
+.filtered-item {
+  transform: scale(1.05);
+  transition: all 0.5s ease-in-out;
+}
+
+.not-filtered-item {
+  filter: blur(.0313rem);
+  opacity: 0.5; /* Hace que los no filtrados sean menos visibles */
+
+}
+
+.kanban-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(var(--v-theme-background), 1);
+  border-block-end: 1px solid #E5E7EB;
+  padding-block: 10px;
+  padding-inline: 16px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espacio entre el input y el botón */
+}
+
+.search-input {
+  max-inline-size: 300px;
+  min-inline-size: 200px;
+}
+
+.clear-search-btn {
+  border-radius: 12px;
+  max-block-size: 38px;
+  max-inline-size: 38px;
 }
 </style>
