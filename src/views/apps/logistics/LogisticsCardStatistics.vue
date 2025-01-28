@@ -26,14 +26,14 @@ const updateLogisticData = (data) => {
     },
     {
       icon: 'tabler-exchange ',
-      color: 'primary',
+      color: 'info',
       title: 'Total de prospectos',
       value: data.total_prospect || 0,
       isHover: false,
     },
     {
       icon: 'tabler-coins',
-      color: 'primary',
+      color: 'success',
       title: 'Total de ventas',
       value: data.total_sales || 0,
       amount: formatCurrency(data.total_amount_sale || 0),
@@ -41,7 +41,7 @@ const updateLogisticData = (data) => {
     },
     {
       icon: 'tabler-clock-record',
-      color: 'primary',
+      color: 'warning',
       title: 'Promedio de cierre',
       value: `${data.average_closure_time || 0} dias`,
       isHover: false,
