@@ -113,6 +113,7 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
             density="compact"
           />
           <VBtn
+            v-if="userData.some(rule => rule.action === 'manage' && rule.subject === 'ADMINISTRADOR')"
             prepend-icon="tabler-screen-share"
             variant="tonal"
             color="secondary"

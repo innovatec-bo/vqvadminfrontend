@@ -1,4 +1,5 @@
 <script setup>
+import { useCookie } from '@/@core/composable/useCookie'
 import { useCustomer } from '@/composables/Customer/useCustomer'
 import ECommerceAddCustomerDrawer from '@/views/apps/ecommerce/ECommerceAddCustomerDrawer.vue'
 import { paginationMeta } from '@api-utils/paginationMeta'
@@ -10,6 +11,7 @@ const searchQuery = ref('')
 const isAddCustomerDrawerOpen = ref(false)
 
 const { allCustomerPaginate, exportCustomerExcel, totalCustomers, customers } = useCustomer()
+const userData = useCookie('userAbilityRules').value
 
 // Data table options
 const itemsPerPage = ref(10)
@@ -90,6 +92,8 @@ watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
               :items="[5, 10, 20, 50, 100]"
             />
             <VBtn
+              v-if="userData.some(rule => rule.action === 'manage' && rule.subject === 'ADMINISTRADOR')"
+
               prepend-icon="tabler-screen-share"
               variant="tonal"
               color="secondary"
