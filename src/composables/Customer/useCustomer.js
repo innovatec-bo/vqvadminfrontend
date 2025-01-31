@@ -56,8 +56,9 @@ export function useCustomer(){
       }
       if(err.response && err.response.status== 409){
         showWarningNotification('Advertencia', err.response._data.message)
+      }else{
+        showWarningNotification('Advertencia', 'Hubo un problema al registar al cliente')
       }
-      
       error.value =  err.message
     } finally {
       loading.value = false

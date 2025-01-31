@@ -9,12 +9,18 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits([
+  'refreshCustomer',
+  'updateStageId',
+])
+
 const { confirmPaymentPlans } = usePaymentPlans()
 const {  SaleChangeSignature } = useSales()
 
 const confirmPayment = async paymentplanId => {
   console.log(paymentplanId)
   await confirmPaymentPlans( paymentplanId)
+  emit('refreshCustomer') 
   emit('updateStageId', props.opportunity.id)
 }
 
@@ -40,7 +46,9 @@ const displayStatus = status => {
     return 'VENDIDO'
   } else if (status === 'DISCARD') {
     return 'CANCELADO'
-  } else if (status === 'DELIVERY') {
+  }else if (status === 'PRESALE') {
+    return 'RESERVADO'
+  }   else if (status === 'DELIVERY') {
     return 'ENTREGADO'
   }
   

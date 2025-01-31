@@ -11,56 +11,48 @@ let searchTerm = ref()
 <template>
   <div class="">
     <!-- Barra de herramientas (encima del Kanban) -->
-    <div class="toolbar">
+    <!--
+      <div class="toolbar">
       <div class="breadcrumbs">
-        <div class="filters">
-          <button
-            v-for="filter in filters"
-            :key="filter"
-            :class="{ active: selectedFilter === filter }"
-            @click="selectedFilter = filter"
-          >
-            {{ filter }}
-          </button>
-          <!--
-            <VBtn
-            color="primary"
-            title="Agregar Actividad"
-            @click="isDialogVisibleAddOpportunity = true"
-            >
-            Agregar Oportunidad
-            </VBtn> 
-          -->
-        </div>
+      <div class="filters">
+      <button
+      v-for="filter in filters"
+      :key="filter"
+      :class="{ active: selectedFilter === filter }"
+      @click="selectedFilter = filter"
+      >
+      {{ filter }}
+      </button>
+      </div>
       </div>
 
+      
       <div class="filter-controls">
-        <!-- Selector de fechas -->
-        <div class="date-picker d-flex align-center justify-center">
-          <AppDateTimePicker
-            v-model="selectedDateRange[0]"
-            style="inline-size: 200px;"
-            label="Desde"
-            placeholder="Seleccione Fecha"
-            :config="{ dateFormat: 'F j, Y' }"
-          />
-          <AppDateTimePicker
-            v-model="selectedDateRange[1]"
-            label="Hasta"
-            style="inline-size: 200px;"
-            placeholder="Seleccione Fecha"
-            :config="{ dateFormat: 'F j, Y' }"
-          />
-        </div>
+      <div class="date-picker d-flex align-center justify-center">
+      <AppDateTimePicker
+      v-model="selectedDateRange[0]"
+      style="inline-size: 200px;"
+      label="Desde"
+      placeholder="Seleccione Fecha"
+      :config="{ dateFormat: 'F j, Y' }"
+      />
+      <AppDateTimePicker
+      v-model="selectedDateRange[1]"
+      label="Hasta"
+      style="inline-size: 200px;"
+      placeholder="Seleccione Fecha"
+      :config="{ dateFormat: 'F j, Y' }"
+      />
       </div>
-    </div>
+      </div>
+      </div> 
+    -->
 
     <!-- Kanban Board -->
     <div>
       <Kanban />
     </div>
   </div>
-  <!-- <AddOportunity v-model:is-dialog-visible="isDialogVisibleAddOpportunity" /> -->
 </template>
 
 <style scoped>

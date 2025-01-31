@@ -158,7 +158,10 @@ onMounted(() => {
           <CustomerQuote :quotes="customer.quotes" />
         </VWindowItem>
         <VWindowItem>
-          <CustomerSale :sales="customer.sales" />
+          <CustomerSale
+            :sales="customer.sales" 
+            @refresh-customer="loadCustomer"
+          />
         </VWindowItem>
         <VWindowItem>
           <BitacoraCustomer :customer="customer.customer.id" />

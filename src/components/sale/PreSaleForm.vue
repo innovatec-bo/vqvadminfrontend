@@ -26,7 +26,7 @@ const props = defineProps({
 
 })
 
-const emit = defineEmits(['update:isDialogVisible', 'registerSale', 'formCancelled'])
+const emit = defineEmits(['update:isDialogVisible', 'registerSale', 'formCancelled', 'formRefresh'])
 const { generateSale, generateSaleChangeStage } = useSales()
 const loadingSale = ref(false)
 
@@ -35,7 +35,7 @@ const items = ['20', '30', '40', '50', '70', '80', '100']
 const selectedPercentage =  ref('30')
 
 const dialogVisibleUpdate = () => {
-  emit('formCancelled')
+  emit('formCancelled')  
   emit('update:isDialogVisible', false)
 }
 
@@ -194,7 +194,7 @@ const generateSalePage = async () => {
       await generateSaleChangeStage(salesData.value)
     }
     emit('registerSale', salesData.value.opportunity_id)
-    
+    emit('formRefresh')
   } catch (error) {
     console.error('Error generando la venta:', error)
 
@@ -242,6 +242,8 @@ watch(
       salesData.value.opportunity_id = selectedCustomer.opportunity_id
       salesData.value.workplace = selectedCustomer.workplace
       salesData.value.observations = selectedCustomer.observations
+      salesData.value.payment_method = selectedCustomer.payment_method
+      selectedPercentage.value = selectedCustomer.percentage_initial_fee
       if (selectedCustomer.property_id !== null) {
         salesData.value.properties[0].property_id = selectedCustomer.properties[0]?.id
         salesData.value.properties[0].price = selectedCustomer.properties[0]?.pivot_price

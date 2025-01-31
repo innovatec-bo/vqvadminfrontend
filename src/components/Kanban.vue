@@ -17,10 +17,7 @@ import AddActivity from './activity/AddActivity.vue'
 import TaskKanban from './opportunity/TaskKanban.vue'
 import PreSaleForm from './sale/PreSaleForm.vue'
 
-
 const searchTerm = ref('')
-
-
 const { allOpportunityKanbanForUser, kanban, getOpportunitybyId, opportunity, changeStatusByOpportunity } = useOpportunity()
 const { getallTypeActivities, typeActivities } = useActivity()
 
@@ -128,6 +125,7 @@ const openMissingModal = async element => {
 
 const changeStatus = async (element, stage) => {
   await changeStatusByOpportunity(element.id, stage, {})
+  await allOpportunityKanbanForUser() 
 }
 
 const completOportunidad = async element => {
@@ -170,7 +168,6 @@ const removeElement = data => {
     console.log('El elemento no se encuentra en ningún tablero')
   }
 }
-
 
 const handleFormCancelled = () => {
   formCancelled.value= true
@@ -272,7 +269,6 @@ onMounted(async () => {
   await allOpportunityKanbanForUser() 
   await getallTypeActivities()
 })
-
 
 const refreshKanban = async() => {
   await allOpportunityKanbanForUser() 
@@ -480,6 +476,7 @@ const filteredKanban = computed(() => {
     :opportunity="selectedOpportunity"
     stage="PRESALE"
     @form-cancelled="handleFormCancelled"
+    @form-refresh="refreshKanban"
   />
   <AddActivity
     v-model:is-dialog-visible="isFormActivityVisible"

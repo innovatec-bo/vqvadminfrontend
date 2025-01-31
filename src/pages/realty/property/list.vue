@@ -70,7 +70,7 @@ const resolvePropertyStatusVariant = stat => {
   case 'AVAILABLE':
     return { color: 'success', text: 'DISPONIBLE' }
   case 'PRESALE':
-    return { color: 'warning', text: 'PRE VENTA' }
+    return { color: 'warning', text: 'RESERVADO' }
   case 'SALE':
     return { color: 'error', text: 'VENDIDO' }
   case 'DELIVERED':

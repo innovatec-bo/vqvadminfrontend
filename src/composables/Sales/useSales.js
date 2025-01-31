@@ -26,7 +26,13 @@ export function useSales (){
         
         return { success: false, message: 'Validación fallida' }
       }
-      showErrorToast('Error al crear la venta', 'Hubo un problema al crear la venta.')
+      if(err.response && err.response.status == 409){
+        showWarningNotification('Advertencia', err.response._data.message)
+        
+      }else{
+
+        showErrorToast('Error al crear la venta', 'Hubo un problema al crear la venta.')
+      }
       
       return { success: false, message: 'Error de actualización' }
     }finally{
@@ -71,10 +77,12 @@ export function useSales (){
     }catch(err){
       if(err.response && err.response.status == 422){
         showWarningToast('Validación fallida', 'Faltan datos por rellenar')
-        
-        return { success: false, message: 'Validación fallida' }
       }
-      showErrorToast('Error al crear la venta', 'Hubo un problema al crear la venta.')
+      if(err.response && err.response.status == 409){
+        showWarningNotification('Advertencia', err.response._data.error)
+      }else{
+        showErrorToast('Error al crear la venta', 'Hubo un problema al crear la venta.')
+      }
       
       return { success: false, message: 'Error de actualización' }
     }finally{
