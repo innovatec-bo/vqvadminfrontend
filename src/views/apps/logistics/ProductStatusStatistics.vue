@@ -17,10 +17,9 @@ const labelColor = 'rgba(var(--v-theme-on-background), var(--v-medium-emphasis-o
 
 const chartColors = {
   donut: {
-    series1: '#666666',
-    series2: '#474747',
-    series3: '#292929',
-    series4: '#0A0A0A',
+    series1: '#858585',
+    series2: '#28C76F',
+    series3: '#7367F0',
   },
 }
 
