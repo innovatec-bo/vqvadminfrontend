@@ -1,7 +1,6 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
-import { useCustomer } from '@/composables/Customer/useCustomer'
 import { useProperty } from '@/composables/Realty/useProperty'
 import { onMounted, ref } from 'vue'
 
@@ -10,52 +9,37 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  customerObject,
 })
 
-const emit = defineEmits([
-  'update:isDialogVisible',
-  'submit',
-])
-
-// Datos para el formulario
-const selectedCustomer = ref(null)
+const emit = defineEmits('update:isDialogVisible')
+const { propertiesAvailbles, properties } = useProperty()
 
 const opportunityDetails = ref({
   title: '',
   description: '',
 })
 
-const { propertiesAvailbles, properties } = useProperty()
-const { allCustomerPaginate, customers } = useCustomer()
+watch(
+  () => props.customerObject,
+ 
+  { immediate: true }, // Ejecuta el watch al inicializar
+)
 
-const submitOpportunity = async () => {
-  if (!selectedCustomer.value || !opportunityDetails.value.title) {
-    // Validación simple
-    alert('Por favor selecciona un cliente y llena todos los campos requeridos.')
-    
-    return
-  }
+// const submitOpportunity = async () => {
+//   const data = {
+//     customer_id: customerId,
+//     ...opportunityDetails.value,
+//   }
 
-  const data = {
-    customer_id: selectedCustomer.value,
-    ...opportunityDetails.value,
-  }
+//   try {
+//     emit('update:isDialogVisible', false)
+//   } catch (error) {
+//     console.error('Error al agregar la oportunidad:', error)
+//   }
+// }
 
-  try {
-    //await addOpportunity(data)
-    emit('submit', data)
-    emit('update:isDialogVisible', false)
-  } catch (error) {
-    console.error('Error al agregar la oportunidad:', error)
-  }
-}
-
-// Cargar clientes
 onMounted(async () => {
-  await allCustomerPaginate({
-    page: 1,
-    itemsPerPage: 1000,
-  })
   await propertiesAvailbles()
 })
 </script>
@@ -64,26 +48,13 @@ onMounted(async () => {
   <VDialog
     max-width="600"
     :model-value="props.isDialogVisible"
-    persistent
-    :close-on-esc="false"
+    
     @update:model-value="(val) => $emit('update:isDialogVisible', val)"
   >
-    <!-- Botón para cerrar el diálogo -->
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
-
     <VCard title="Agregar Oportunidad">
       <VCardText>
         <VRow>
-          <VCol cols="12">
-            <AppAutocomplete
-              v-model="selectedCustomer"
-              label="Cliente"
-              placeholder="Selecciona un Cliente"
-              :items="customers.map(customer => ({ title: customer.name, value: customer.id }))"
-              outlined
-            />
-          </VCol>
-
           <VCol
             cols="12"
             sm="6"
@@ -105,8 +76,6 @@ onMounted(async () => {
               outlined
             />
           </VCol>
-
-
           <VCol cols="12">
             <VTextarea
               v-model="opportunityDetails.description"
@@ -118,20 +87,16 @@ onMounted(async () => {
           </VCol>
         </VRow>
       </VCardText>
-
       <VCardActions>
         <VSpacer />
+        <VBtn color="primary">
+          Guardar
+        </VBtn>
         <VBtn
-          color="secondary"
+          color="error"
           @click="$emit('update:isDialogVisible', false)"
         >
           Cancelar
-        </VBtn>
-        <VBtn
-          color="primary"
-          @click="submitOpportunity"
-        >
-          Guardar
         </VBtn>
       </VCardActions>
     </VCard>

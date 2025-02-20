@@ -26,7 +26,7 @@ const props = defineProps({
 
 })
 
-const emit = defineEmits(['update:isDialogVisible', 'registerSale', 'formCancelled'])
+const emit = defineEmits(['update:isDialogVisible', 'registerSale', 'formCancelled', 'formRefresh'])
 const { generateSale, generateSaleChangeStage } = useSales()
 const loadingSale = ref(false)
 
@@ -34,9 +34,9 @@ const items = ['20', '30', '40', '50', '70', '80', '100']
 
 const selectedPercentage =  ref('30')
 
-const dialogVisibleUpdate = val => {
-  emit('formCancelled')
-  emit('update:isDialogVisible', val)
+const dialogVisibleUpdate = () => {
+  emit('formCancelled')  
+  emit('update:isDialogVisible', false)
 }
 
 const salesData = ref({
@@ -81,14 +81,10 @@ const calculatedAmount = totalAmount => {
 const isGeneralFormValid = computed(() => {
   return salesData.value.social_reason && 
          salesData.value.nit &&
-
-  //  salesData.value.email &&
          salesData.value.phone &&
          salesData.value.amount &&  
          salesData.value.creation_date &&
          salesData.value.payment_method &&
-
-  //  salesData.value.balance &&
          salesData.value.quote_id 
 })
 
@@ -160,14 +156,12 @@ const isFormValid = computed(() => {
 
 const generateSalePage = async () => {
   if (!isInitialFeeValid.value) {
-    // showWarningToast('Validación fallida', 'La suma de las diferencias de la cuota inicial no son correctas')
     alert('Por favor, diferencias del anticipo ')
     
     return
   }
   if (!isBalanceValid.value) {
-    // showWarningToast('Validación fallida', 'La suma de las diferencias del balance no son correctas')
-    alert('Por favor, diferencias del balance ')
+    alert('La suma de las diferencias del balance no son correctas')
     
     return
   }
@@ -187,29 +181,30 @@ const generateSalePage = async () => {
         })
       }
     }
-
     if (salesData.value.differs_initial_fee.length === 0){
       salesData.value.differs_initial_fee.push({
         date: new Date().toISOString().slice(0, 19).replace('T', ' '),
         amount: salesData.value.initial_fee,
       })
     }
-
-    console.log('data de la venta: ', salesData.value)
     if (props.stage === 'SALE') {
       await generateSale(salesData.value)
       console.log('entro a venta')
     } else if (props.stage === 'PRESALE') {
       await generateSaleChangeStage(salesData.value)
     }
-    emit('update:isDialogVisible', false)
     emit('registerSale', salesData.value.opportunity_id)
+    emit('formRefresh')
   } catch (error) {
     console.error('Error generando la venta:', error)
+
   } finally {
     loadingSale.value = false 
+    emit('update:isDialogVisible', false)
   }
 }
+
+watch(() => props.isDialogVisible)
 
 watch(
   () => salesData.value.properties,
@@ -247,6 +242,8 @@ watch(
       salesData.value.opportunity_id = selectedCustomer.opportunity_id
       salesData.value.workplace = selectedCustomer.workplace
       salesData.value.observations = selectedCustomer.observations
+      salesData.value.payment_method = selectedCustomer.payment_method
+      selectedPercentage.value = selectedCustomer.percentage_initial_fee
       if (selectedCustomer.property_id !== null) {
         salesData.value.properties[0].property_id = selectedCustomer.properties[0]?.id
         salesData.value.properties[0].price = selectedCustomer.properties[0]?.pivot_price
@@ -264,7 +261,7 @@ watch(
     @update:model-value="dialogVisibleUpdate"
   >
     <!-- 👉 Dialog close btn -->
-    <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
+    <DialogCloseBtn @click="dialogVisibleUpdate" />
     <VCard>
       <VCardText class="d-flex flex-wrap justify-space-between gap-y-5 flex-column flex-sm-row align-center">
         <VNodeRenderer

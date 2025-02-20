@@ -129,6 +129,7 @@ watch([searchQuery, itemsPerPage, page, status], debouncedFetch, { immediate: tr
               :items="[5, 10, 20, 50, 100]"
             />
             <VBtn
+              v-if="userData.some(rule => rule.action === 'manage' && rule.subject === 'ADMINISTRADOR')"
               prepend-icon="tabler-screen-share"
               variant="tonal"
               color="secondary"
@@ -188,7 +189,7 @@ watch([searchQuery, itemsPerPage, page, status], debouncedFetch, { immediate: tr
                 activator="parent"
                 location="top"
               >
-                {{ item.status == "NOT_APPROVED"? 'No aprovado por gerencia': 'Aprobado por Gerencia' }}
+                {{ item.status == "NOT_APPROVED"? 'No aprobado por gerencia': 'Aprobado por Gerencia' }}
               </VTooltip>
             </VCheckbox>
           </div>

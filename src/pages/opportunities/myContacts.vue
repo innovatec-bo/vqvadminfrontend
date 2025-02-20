@@ -1,68 +1,58 @@
 <script setup>
 import Kanban from '@/components/Kanban.vue'
-import AddOportunity from '@/components/opportunity/AddOportunity.vue'
 
 const isDialogVisibleAddOpportunity = ref(false)
 const selectedDateRange = ref([new Date(2024, 9, 10), new Date(2024, 10, 10)]) // Rango de fechas
-// const filters = ref(['Todos', 'OGA', 'PORA']) // Opciones de filtro
 const filters = ref(['Todos', 'PORA']) // Opciones de filtro
-
-const selectedFilter = ref('Todos') // Filtro seleccionado
+const selectedFilter = ref('Todos') 
+let searchTerm = ref()
 </script>
 
 <template>
-  <div class="body-kanban">
+  <div class="">
     <!-- Barra de herramientas (encima del Kanban) -->
-    <div class="toolbar">
+    <!--
+      <div class="toolbar">
       <div class="breadcrumbs">
-        <div class="filters">
-          <button
-            v-for="filter in filters"
-            :key="filter"
-            :class="{ active: selectedFilter === filter }"
-            @click="selectedFilter = filter"
-          >
-            {{ filter }}
-          </button>
-          <!--
-            <VBtn
-            color="primary"
-            title="Agregar Actividad"
-            @click="isDialogVisibleAddOpportunity = true"
-            >
-            Agregar Oportunidad
-            </VBtn> 
-          -->
-        </div>
+      <div class="filters">
+      <button
+      v-for="filter in filters"
+      :key="filter"
+      :class="{ active: selectedFilter === filter }"
+      @click="selectedFilter = filter"
+      >
+      {{ filter }}
+      </button>
+      </div>
       </div>
 
+      
       <div class="filter-controls">
-        <!-- Selector de fechas -->
-        <div class="date-picker d-flex align-center justify-center">
-          <AppDateTimePicker
-            v-model="selectedDateRange[0]"
-            style="inline-size: 200px;"
-            label="Desde"
-            placeholder="Seleccione Fecha"
-            :config="{ dateFormat: 'F j, Y' }"
-          />
-          <AppDateTimePicker
-            v-model="selectedDateRange[1]"
-            label="Hasta"
-            style="inline-size: 200px;"
-            placeholder="Seleccione Fecha"
-            :config="{ dateFormat: 'F j, Y' }"
-          />
-        </div>
+      <div class="date-picker d-flex align-center justify-center">
+      <AppDateTimePicker
+      v-model="selectedDateRange[0]"
+      style="inline-size: 200px;"
+      label="Desde"
+      placeholder="Seleccione Fecha"
+      :config="{ dateFormat: 'F j, Y' }"
+      />
+      <AppDateTimePicker
+      v-model="selectedDateRange[1]"
+      label="Hasta"
+      style="inline-size: 200px;"
+      placeholder="Seleccione Fecha"
+      :config="{ dateFormat: 'F j, Y' }"
+      />
       </div>
-    </div>
+      </div>
+      </div> 
+    -->
 
     <!-- Kanban Board -->
     <div>
       <Kanban />
     </div>
   </div>
-  <AddOportunity v-model:is-dialog-visible="isDialogVisibleAddOpportunity" />
 </template>
 
 <style scoped>

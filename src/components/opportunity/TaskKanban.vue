@@ -6,6 +6,7 @@ import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProcess } from '@/composables/Process/useProcess'
 import { useQuote } from '@/composables/Quote/useQuote'
 import { useProperty } from '@/composables/Realty/useProperty'
+import { usePaymentPlans } from '@/composables/Sales/usePaymentPlans'
 import { useSales } from '@/composables/Sales/useSales'
 import { StagesOpportunity } from '@/enums/StagesOpportunity'
 import { StateActivity } from '@/enums/StateActivity'
@@ -21,17 +22,18 @@ const props = defineProps({
 const emit = defineEmits(['update:isDialogVisible', 'formCancelled'])
 const { changeStatusQuotesCustomer } = useQuote()
 const { checkProcessForOpportunity } = useProcess()
-const { allProperty, properties, propertiesAvailbles } = useProperty()
+const { propertiesAvailbles, properties } = useProperty()
 const { getallTypeActivities, typeActivities, registerActivity, loadingActivity, changeStatusActivity } = useActivity()
-const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity, changeStatusByOpportunity } = useOpportunity()
+const { getOpportunitybyId, opportunity, changeOpportunity, loadingOpportunity } = useOpportunity()
 const { SaleChangeSignature } = useSales()
+const { confirmPaymentPlans } = usePaymentPlans()
 
 const newActivity = ref({
   title: null,
   description: null,
   type_activity_id: null,
   scheduled_at: null,
-  opportunity_id: null,
+  opportunity_id: opportunity.value.id,
   assigned_to: null,
 })
 
@@ -79,6 +81,7 @@ const fetchOpportunityData = async () => {
 
 
 const addActivity = async () => {
+  newActivity.value.opportunity_id =  opportunity.value.id,
   await registerActivity(newActivity.value)
   newActivity.value = {
     title: null,
@@ -180,6 +183,10 @@ const markProcedureAsDone = async procedure => {
     is_check: !procedure.pivot.is_check, 
   })
   procedure.pivot.is_check = !procedure.pivot.is_check
+}
+
+const confirmPayment = async paymentplanId => {
+  await confirmPaymentPlans( paymentplanId)
 }
 </script>
 

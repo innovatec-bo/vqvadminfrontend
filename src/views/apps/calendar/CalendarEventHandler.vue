@@ -154,6 +154,27 @@ const dialogModelValueUpdate = val => {
   emit('update:isDrawerOpen', val)
 }
 
+const autocompleteItems = computed(() => {
+  const customerFromEvent = event.value.extendedProps.customer
+  const customerList = customers.value.map(customer => ({
+    title: customer.name,
+    value: customer.id,
+  }))
+
+
+  if (
+    customerFromEvent &&
+    !customerList.some(item => item.value === customerFromEvent.customerId)
+  ) {
+    customerList.unshift({
+      title: customerFromEvent.customerName,
+      value: customerFromEvent.customerId,
+    })
+  }
+
+  return customerList
+})
+
 const handleCustomerSearch = useDebounceFn(async (query) => {
   if (query.trim()) {
     await searchCustomers(query)
@@ -204,7 +225,7 @@ const handleCustomerSearch = useDebounceFn(async (query) => {
                   :rules="[requiredValidator]"
                   label="Cliente"
                   placeholder="Selecciona un Cliente"
-                  :items="customers.map(customer => ({title:customer.name, value:customer.id}))"
+                  :items="autocompleteItems"
                   outlined
                   :disabled="event.id && true"
                   @update:search="handleCustomerSearch"

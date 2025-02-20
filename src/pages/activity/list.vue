@@ -49,10 +49,12 @@ onMounted(async () => {
 })
 
 const isEditActivity = ref(false)
+const selectedActivityId = ref(null)
 
 const editActivity = item => {
   isEditActivity.value = true
   activity.value = { ...item }
+  selectedActivityId.value = item.id
 }
 
 const onRefreshActivities = async () => {
@@ -139,9 +141,7 @@ watch(searchQuery, newValue => {
 
 
 <template>
-  <VRow
-    class="match-height"
-  >
+  <VRow class="match-height">
     <VCol
       cols="12"
       md="4"
@@ -229,6 +229,7 @@ watch(searchQuery, newValue => {
                   fill-dot
                   class="border mb-2 rounded-sm py-2"
                   style="cursor: pointer;"
+                  :class="[{ 'selected-activity': item.id === selectedActivityId }]"
 
                   @click="editActivity(item)"
                 >
@@ -411,6 +412,19 @@ watch(searchQuery, newValue => {
   /* Color de botón activo */
   color: rgb(var(--v-theme-surface));
 }
+
+.selected-activity {
+  border: 1px solid rgba(var(--v-theme-primary), 0.8); /* Borde resaltado */
+  background-color: hsla(0deg, 0%, 95%, 19.9%); /* Fondo sutil */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 30%); /* Sombra ligera */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* Transición suave */
+}
+
+.selected-activity:hover {
+  border-color: rgba(var(--v-theme-primary), 1); /* Borde más intenso al pasar el ratón */
+  box-shadow: 0 6px 12px rgba(46, 46, 46, 20%); /* Sombra más intensa */
+}
+
 
 
 @keyframes bounce {

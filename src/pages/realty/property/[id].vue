@@ -10,6 +10,22 @@ const fetchProperty = async () =>{
   await getPropertyId(route.params.id)
 }
 
+
+const resolvePropertyStatusVariant = stat => {
+  switch (stat) {
+  case 'AVAILABLE':
+    return { color: 'success', text: 'DISPONIBLE' }
+  case 'PRESALE':
+    return { color: 'warning', text: 'RESERVADO' }
+  case 'SALE':
+    return { color: 'error', text: 'VENDIDO' }
+  case 'DELIVERED':
+    return { color: 'error', text: 'ENTREGADO' }
+  default:
+    return { color: 'primary', text: 'NOTHING' }
+  }
+}
+
 onMounted(fetchProperty)
 </script>
 
@@ -63,7 +79,7 @@ onMounted(fetchProperty)
       >
         <VCard class="overflow-visible course-details">
           <VCardText>
-            <div class="d-flex gap-x-12 gap-y-5 flex-wrap">
+            <div class="d-flex gap-x-12 gap-y-5  flex-wrap">
               <div>
                 <VList class="card-list">
                   <VListItem>
@@ -71,7 +87,15 @@ onMounted(fetchProperty)
                       <strong> Area: </strong>  {{ property?.surface }} m2
                     </VListItemTitle>
                     <VListItemTitle class="text-body-1">
-                      <strong> Estado: </strong> {{ property?.status }} 
+                      <strong> Estado: </strong>
+                      <VChip
+                        label
+                        size="small"
+                        class="text-capitalize"
+                        :color="resolvePropertyStatusVariant(property?.status).color"
+                      >
+                        {{ resolvePropertyStatusVariant(property?.status).text }}
+                      </VChip>
                     </VListItemTitle>
                     <VListItemTitle class="text-body-1">
                       <strong> Tipo de Propiedad: </strong> {{ property?.property_type }} 

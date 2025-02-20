@@ -8,6 +8,8 @@ import CustomerSale from '@/views/customer/customerSale.vue'
 
 const userTab = ref(null)
 const route = useRoute()
+const isDialogVisibleAddOpportunity = ref(false)
+
 const {  getPerfilCutomerbyId, customer, loading } = useCustomer()
 
 const tabs = [
@@ -22,7 +24,7 @@ const loadCustomer = async () => {
   try {
     await getPerfilCutomerbyId(route.params.id)
   } catch (error) {
-    console.error('Error al obtener la cotización:', error)
+    console.error('Error al obtener al customer:', error)
   }
 }
 
@@ -47,7 +49,6 @@ onMounted(() => {
             {{ customer.customer.name }}
           </h6>
         </VCardText>
-
         <VDivider />
 
         <!-- 👉 Details -->
@@ -106,23 +107,18 @@ onMounted(() => {
                 </h6>
               </VListItemTitle>
             </VListItem>
+            <!--
+              <VBtn
+              color="primary"
+              title="Agregar Actividad"
+              @click="isDialogVisibleAddOpportunity = true"
+              >
+              Agregar Oportunidad
+              </VBtn> 
+            -->
           </VList>
         </VCardText>
         <!-- 👉 Edit and Suspend button -->
-        <VCardText class="d-flex justify-center">
-          <VBtn
-            variant="elevated"
-            class="me-4"
-          >
-            Edit
-          </VBtn>
-          <VBtn
-            variant="tonal"
-            color="error"
-          >
-            Suspend
-          </VBtn>
-        </VCardText>
       </VCard>
     </VCol>
     <VCol
@@ -164,7 +160,10 @@ onMounted(() => {
           <CustomerQuote :quotes="customer.quotes" />
         </VWindowItem>
         <VWindowItem>
-          <CustomerSale :sales="customer.sales" />
+          <CustomerSale
+            :sales="customer.sales" 
+            @refresh-customer="loadCustomer"
+          />
         </VWindowItem>
         <VWindowItem>
           <BitacoraCustomer :customer="customer.customer.id" />
@@ -177,6 +176,12 @@ onMounted(() => {
       {{ loading ? 'Cargando' : 'Cliente no encontrado' }}
     </VCardTitle>
   </VCard>
+  <!--
+    <AddOportunity
+    v-model:is-dialog-visible="isDialogVisibleAddOpportunity"
+    :customer-object="customer"
+    /> 
+  -->
 </template>
 
 

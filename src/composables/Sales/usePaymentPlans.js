@@ -14,6 +14,7 @@ export function usePaymentPlans (){
       showSuccessToast('Actualizacion Exitosa', 'Se confirmo el pago')
     }catch (err){
       console.log(err)
+      showWarningNotification('Advertencia', 'No se puedo realizar la confirmacion')
     }
   }
   

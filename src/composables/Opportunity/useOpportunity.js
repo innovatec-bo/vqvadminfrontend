@@ -91,10 +91,14 @@ export function useOpportunity (){
 
       console.log('Oportunidad actualizada: ', response)
       opportunity.value = response.data
-      showSuccessNotification('¡Oportunidad avanzó a una nueva etapa!',
-
-        //  'La oportunidad ha avanzado exitosamente a la siguiente fase.'
-      )
+      
+      if(stageId!= 6 && stageId!= 7 ){
+        showSuccessNotification('¡Oportunidad avanzó a una nueva etapa!')
+      }else if (stageId == 7) {
+        showSuccessNotification('¡Oportunidad fue completada!')
+      } else {
+        showSuccessNotification('¡Oportunidad fue dada de Baja!')
+      }
     }catch (err){
       console.log(err)
       if(err.response && err.response.status== 500){

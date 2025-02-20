@@ -19,10 +19,10 @@ const borderColor = 'rgba(var(--v-border-color), var(--v-border-opacity))'
 const chartColors = {
   line: {
     series1: '#858585',
-    series2: '#666666',
-    series3: '#474747',
-    series4: '#292929',
-    series5: '#0A0A0A',
+    series2: '#00d1e8',
+    series3: '#FF9F43',
+    series4: '#28C76F',
+    series5: '#7367F0',
   },
 }
 

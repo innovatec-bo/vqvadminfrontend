@@ -23,13 +23,13 @@ export function useCustomer(){
     loading.value = true
     error.value = null
     try {
-      // const thread = await createThread()
+      const thread = await createThread()
 
       const customerData = {
         name: data.name,
         phone: data.phone,
 
-        // thread: thread.id,
+        thread: thread.id,
         email: data.email,
         ci: data.ci,
         // eslint-disable-next-line camelcase
@@ -56,8 +56,9 @@ export function useCustomer(){
       }
       if(err.response && err.response.status== 409){
         showWarningNotification('Advertencia', err.response._data.message)
+      }else{
+        showWarningNotification('Advertencia', 'Hubo un problema al registar al cliente')
       }
-      
       error.value =  err.message
     } finally {
       loading.value = false

@@ -390,6 +390,7 @@
     "formatNumber": true,
     "DirectiveBinding": true,
     "MaybeRef": true,
-    "MaybeRefOrGetter": true
+    "MaybeRefOrGetter": true,
+    "formatDateTime": true
   }
 }
