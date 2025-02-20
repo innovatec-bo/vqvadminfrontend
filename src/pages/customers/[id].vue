@@ -107,13 +107,15 @@ onMounted(() => {
                 </h6>
               </VListItemTitle>
             </VListItem>
-            <VBtn
+            <!--
+              <VBtn
               color="primary"
               title="Agregar Actividad"
               @click="isDialogVisibleAddOpportunity = true"
-            >
+              >
               Agregar Oportunidad
-            </VBtn>
+              </VBtn> 
+            -->
           </VList>
         </VCardText>
         <!-- 👉 Edit and Suspend button -->

@@ -3,7 +3,6 @@ import EditCustomerDialog from '@/components/customer/EditCustomerDialog.vue'
 import { useOpportunity } from '@/composables/Opportunity/useOpportunity'
 import { useProcess } from '@/composables/Process/useProcess'
 import { StagesOpportunity } from '@/enums/StagesOpportunity'
-import { formatCurrency } from '@/utils/currencyFormatter'
 import Swal from 'sweetalert2'
 
 const props = defineProps({
@@ -53,16 +52,10 @@ const openMissingModal = async element => {
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
     confirmButtonText: "confirmar",
-  }).then(result => {
+  }).then(async result => {
     if (result.isConfirmed) {
-      changeStatusByOpportunity(element.id, StagesOpportunity.LOSS.value, {})
-      
-      closeNavigationDrawer()
-      emit('refreshCustomer') 
-      Swal.fire({
-        text: "La oportunidad fue dada de baja",
-        icon: "success",
-      })
+      await  changeStatusByOpportunity(element.id, StagesOpportunity.LOSS.value, {})
+      emit('refreshCustomer')
     }
   })
 }
@@ -98,9 +91,18 @@ const openMissingModal = async element => {
             </span>
             <br>
             <strong>Propiedad de Interes: </strong>
-            <span>
+            <span v-if="item.property">
               {{ item.property.title }}  |   {{ formatCurrency( item.property.base_price ) }} |   {{ item.property.surface }} m2 
             </span>
+            <span v-else>
+              Indefinido
+            </span>
+            <p v-if="item.description">
+              <strong>
+                Descripcion: 
+              </strong>
+              {{ item.description }}
+            </p>
 
             <div class="mt-5">
               <h3 class="my-1">
