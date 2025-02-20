@@ -4,7 +4,7 @@ export const COOKIE_MAX_AGE_1_YEAR = 365 * 24 * 60 * 60
 export const URL_BACKEND = 'https://phplaravel-1171375-4944906.cloudwaysapps.com/'
 
 // export const URL_MICROSERVICIO= 'https://nuna-properties-ia-production.up.railway.app/'
-export const URL_MICROSERVICIO= 'https://nuna-properties-ia-production-c86d.up.railway.app/'
+export const URL_MICROSERVICIO= 'http://146.190.46.28:4000/'
 
 
 // Servidor Local
@@ -13,7 +13,7 @@ export const URL_MICROSERVICIO= 'https://nuna-properties-ia-production-c86d.up.r
 
 // Servidor de QA
 // export const URL_BACKEND = 'https://salesprop.nuna.tech/nuna_properties_backend/public/index.php/'
-// export const URL_MICROSERVICIO= 'https://nuna-properties-ia-production-c86d.up.railway.app/'
+//export const URL_MICROSERVICIO= 'http://146.190.46.28:4000/'
 
 export const URL_ADMIN =  URL_BACKEND +'api/' 
 
