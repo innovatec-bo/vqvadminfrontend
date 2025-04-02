@@ -1,15 +1,19 @@
 export const COOKIE_MAX_AGE_1_YEAR = 365 * 24 * 60 * 60
 
 //Servidor de Vertical Homes
-export const URL_BACKEND = 'https://phplaravel-1171375-4944906.cloudwaysapps.com/'
+// export const URL_BACKEND = 'https://phplaravel-1171375-4944906.cloudwaysapps.com/'
 
 // export const URL_MICROSERVICIO= 'https://nuna-properties-ia-production.up.railway.app/'
-export const URL_MICROSERVICIO= 'http://146.190.46.28:4000/'
+// export const URL_MICROSERVICIO= 'http://146.190.46.28:4000/'
 
 
 // Servidor Local
 // export const URL_BACKEND = 'http://127.0.0.1:8000/'
 //export const URL_MICROSERVICIO= 'http://localhost:3000/'
+
+// Servidor Local vayaquevalla
+export const URL_BACKEND = 'http://vayaquevalla.test/'
+export const URL_MICROSERVICIO= 'http://localhost:5173/'
 
 // Servidor de QA
 // export const URL_BACKEND = 'https://salesprop.nuna.tech/nuna_properties_backend/public/index.php/'
