@@ -4,17 +4,19 @@ import { breakpointsVuetifyV2 } from '@vueuse/core'
 import { VIcon } from 'vuetify/components/VIcon'
 
 // ❗ Logo SVG must be imported with ?raw suffix
-import logo from '@images/logos/canzza.svg'
 import logopora from '@images/logos/logo-pora.svg'
+import logo from '@images/logos/vqvlogo.png'
 
 import { AppContentLayoutNav, ContentWidth, FooterType, NavbarType } from '@layouts/enums'
 
 export const { themeConfig, layoutConfig } = defineThemeConfig({
   app: {
-    title: 'Canzza - Vertical Homes',
-    logo: h('img', { src: logo, alt: 'Logo de Canzza', style: {
+    title: 'Vaya que valla',
+    logo: h('img', { src: logo, alt: 'Logo de vqv', style: {
       width: 'auto', 
-      height: 'auto',  
+      height: '70px',
+      marginLeft:'auto',
+      marginRight: 'auto'  
     } }),
     logopora: h('img', { src: logopora, alt: 'Logo de Pora', style: {
       width: 'auto', 
@@ -44,7 +46,7 @@ export const { themeConfig, layoutConfig } = defineThemeConfig({
         },
       ],
     },
-    theme: 'light',
+    theme: 'dark',
     skin: Skins.Default,
     iconRenderer: VIcon,
   },
