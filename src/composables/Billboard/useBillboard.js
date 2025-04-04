@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
-import { allBillboards, allPropertiesProject, deletePropertyById, exportProperty, getPropertiesAvailable, getPropertiesForType, getPropertyById, registerProperty, updateProperty } from '@/services/Billboard/billboardService'
+import { allBillboards, allPropertiesProject, deletePropertyById, exportProperty, getPropertiesAvailable, getPropertiesForType, getPropertyById, registerBillboard, updateProperty } from '@/services/Billboard/billboardService'
 import { showErrorToast, showSuccessNotification, showSuccessToast, showWarningToast } from '@/utils/notifications'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-export function useBillboard() {
+export function useBillboard(){
   const userData = useCookie('userData').value
 
   const loadingProperty = ref(false)
@@ -16,7 +16,7 @@ export function useBillboard() {
 
   const totalProperties = ref(0)
 
-  const addProperty = async propertyListingData => {
+  const addBillboard = async propertyListingData => {
     loadingProperty.value = true
     error.value = null
     try {
@@ -65,12 +65,12 @@ export function useBillboard() {
 
       console.log(propertyData)
 
-      const response = await registerProperty(propertyData)
+      const response = await registerBillboard(propertyData)
 
       console.log('Respuesta del servidor:', response)
-      showSuccessNotification('Se Agrego una nueva Propiedad', 'La propiedad fue registrada exitosamente en el sistema de inventario.')
+      showSuccessNotification('Se Agrego una nueva valla', 'La valla fue registrada exitosamente.')
 
-      router.push('/realty/property/list')
+      router.push('/billboards/list')
     } catch (err) {
       console.log(err)
       if(err.response && err.response.status == 422){
@@ -226,7 +226,7 @@ export function useBillboard() {
   return {
     loadingProperty,
     error,
-    addProperty,
+    addBillboard,
     editProperty,
     getPropertyId,
     allBillboard,

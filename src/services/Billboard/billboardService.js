@@ -1,9 +1,9 @@
 import { $api } from "@/utils/api"
 
-export const registerProperty = async PropertyData => {
-  return await $api('/property', {
+export const registerBillboard = async data => {
+  return await $api('/billboards', {
     method: 'POST',
-    body: PropertyData,
+    body: data,
   })
 }
 export const getPropertyById = async propertyId => {

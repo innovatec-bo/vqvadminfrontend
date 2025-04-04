@@ -1,16 +1,36 @@
 <script setup>
-import { useProject } from '@/composables/Realty/useProject'
+import { useBillboard } from '@/composables/Billboard/useBillboard'
 import { ref } from 'vue'
 
-const { addProyect } = useProject()
-const title = ref('')
-const description = ref('')
-const numPisos = ref('')
+const { addBillboard } = useBillboard()
+const name = ref('')
+const location = ref('')
+const status = ref('')
+const billboard_type_id = ref('')
+const city_id = ref('');
 
 const errors = ref({
   title: '',
   description: '',
 })
+
+const listStatus = ref([
+  { value: '1', title: 'Disponible' },
+  { value: '2', title: 'No disponible' },
+])
+
+const listStructureType = ref([
+  { value: '1', title: 'Digital A' },
+  { value: '2', title: 'Digital B' },
+  { value: '3', title: 'Digital C' },
+  { value: '4', title: 'Estatica A' },
+  { value: '5', title: 'Estatica B' },
+  { value: '6', title: 'Estatica C' },
+])
+
+const listCities = ref([
+  { value: '1', title: 'Santa Cruz' },
+])
 
 const validateForm = () => {
   errors.value.title = title.value ? '' : 'El título es obligatorio.'
@@ -19,13 +39,13 @@ const validateForm = () => {
   return !errors.value.title && !errors.value.description
 }
 
-const registerProyect = async () => {
-  if (validateForm()) {
-    addProyect({
-      title: title.value,
-      description: description.value,
-      // eslint-disable-next-line camelcase
-      num_pisos: numPisos.value, 
+const registerBillboard = async () => {
+  if (validateForm()) 
+  {
+    addBillboard({
+      name: name.value,
+      location: location.value,
+      status: status.value
     })
   }
 }
@@ -46,7 +66,7 @@ const registerProyect = async () => {
         >
           Cancelar
         </VBtn>
-        <VBtn @click="registerProyect">
+        <VBtn @click="registerBillboard">
           Registrar Valla
         </VBtn>
       </div>
@@ -59,29 +79,59 @@ const registerProyect = async () => {
             <VRow>
               <VCol cols="12">
                 <AppTextField
-                  v-model="title"
+                  v-model="name"
                   label="Nombre"
                   placeholder=""
-                  :error="!!errors.title"
-                  :error-messages="errors.title"
+                  :error="!!errors.name"
+                  :error-messages="errors.name"
                 />
               </VCol>
               <VCol>
                 <AppTextarea
-                  v-model="description"
+                  v-model="location"
                   label="Ubicacion"
                   rows="2"
-                  :error="!!errors.description"
-                  :error-messages="errors.description"
+                  :error="!!errors.location"
+                  :error-messages="errors.location"
                 />
               </VCol>
-              <VCol cols="6">
-                <AppTextField
-                  v-model="numPisos"
-                  label="Numero de pisos (Departamentos)"
-                  placeholder=""
-                  type="number"
-                  min="0"
+              <VCol
+                cols="6"
+              >
+                <!-- 👉 Billboard  status -->
+                <AppSelect
+                  v-model="status"
+                  label="Estado"
+                  placeholder="Seleccione un estado"
+                  :items="listStatus"
+                  return-object
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol
+                cols="6"
+              >
+                <!-- 👉 Billboard type -->
+                <AppSelect
+                  v-model="billboard_type_id"
+                  label="Tipo"
+                  placeholder="Seleccione un tipo de valla"
+                  :items="listStructureType"
+                  return-object
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol
+                cols="6"
+              >
+                <!-- 👉 Billboard city -->
+                <AppSelect
+                  v-model="city_id"
+                  label="Ciudad"
+                  placeholder="Seleccione una ciudad"
+                  :items="listCities"
+                  return-object
+                  :rules="[requiredValidator]"
                 />
               </VCol>
             </VRow>
