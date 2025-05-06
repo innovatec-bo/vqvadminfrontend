@@ -4,5 +4,23 @@ export default [
     icon: { icon: 'tabler-menu' },
     to: 'billboards-list',
     subject: 'ADMINISTRADOR',
+  },
+  {
+    title: 'Cotizaciones',
+    icon: { icon: 'tabler-menu' },
+    to: 'billboards-list',
+    subject: 'ADMINISTRADOR',
+  },
+  {
+    title: 'Alquileres',
+    icon: { icon: 'tabler-menu' },
+    to: 'billboards-list',
+    subject: 'ADMINISTRADOR',
+  },
+  {
+    title: 'Usuarios',
+    icon: { icon: 'tabler-menu' },
+    to: 'billboards-list',
+    subject: 'ADMINISTRADOR',
   }
 ]

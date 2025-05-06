@@ -8,6 +8,8 @@ const location = ref('')
 const status = ref('')
 const billboard_type_id = ref('')
 const city_id = ref('');
+const size = ref('');
+const price_per_month = ref('');
 
 const errors = ref({
   title: '',
@@ -33,19 +35,35 @@ const listCities = ref([
 ])
 
 const validateForm = () => {
-  errors.value.title = title.value ? '' : 'El título es obligatorio.'
-  errors.value.description = description.value ? '' : 'La descripción es obligatoria.'
+  errors.value.name = name.value ? '' : 'El título es obligatorio.'
+  errors.value.location = location.value ? '' : 'La ubicacion es obligatoria.'
+  errors.value.status = status.value ? '' : 'El estado es obligatorio.'
+  errors.value.billboard_type_id = billboard_type_id.value ? '' : 'El tipo de valla.'
+  errors.value.city_id = city_id.value ? '' : 'La ciudad es obligatoria.'
+  errors.value.size = size.value ? '' : 'El tamanio es obligatorio.'
+  errors.value.price_per_month = price_per_month.value ? '' : 'El precio mensual el obligatorio.'
   
-  return !errors.value.title && !errors.value.description
+  return !errors.value.name && 
+          !errors.value.location &&
+          !errors.value.status &&
+          !errors.value.billboard_type_id &&
+          !errors.value.city_id &&
+          !errors.value.size &&
+          !errors.value.price_per_month
 }
 
 const registerBillboard = async () => {
   if (validateForm()) 
   {
+    // console.log(name.value, location.value, status.value);
     addBillboard({
       name: name.value,
       location: location.value,
-      status: status.value
+      status: status.value,
+      billboard_type_id: billboard_type_id.value,
+      city_id: city_id.value,
+      size: size.value,
+      price_per_month: price_per_month.value
     })
   }
 }
@@ -132,6 +150,24 @@ const registerBillboard = async () => {
                   :items="listCities"
                   return-object
                   :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol cols="6">
+                <AppTextField
+                  v-model="size"
+                  label="Tamanio"
+                  placeholder=""
+                  :error="!!errors.size"
+                  :error-messages="errors.size"
+                />
+              </VCol>
+              <VCol cols="6">
+                <AppTextField
+                  v-model="price_per_month"
+                  label="Precio mensual"
+                  placeholder=""
+                  :error="!!errors.price_per_month"
+                  :error-messages="errors.price_per_month"
                 />
               </VCol>
             </VRow>

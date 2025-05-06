@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { allBillboards, allPropertiesProject, deletePropertyById, exportProperty, getPropertiesAvailable, getPropertiesForType, getPropertyById, registerBillboard, updateProperty } from '@/services/Billboard/billboardService'
+import { allBillboards, allPropertiesProject, deletePropertyById, exportProperty, getPropertiesAvailable, getPropertiesForType, getPropertyById, updateProperty } from '@/services/Billboard/billboardService'
 import { showErrorToast, showSuccessNotification, showSuccessToast, showWarningToast } from '@/utils/notifications'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -22,55 +22,45 @@ export function useBillboard(){
     try {
       console.log('este es el formulario:', propertyListingData)
 
-      const propertyTypes = {
-        1: 'DEPARTAMENT',
-        2: 'PARK',
+      const status = {
+        1: 'available',
+        2: 'reserved',
+        3: 'rented',
+        4: 'inactive'
       }
 
-      const propertyType = propertyTypes[propertyListingData.propertyDetails.propertyType.value] || 'UNKNOWN'
+      const billboardStatus = status[propertyListingData.status.value] || 'UNKNOWN'
 
-      console.log(propertyType)
+      console.log(billboardStatus)
 
-      const propertyData = {
-        code: propertyListingData.propertyDetails.code,
-        surface: propertyListingData.propertyFeatures.surface,
-        description: propertyListingData.propertyDetails.description,
-        // eslint-disable-next-line camelcase
-        delivery_date: propertyListingData.propertyDetails.deliveryDate,
-        // eslint-disable-next-line camelcase
-        base_price: propertyListingData.propertyDetails.price,
-        // eslint-disable-next-line camelcase
-        percentage_initial_fee: propertyListingData.propertyDetails.percentageinitialfee,
-        // eslint-disable-next-line camelcase
-        property_type: propertyType,
-        // eslint-disable-next-line camelcase
-        property_type_id: propertyListingData.propertyDetails.propertyType.value,
-        // eslint-disable-next-line camelcase
-        project_id: propertyListingData.propertyDetails.projectType.value,
-        // eslint-disable-next-line camelcase
-        benefits: propertyListingData.propertyFeatures.benefitsDetails.map(benefit => benefit.value),
-        features: propertyListingData.propertyFeatures.featureDetails.map(feature => feature.value),
-        // eslint-disable-next-line camelcase
-        type_department_id: propertyType === DEPARTAMENT ? propertyListingData.propertyFeatures.typeDepartmentsDetails.value : null,
-        // eslint-disable-next-line camelcase
-        number_bathrooms: propertyType !== LAND ? propertyListingData.propertyFeatures.bathroomCount : "",
-        // eslint-disable-next-line camelcase
-        number_bedrooms: propertyType !== LAND ? propertyListingData.propertyFeatures.bedroomCount : "",
-        // eslint-disable-next-line camelcase
-        number_floors: propertyType !== LAND && propertyType !== DEPARTAMENT ? propertyListingData.propertyFeatures.floorNo : "",
-        floors: propertyType === DEPARTAMENT ? propertyListingData.propertyFeatures.floor : "",
-        // eslint-disable-next-line camelcase
-        number_rooms: '',
-      }
+      // const propertyData = {
+      //   code: propertyListingData.propertyDetails.code,
+      //   surface: propertyListingData.propertyFeatures.surface,
+      //   description: propertyListingData.propertyDetails.description,
+      //   delivery_date: propertyListingData.propertyDetails.deliveryDate,
+      //   base_price: propertyListingData.propertyDetails.price,
+      //   percentage_initial_fee: propertyListingData.propertyDetails.percentageinitialfee,
+      //   property_type: propertyType,
+      //   property_type_id: propertyListingData.propertyDetails.propertyType.value,
+      //   project_id: propertyListingData.propertyDetails.projectType.value,
+      //   benefits: propertyListingData.propertyFeatures.benefitsDetails.map(benefit => benefit.value),
+      //   features: propertyListingData.propertyFeatures.featureDetails.map(feature => feature.value),
+      //   type_department_id: propertyType === DEPARTAMENT ? propertyListingData.propertyFeatures.typeDepartmentsDetails.value : null,
+      //   number_bathrooms: propertyType !== LAND ? propertyListingData.propertyFeatures.bathroomCount : "",
+      //   number_bedrooms: propertyType !== LAND ? propertyListingData.propertyFeatures.bedroomCount : "",
+      //   number_floors: propertyType !== LAND && propertyType !== DEPARTAMENT ? propertyListingData.propertyFeatures.floorNo : "",
+      //   floors: propertyType === DEPARTAMENT ? propertyListingData.propertyFeatures.floor : "",
+      //   number_rooms: '',
+      // }
 
-      console.log(propertyData)
+      // console.log(propertyData)
 
-      const response = await registerBillboard(propertyData)
+      // const response = await registerBillboard(propertyData)
 
-      console.log('Respuesta del servidor:', response)
-      showSuccessNotification('Se Agrego una nueva valla', 'La valla fue registrada exitosamente.')
+      // console.log('Respuesta del servidor:', response)
+      // showSuccessNotification('Se Agrego una nueva valla', 'La valla fue registrada exitosamente.')
 
-      router.push('/billboards/list')
+      // router.push('/billboards/list')
     } catch (err) {
       console.log(err)
       if(err.response && err.response.status == 422){
