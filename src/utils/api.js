@@ -1,7 +1,6 @@
-import { router } from '@/plugins/1.router'
-import { ofetch } from 'ofetch'
-import { URL_ADMIN, URL_MICROSERVICIO } from './constants'
-
+import { router } from '@/plugins/1.router';
+import { ofetch } from 'ofetch';
+import { URL_ADMIN, URL_MICROSERVICIO } from './constants';
 
 export const $api = ofetch.create({
   baseURL: URL_ADMIN,

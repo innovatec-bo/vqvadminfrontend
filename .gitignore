@@ -14,7 +14,7 @@ dist-ssr
 
 /cypress/videos/
 /cypress/screenshots/
-
+/dist/assets
 # 👉 Custom Git ignores
 
 # Editor directories and files
