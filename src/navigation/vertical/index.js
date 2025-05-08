@@ -8,7 +8,8 @@
 // import sale from './sale'
 
 import admin from "./admin";
+import ajustes from "./ajustes";
 
 // export default [...dashboard, ...person, ...inventory, ...sale, ...iaWhatssap, ...others, ...ajustes]
 
-export default [...admin]
+export default [...admin, ...ajustes];

@@ -1,13 +1,14 @@
 <script setup>
 import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
 import EditPropertyDialog from '@/components/realty/property/EditPropertyDialog.vue'
-import { useBillboard } from '@/composables/Billboard/useBillboard'
+import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
 import { formatCurrency } from '@/utils/currencyFormatter'
 import { paginationMeta } from '@api-utils/paginationMeta'
+import dayjs from 'dayjs'
 import { debounce } from 'lodash'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
-const { allBillboard, exportPropertyExcel,  properties, property, totalProperties, removeProperty } = useBillboard()
+const { getAllBillboardFaces,  billboardFaces, billboardFace, totalBillboardFaces } = useBillboardFace()
 
 const searchQuery = ref()
 const itemsPerPage = ref(20)
@@ -22,24 +23,24 @@ const updateOptions = options => {
 // Headers
 const headers = [
   {
-    title: 'Nombre',
-    key: 'name',
+    title: 'Codigo',
+    key: 'code',
   },
   {
-    title: 'Ubicacion',
-    key: 'location',
-  },
-  {
-    title: 'Tamanio',
-    key: 'size',
+    title: 'Cara',
+    key: 'face',
   },
   {
     title: 'Estado',
     key: 'status',
   },
   {
-    title: 'Precio',
-    key: 'price_per_month',
+    title: 'Rentado desde',
+    key: 'rented_from',
+  },
+  {
+    title: 'Disponible desde',
+    key: 'available_from',
   },
   {
     title: 'Departamento',
@@ -57,7 +58,7 @@ const headers = [
 ]
 
 const fetchList = () => {
-  allBillboard({
+  getAllBillboardFaces({
     itemsPerPage: itemsPerPage.value,
     page: page.value,
     search: searchQuery.value,
@@ -69,18 +70,16 @@ const debouncedFetch = debounce(fetchList, 300)
 // Observar múltiples reactivos con opción immediate
 watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 
-const resolvePropertyStatusVariant = stat => {
+const resolveBillboardFaceStatus = stat => {
   switch (stat) {
-  case 'available':
-    return { color: 'success', text: 'DISPONIBLE' }
-  case 'reserved':
-    return { color: 'warning', text: 'RESERVADO' }
-  case 'rented':
-    return { color: 'error', text: 'RENTADO' }
-  case 'inactive':
-    return { color: 'error', text: 'INACTIVO' }
+  case 'ROJO':
+    return { color: 'danger', text: 'ROJO' }
+  case 'AMARILLO':
+    return { color: 'warning', text: 'AMARILLO' }
+  case 'VERDE':
+    return { color: 'success', text: 'VERDE' }
   default:
-    return { color: 'primary', text: 'NOTHING' }
+    return { color: 'primary', text: 'INDEFINIDO' }
   }
 }
 
@@ -95,16 +94,16 @@ const handleUpdateProperty = async item => {
 }
 
 const handlePropertyUpdated = updatedProperty => {
-  const index = properties.value.findIndex(p => p.id === updatedProperty.id)
+  const index = billboardFaces.value.findIndex(p => p.id === updatedProperty.id)
   if (index !== -1) {
-    properties.value[index] = { ...updatedProperty }
+    billboardFaces.value[index] = { ...updatedProperty }
   }
 }
 
 
-const ExportExcell = async ()=>{
-  await exportPropertyExcel()
-}
+// const ExportExcell = async ()=>{
+//   await exportPropertyExcel()
+// }
 </script>
 
 <template>
@@ -113,10 +112,10 @@ const ExportExcell = async ()=>{
       <VCardText class="d-flex flex-wrap gap-4">
         <div>
           <h5 class="text-h5">
-            Vallas
+            Caras
           </h5>
           <div class="text-body-1">
-            En total son {{ totalProperties }} Vallas.
+            En total son {{ totalBillboardFaces }} caras.
           </div>
         </div>
         <VSpacer />
@@ -141,11 +140,11 @@ const ExportExcell = async ()=>{
           >
             Export
           </VBtn>
-          <RouterLink :to="{ name: 'billboards-register' }">
+          <!-- <RouterLink :to="{ name: 'billboards-register' }">
             <VBtn>
               Agregar Valla
             </VBtn>
-          </RouterLink>
+          </RouterLink> -->
         </div>
       </VCardText>
       <VDivider />
@@ -154,9 +153,9 @@ const ExportExcell = async ()=>{
       <VDataTableServer
         v-model:items-per-page="itemsPerPage"
         v-model:page="page"
-        :items="properties"
+        :items="billboardFaces"
         :headers="headers"
-        :items-length="itemsPerPage.value === -1 ? properties.value.length : totalProperties.valueOf"
+        :items-length="itemsPerPage.value === -1 ? billboardFaces.value.length : totalBillboardFaces.valueOf"
         class="text-no-wrap"
         @update:options="updateOptions"
       >
@@ -185,24 +184,33 @@ const ExportExcell = async ()=>{
             label
             size="small"
             class="text-capitalize"
-            :color="resolvePropertyStatusVariant(item.status).color"
+            :color="resolveBillboardFaceStatus(item.status).color"
           >
-            {{ resolvePropertyStatusVariant(item.status).text }}
+            {{ resolveBillboardFaceStatus(item.status).text }}
           </VChip>
         </template>
 
+        <!-- Rented From -->
+        <template #item.rented_from="{ item }">
+          <span>{{ item.rented_from ? dayjs(item.rented_from).format('DD/MM/YYYY') : '-' }}</span>
+        </template>
+
+        <!-- Available From -->
+        <template #item.available_from="{ item }">
+          <span>{{ item.available_from ? dayjs(item.available_from).format('DD/MM/YYYY') : '-' }}</span>
+        </template>
 
         <template #bottom>
           <VDivider />
 
           <div class="d-flex align-center justify-sm-space-between justify-center flex-wrap gap-3 pa-5 pt-3">
             <p class="text-sm text-disabled mb-0">
-              {{ paginationMeta({ page, itemsPerPage }, totalProperties) }}
+              {{ paginationMeta({ page, itemsPerPage }, totalBillboardFaces) }}
             </p>
 
             <VPagination
               v-model="page"
-              :length="Math.ceil(totalProperties / itemsPerPage)"
+              :length="Math.ceil(totalBillboardFaces / itemsPerPage)"
               :total-visible="$vuetify.display.xs ? 1 : 7"
             >
               <template #prev="slotProps">

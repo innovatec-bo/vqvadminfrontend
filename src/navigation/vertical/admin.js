@@ -1,8 +1,14 @@
 export default [
   {
-    title: 'Lista de Vallas',
+    title: 'Vallas',
     icon: { icon: 'tabler-menu' },
     to: 'billboards-list',
+    subject: 'ADMINISTRADOR',
+  },
+  {
+    title: 'Caras',
+    icon: { icon: 'tabler-menu' },
+    to: 'billboard-faces-list',
     subject: 'ADMINISTRADOR',
   },
   {
