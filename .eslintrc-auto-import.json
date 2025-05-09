@@ -391,6 +391,7 @@
     "DirectiveBinding": true,
     "MaybeRef": true,
     "MaybeRefOrGetter": true,
-    "formatDateTime": true
+    "formatDateTime": true,
+    "vuetify": true
   }
 }

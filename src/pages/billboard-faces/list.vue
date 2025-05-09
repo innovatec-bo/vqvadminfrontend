@@ -132,14 +132,6 @@ const handlePropertyUpdated = updatedProperty => {
             density="compact"
             style="inline-size: 12.5rem;"
           />
-          <VBtn
-            prepend-icon="tabler-screen-share"
-            variant="tonal"
-            color="secondary"
-            @click="ExportExcell"
-          >
-            Export
-          </VBtn>
           <!-- <RouterLink :to="{ name: 'billboards-register' }">
             <VBtn>
               Agregar Valla
@@ -247,7 +239,7 @@ const handlePropertyUpdated = updatedProperty => {
           </IconBtn>
           <IconBtn>
             <VIcon
-              icon="tabler-edit"
+              icon="fas fa-search"
               @click="handleUpdateProperty(item)"
             />
           </IconBtn>
