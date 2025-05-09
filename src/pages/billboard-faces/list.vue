@@ -88,12 +88,12 @@ const deleteProperty = async id => {
   fetchList()
 }
 
-const handleUpdateProperty = async item => {
+const handleUpdateBillboardFace = async item => {
   isDialogEditPropertyVisible.value = true
-  property.value = { ...item }
+  billboardFace.value = { ...item }
 }
 
-const handlePropertyUpdated = updatedProperty => {
+const handleBillboardFaceUpdated = updatedProperty => {
   const index = billboardFaces.value.findIndex(p => p.id === updatedProperty.id)
   if (index !== -1) {
     billboardFaces.value[index] = { ...updatedProperty }
@@ -184,12 +184,12 @@ const handlePropertyUpdated = updatedProperty => {
 
         <!-- Rented From -->
         <template #item.rented_from="{ item }">
-          <span>{{ item.rented_from ? dayjs(item.rented_from).format('DD/MM/YYYY') : '-' }}</span>
+          <span>{{ item.rented_from ? dayjs(item.rented_from).format('DD-MM-YYYY') : '-' }}</span>
         </template>
 
         <!-- Available From -->
         <template #item.available_from="{ item }">
-          <span>{{ item.available_from ? dayjs(item.available_from).format('DD/MM/YYYY') : '-' }}</span>
+          <span>{{ item.available_from ? dayjs(item.available_from).format('DD-MM-YYYY') : '-' }}</span>
         </template>
 
         <template #bottom>
@@ -233,18 +233,10 @@ const handlePropertyUpdated = updatedProperty => {
         <!-- Actions -->
         <template #item.actions="{ item }">
           <IconBtn>
-            <RouterLink :to="{ name: 'realty-property-id', params: { id: item.id } }">
-              <VIcon icon="tabler-eye" />
-            </RouterLink>
-          </IconBtn>
-          <IconBtn>
             <VIcon
-              icon="fas fa-search"
-              @click="handleUpdateProperty(item)"
+              icon="ti ti-edit"
+              @click="handleUpdateBillboardFace(item)"
             />
-          </IconBtn>
-          <IconBtn @click="deleteProperty(item.id)">
-            <VIcon icon="tabler-trash" />
           </IconBtn>
         </template>
       </VDataTableServer>
@@ -252,8 +244,8 @@ const handlePropertyUpdated = updatedProperty => {
     </VCard>
     <EditPropertyDialog
       v-model:is-dialog-visible="isDialogEditPropertyVisible"
-      :property="property"
-      @property-updated="handlePropertyUpdated"
+      :billboardFace="billboardFace"
+      @property-updated="handleBillboardFaceUpdated"
     />
   </section>
 </template>

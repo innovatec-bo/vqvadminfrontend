@@ -1,36 +1,38 @@
 <!-- eslint-disable camelcase -->
 <script setup>
-import { useProperty } from '@/composables/Realty/useProperty'
+import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
 
 const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
-  property: { type: Object, required: true },
+  billboardFace: { type: Object, required: true },
 })
 
 const emit = defineEmits(['update:isDialogVisible', 'propertyUpdated'])
 
-const listpropertype = ref([
-  { value: 'DEPARTAMENT', title: 'Departamento' },
-  { value: 'PARK', title: 'Parqueo' },
+const listStatus = ref([
+  { value: 'ROJO', title: 'ROJO' },
+  { value: 'AMARILLO', title: 'AMARILLO' },
+  { value: 'VERDE', title: 'VERDE' },
 ])
 
-const { loadingProperty, editProperty } = useProperty()
-const formProperty = ref({ ...props.property }) 
+const { loadingBillboardFace, editBillboardFace } = useBillboardFace()
+const formBillboardFace = ref({ ...props.billboardFace }) 
 
 const dialogVisibleUpdate = () => {
   emit('update:isDialogVisible', false)
 }
 
-const saveProperty = async () => {
-  const result = await editProperty(formProperty.value)
+const saveBillboardFace = async () => {
+  const result = await editBillboardFace(formBillboardFace.value)
 
-  result.success && emit('propertyUpdated', formProperty.value)
+  result.success && emit('propertyUpdated', formBillboardFace.value)
   dialogVisibleUpdate()
 }
 
-watch(() => props.property, newProperty => {
-  formProperty.value = { ...newProperty }
+watch(() => props.billboardFace, newBillboardFace => {
+  formBillboardFace.value = { ...newBillboardFace }
 })
+
 </script>
 
 <template>
@@ -43,20 +45,31 @@ watch(() => props.property, newProperty => {
   >
     <DialogCloseBtn @click="dialogVisibleUpdate" />
     <VCard
-      title="Editar propiedad"
+      title="Editar cara"
       class="pa-sm-8 pa-5"
     >
       <VCardText>
-        <VForm @submit.prevent="saveProperty">
+        <VForm @submit.prevent="saveBillboardFace">
           <VRow dense>
             <VCol
               cols="12"
               md="6"
             >
               <AppTextField
-                v-model="formProperty.code"
+                v-model="formBillboardFace.code"
                 label="Código"
-                placeholder="A1"
+                placeholder="..."
+                outlined
+              />
+            </VCol>
+            <VCol
+              cols="12"
+              md="6"
+            >
+              <AppTextField
+                v-model="formBillboardFace.face"
+                label="Cara"
+                placeholder="..."
                 outlined
               />
             </VCol>
@@ -65,20 +78,21 @@ watch(() => props.property, newProperty => {
               md="6"
             >
               <AppSelect
-                v-model="formProperty.property_type"
-                label="Tipo de propiedad"
-                placeholder="Seleccione un tipo"
-                :items="listpropertype"
+                v-model="formBillboardFace.status"
+                label="Estado"
+                placeholder="Seleccione un estado"
+                :items="listStatus"
                 outlined
               />
             </VCol>
+            
             <VCol
               cols="12"
               md="6"
             >
               <AppTextField
-                v-model="formProperty.base_price"
-                label="Precio de la propiedad"
+                v-model="formBillboardFace.location_detail"
+                label="Detalle de la ubicacion"
                 placeholder="..."
                 outlined
               />
@@ -87,116 +101,23 @@ watch(() => props.property, newProperty => {
               cols="12"
               md="6"
             >
-              <AppTextField
-                v-model="formProperty.percentage_initial_fee"
-                label="% Anticipo"
-                placeholder="..."
-                outlined
-              />
-            </VCol>
-            <VCol cols="12">
-              <AppTextField
-                v-model="formProperty.title"
-                label="Título comercial"
-                placeholder="Título comercial"
-                outlined
-              />
-            </VCol>
-            <!--
-              <VCol
-              v-if="formProperty.property_type == 'DEPARTAMENT'"
-              cols="12"
-              md="6"
-              >
-              <AppTextField
-              v-model="formProperty.departament.floor"
-              label="Numero de piso"
-              placeholder="..."
-              outlined
-              />
-              </VCol> 
-            -->
-            <!--
-              <VCol
-              v-if="formProperty.property_type == 'PARK'"
-              cols="12"
-              md="6"
-              >
-              <AppTextField
-              v-model="formProperty.parking.floor"
-              label="piso"
-              placeholder="..."
-              outlined
-              />
-              </VCol> 
-            -->
-            <VCol
-              cols="12"
-
-              md="6"
-            >
-              <AppTextField
-                v-model="formProperty.surface"
-                label="Superficie"
-                placeholder="..."
-                outlined
-              />
+              <AppDateTimePicker
+              v-model="formBillboardFace.rented_from"
+              label="Rentado desde"
+              placeholder=""
+            />
             </VCol>
             <VCol
-              v-if="formProperty.property_type == 'DEPARTAMENT'"
-
               cols="12"
               md="6"
             >
-              <AppTextField
-                v-model="formProperty.departament.number_bedrooms"
-                label="Numero de habitaciones"
-                placeholder="..."
-                outlined
-              />
+              <AppDateTimePicker
+              v-model="formBillboardFace.available_from"
+              label="Disponible desde"
+              placeholder=""
+            />
             </VCol>
-            <VCol
-              v-if="formProperty.property_type == 'DEPARTAMENT'"
-
-              cols="12"
-              md="6"
-            >
-              <AppTextField
-                v-model="formProperty.departament.number_bathrooms"
-                label="Numero de baños"
-                placeholder="..."
-                outlined
-              />
-            </VCol>
-            <VCol
-              v-if="formProperty.property_type == 'DEPARTAMENT'"
-
-              cols="12"
-              md="3"
-            >
-              <div class="d-flex items-center gap-x-2 py-7 px-1 ">
-                <span class="my-2">
-                  {{ formProperty.departament.is_balcony ? 'Con Terraza' : 'Sin Terraza' }}
-                </span>
-                <VCheckbox
-                  v-model="formProperty.departament.is_balcony" 
-                  :true-value="1"
-                  :false-value="0"
-                />
-              </div>
-            </VCol>
-            <VCol
-              v-if="formProperty.property_type == 'DEPARTAMENT' && formProperty.departament.is_balcony "
-              cols="12"
-              md="3"
-            >
-              <AppTextField
-                v-model="formProperty.departament.surface_balcony"
-                label="Superficie"
-                placeholder="..."
-                outlined
-              />
-            </VCol>
+            
             <!-- Botones de Acción -->
             <VCol
               cols="12"
@@ -214,8 +135,8 @@ watch(() => props.property, newProperty => {
                 type="submit"
                 color="primary"
                 class="me-3"
-                :disabled="loadingProperty"
-                :loading="loadingProperty"
+                :disabled="loadingBillboardFace"
+                :loading="loadingBillboardFace"
               >
                 Guardar 
               </VBtn>

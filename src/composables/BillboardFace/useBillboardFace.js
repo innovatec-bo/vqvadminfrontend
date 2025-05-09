@@ -71,21 +71,17 @@ export function useBillboardFace(){
     loadingBillboardFace.value = true
     error.value = null
     try {
-      const propertyData = {
-        title: billboardFaceDataForm.title,
+      const billboardFaceData = {
+        _method:'put',
         code: billboardFaceDataForm.code,
-        surface: billboardFaceDataForm.surface,
-        base_price: billboardFaceDataForm.base_price,
-        percentage_initial_fee: billboardFaceDataForm.percentage_initial_fee,
-        property_type: billboardFaceDataForm.property_type,
-        number_bathrooms: billboardFaceDataForm?.departament?.number_bathrooms ?? '',
-        number_bedrooms: billboardFaceDataForm?.departament?.number_bedrooms ?? '',
-        surface_balcony: billboardFaceDataForm?.departament?.surface_balcony ?? '',
-        is_balcony: billboardFaceDataForm?.departament?.is_balcony,
-        covered: billboardFaceDataForm?.covered ? true : false,
+        face: billboardFaceDataForm.face,
+        location_detail: billboardFaceDataForm.location_detail,
+        status: billboardFaceDataForm.status,
+        rented_from: billboardFaceDataForm.rented_from,
+        available_from: billboardFaceDataForm.available_from
       }
-
-      const response = await updateBillboardFace(billboardFaceDataForm.id, propertyData)
+      console.log(billboardFaceData)
+      const response = await updateBillboardFace(billboardFaceDataForm.id, billboardFaceData)
 
       showSuccessToast('¡La cara de la valla ha sido actualizada exitosamente!', 'Los detalles de la cara de la valla han sido editados y guardados correctamente.')
       
