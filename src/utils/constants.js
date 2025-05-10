@@ -12,8 +12,8 @@ export const COOKIE_MAX_AGE_1_YEAR = 365 * 24 * 60 * 60
 //export const URL_MICROSERVICIO= 'http://localhost:3000/'
 
 // Servidor Local vayaquevalla
-export const URL_BACKEND = 'http://vayaquevalla.test/'
-export const URL_MICROSERVICIO = 'http://vayaquevalla.test/';//'http://localhost:5173/'
+export const URL_BACKEND = import.meta.env.VITE_URL_BACKEND;//'http://vayaquevalla.test/'
+export const URL_MICROSERVICIO = import.meta.env.VITE_URL_MICROSERVICIO;//'http://vayaquevalla.test/';//'http://localhost:5173/'
 
 // Servidor de QA
 // export const URL_BACKEND = 'https://salesprop.nuna.tech/nuna_properties_backend/public/index.php/'
