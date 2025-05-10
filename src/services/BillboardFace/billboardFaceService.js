@@ -22,7 +22,7 @@ export const allBillboardFaces = async pagination =>{
 
 export const updateBillboardFace = async (billboardFaceId, billboardFaceData)=> {
   return await $api(`/billboard_faces/${billboardFaceId}`, {
-    method: 'PATCH',
+    method: 'POST',
     body: billboardFaceData,
   })
 }

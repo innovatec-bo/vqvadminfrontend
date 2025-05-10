@@ -72,7 +72,7 @@ export function useBillboardFace(){
     error.value = null
     try {
       const billboardFaceData = {
-        _method:'put',
+        _method:'PUT',
         code: billboardFaceDataForm.code,
         face: billboardFaceDataForm.face,
         location_detail: billboardFaceDataForm.location_detail,

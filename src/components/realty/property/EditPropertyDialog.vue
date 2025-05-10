@@ -1,6 +1,7 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
+import dayjs from 'dayjs'
 
 const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
@@ -33,6 +34,21 @@ watch(() => props.billboardFace, newBillboardFace => {
   formBillboardFace.value = { ...newBillboardFace }
 })
 
+
+// Control del menú del datepicker
+const isDateMenuOpen = ref(false)
+
+// Valor visible formateado
+const formattedAvailableFrom = computed({
+  get() {
+    return formBillboardFace.value.available_from
+      ? dayjs(formBillboardFace.value.available_from).format('YYYY-MM-DD')
+      : ''
+  },
+  set(value) {
+    formBillboardFace.value.available_from = value
+  },
+})
 </script>
 
 <template>
@@ -111,11 +127,37 @@ watch(() => props.billboardFace, newBillboardFace => {
               cols="12"
               md="6"
             >
-              <AppDateTimePicker
+              <!-- <AppDateTimePicker
               v-model="formBillboardFace.available_from"
               label="Disponible desde"
               placeholder=""
-            />
+            /> -->
+            <VMenu
+              v-model="isDateMenuOpen"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template #activator="{ props }">
+                <AppTextField
+                  v-bind="props"
+                  v-model="formattedAvailableFrom"
+                  label="Disponible desde"
+                  readonly
+                  placeholder="yyyy-mm-dd"
+                  outlined
+                />
+              </template>
+
+              <VDatePicker
+                v-model="formattedAvailableFrom"
+                @update:model-value="isDateMenuOpen = false"
+                :max="dayjs().add(5, 'year').format('YYYY-MM-DD')"
+                :min="dayjs().subtract(2, 'days').format('YYYY-MM-DD')"
+                show-adjacent-months
+              />
+            </VMenu>
             </VCol>
             
             <!-- Botones de Acción -->
