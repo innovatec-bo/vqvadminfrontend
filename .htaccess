@@ -1,0 +1,13 @@
+# Habilitar el motor de reescritura
+RewriteEngine On
+
+# Redirigir todas las solicitudes a /dist
+RewriteCond %{REQUEST_URI} !^/dist/ [NC]
+RewriteRule ^(.*)$ /dist/$1 [L,QSA]
+
+# Asegurarse de que los archivos y directorios existentes no sean afectados por la redireccion
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirigir todas las solicitudes a /dist/index.html para manejar las rutas SPA
+RewriteRule ^ /dist/index.html [L]
