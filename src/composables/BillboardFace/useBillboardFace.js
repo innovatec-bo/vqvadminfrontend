@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { allBillboardFaces, getBillboardFaceById, updateBillboardFace } from '@/services/BillboardFace/billboardFaceService'
 import { showErrorToast, showSuccessToast, showWarningToast } from '@/utils/notifications'
+import dayjs from 'dayjs'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -77,10 +78,10 @@ export function useBillboardFace(){
         face: billboardFaceDataForm.face,
         location_detail: billboardFaceDataForm.location_detail,
         status: billboardFaceDataForm.status,
-        rented_from: billboardFaceDataForm.rented_from,
-        available_from: billboardFaceDataForm.available_from
+        rented_from: billboardFaceDataForm.rented_from?dayjs(billboardFaceDataForm.rented_from).format('YYYY-MM-DD'):null,
+        available_from: billboardFaceDataForm.available_from?dayjs(billboardFaceDataForm.available_from).format('YYYY-MM-DD'):null
       }
-      console.log(billboardFaceData)
+      console.log(billboardFaceDataForm,billboardFaceData)
       const response = await updateBillboardFace(billboardFaceDataForm.id, billboardFaceData)
 
       showSuccessToast('¡La cara de la valla ha sido actualizada exitosamente!', 'Los detalles de la cara de la valla han sido editados y guardados correctamente.')
