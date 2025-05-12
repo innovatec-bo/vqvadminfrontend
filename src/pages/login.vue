@@ -1,6 +1,6 @@
 <!-- ❗Errors in the form are set on line 60 -->
 <script setup>
-import postPora from '@/assets/canzza/postPora.png'
+import postVQV from '@/assets/vqv/vayaquevalla-wallpaper.png'
 import { useAuth } from '@/composables/Auth/useAuth'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
@@ -32,8 +32,8 @@ const refVForm = ref()
 const errors = ref({ email: undefined, password: undefined })
 
 const credentials = ref({
-  email: 'admin@canzza.com',
-  password: 'admin',
+  email: 'admin@vayaquevalla.com',
+  password: '12345678',
 })
 
 const rememberMe = ref(false)
@@ -58,12 +58,12 @@ const onSubmit = () => {
   >
     <VCol
       lg="8"
-      class="d-none d-lg-flex"
+      class="d-none d-lg-flex" :style="{overflow:'hidden'}"
     >
       <div
         class="position-relative bg-background rounded-lg w-100 ma-8 me-0"
         :style="{
-          backgroundImage: `url(${postPora})`,
+          backgroundImage: `url(${postVQV})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -95,14 +95,14 @@ const onSubmit = () => {
         :max-width="500"
         class="mt-12 mt-sm-0 pa-4"
       >
-        <VCardText>
+        <VCardText class="text-center">
           <VNodeRenderer
             :nodes="themeConfig.app.logo"
             class="mb-6"
           />
 
           <h4 class="text-h4 mb-1">
-            Bienvenido a  <br> <span class="text-capitalize"> {{ themeConfig.app.title }} </span>
+            <span class="text-capitalize"> {{ themeConfig.app.title }} </span>
           </h4>
         </VCardText>
         

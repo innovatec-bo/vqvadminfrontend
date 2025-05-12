@@ -5,13 +5,13 @@ import { VIcon } from 'vuetify/components/VIcon'
 
 // ❗ Logo SVG must be imported with ?raw suffix
 import logopora from '@images/logos/logo-pora.svg'
-import logo from '@images/logos/vqvlogo.png'
+import logo from '@images/logos/vqvlogo.svg'
 
 import { AppContentLayoutNav, ContentWidth, FooterType, NavbarType } from '@layouts/enums'
 
 export const { themeConfig, layoutConfig } = defineThemeConfig({
   app: {
-    title: 'Vaya que valla',
+    title: 'Admin',
     logo: h('img', { src: logo, alt: 'Logo de vqv', style: {
       width: 'auto', 
       height: '70px',
@@ -46,7 +46,7 @@ export const { themeConfig, layoutConfig } = defineThemeConfig({
         },
       ],
     },
-    theme: 'dark',
+    theme: 'light',
     skin: Skins.Default,
     iconRenderer: VIcon,
   },

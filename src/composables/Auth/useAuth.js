@@ -52,7 +52,7 @@ export function useAuth() {
 
       const userRoles = userOutData.roles || []
       if (userRoles.includes('ADMINISTRADOR')) {
-        router.push('/dashboards/analytics')
+        router.push('/billboard-faces/list')
         
         return
       }
