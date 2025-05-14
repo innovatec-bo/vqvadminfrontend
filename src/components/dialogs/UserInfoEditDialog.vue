@@ -1,4 +1,6 @@
 <script setup>
+import { useUser } from '@/composables/User/useUser'
+
 const props = defineProps({
   userData: {
     type: Object,
@@ -31,7 +33,7 @@ const emit = defineEmits([
   'submit',
   'update:isDialogVisible',
 ])
-
+const { updateProfile } = useUser()
 const userData = ref(structuredClone(toRaw(props.userData)))
 const isUseAsBillingAddress = ref(false)
 
@@ -39,9 +41,13 @@ watch(props, () => {
   userData.value = structuredClone(toRaw(props.userData))
 })
 
-const onFormSubmit = () => {
+const onFormSubmit = async() => {
+  // emit('update:isDialogVisible', false)
+  // emit('submit', userData.value)
+  const result = await updateProfile(userData.value)
+  result.success && emit('profileUpdated', userData.value)
+  // dialogVisibleUpdate()
   emit('update:isDialogVisible', false)
-  emit('submit', userData.value)
 }
 
 const onFormReset = () => {
@@ -66,16 +72,14 @@ const dialogModelValueUpdate = val => {
     <VCard class="pa-sm-8 pa-5">
       <VCardItem class="text-center">
         <VCardTitle class="text-h3 mb-3">
-          Edit User Information
+          Editar informaci&oacute;n del usuario
         </VCardTitle>
-        <p class="mb-0">
-          Updating user details will receive a privacy audit.
-        </p>
       </VCardItem>
 
       <VCardText>
         <!-- 👉 Form -->
         <VForm
+          ref="refForm"
           class="mt-6"
           @submit.prevent="onFormSubmit"
         >
@@ -86,104 +90,56 @@ const dialogModelValueUpdate = val => {
               md="6"
             >
               <AppTextField
-                v-model="userData.fullName"
-                label="Full Name"
-                placeholder="John Doe"
+                v-model="userData.name"
+                label="Nombre"
+                placeholder=""
               />
             </VCol>
-
-            <!-- 👉 Last Name -->
             <VCol
               cols="12"
               md="6"
             >
               <AppTextField
-                v-model="userData.username"
-                label="Username"
-                placeholder="johndoe"
+                v-model="userData.last_name"
+                label="Apellido"
+                placeholder=""
               />
             </VCol>
 
-            <!-- 👉 Billing Email -->
+            <!-- 👉 Email -->
             <VCol
               cols="12"
               md="6"
             >
               <AppTextField
                 v-model="userData.email"
-                label="Billing Email"
+                label="Email"
+                :readonly=true
                 placeholder="johndoe@email.com"
               />
             </VCol>
 
-            <!-- 👉 Status -->
+            <!-- 👉 Cod. Phone -->
             <VCol
               cols="12"
               md="6"
             >
               <AppTextField
-                v-model="userData.status"
-                label="Status"
-                placeholder="Active"
+                v-model="userData.cod_phone"
+                label="Cod. Tel&eacute;fono"
+                placeholder=""
               />
             </VCol>
 
-            <!-- 👉 Tax Id -->
+            <!-- 👉 Phone -->
             <VCol
               cols="12"
               md="6"
             >
               <AppTextField
-                v-model="userData.taxId"
-                label="Tax Id"
-                placeholder="123456789"
-              />
-            </VCol>
-
-            <!-- 👉 Contact -->
-            <VCol
-              cols="12"
-              md="6"
-            >
-              <AppTextField
-                v-model="userData.contact"
-                label="Contact"
-                placeholder="+1 9876543210"
-              />
-            </VCol>
-
-            <!-- 👉 Language -->
-            <VCol
-              cols="12"
-              md="6"
-            >
-              <AppTextField
-                v-model="userData.language"
-                chips
-                multiple
-                label="Language"
-                placeholder="English"
-              />
-            </VCol>
-
-            <!-- 👉 Country -->
-            <VCol
-              cols="12"
-              md="6"
-            >
-              <AppTextField
-                v-model="userData.country"
-                label="Country"
-                placeholder="United States"
-              />
-            </VCol>
-
-            <!-- 👉 Switch -->
-            <VCol cols="12">
-              <VSwitch
-                v-model="isUseAsBillingAddress"
-                density="compact"
-                label="Use as a billing address?"
+                v-model="userData.phone"
+                label="Tel&eacute;fono"
+                placeholder=""
               />
             </VCol>
 
@@ -193,7 +149,7 @@ const dialogModelValueUpdate = val => {
               class="d-flex flex-wrap justify-center gap-4"
             >
               <VBtn type="submit">
-                Submit
+                Guardar
               </VBtn>
 
               <VBtn
@@ -201,7 +157,7 @@ const dialogModelValueUpdate = val => {
                 variant="tonal"
                 @click="onFormReset"
               >
-                Cancel
+                Cancelar
               </VBtn>
             </VCol>
           </VRow>

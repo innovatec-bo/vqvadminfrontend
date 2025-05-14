@@ -7,3 +7,16 @@ export const getUsersPaginate = async paginationData =>{
     body: paginationData,
   })
 }
+
+export const updateUserProfile = async profileData =>{
+  return await $api('/users/update_profile', {
+    method: 'PUT',
+    body: profileData,
+  })
+}
+
+export const getUserById = async userId => {
+  return await $api(`/users/${userId}`, {
+    method: 'GET',
+  })
+}

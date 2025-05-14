@@ -23,7 +23,11 @@ const resolveUserStatusVariant = stat => {
 
 const router = useRouter()
 const ability = useAbility()
+const emit = defineEmits(['profile-updated'])
 
+function handleUpdate() {
+  emit('profile-updated')
+}
 // TODO: Get type from backend
 const data = useCookie('userData')
 
@@ -126,16 +130,10 @@ const logout = async () => {
             <VListItem>
               <VListItemTitle>
                 <h6 class="text-h6">
-                  Estado:
-
-                  <VChip
-                    label
-                    size="small"
-                    :color="resolveUserStatusVariant(props.userData.status)"
-                    class="text-capitalize"
-                  >
-                    {{ props.userData.entity_status }}
-                  </VChip>
+                  Tel&eacute;fono:
+                  <span class="text-body-1">
+                    {{props.userData.cod_phone}} {{props.userData.phone}}
+                  </span>                  
                 </h6>
               </VListItemTitle>
             </VListItem>
@@ -149,14 +147,6 @@ const logout = async () => {
                   >
                     <span class="text-capitalize text-body-1">{{ item }}</span>
                   </span>
-                </h6>
-              </VListItemTitle>
-            </VListItem>
-            <VListItem>
-              <VListItemTitle>
-                <h6 class="text-h6">
-                  Contacto:
-                  <span class="text-body-1">{{ props.userData.cod_phone }}  {{ props.userData.phone }}</span>
                 </h6>
               </VListItemTitle>
             </VListItem>
@@ -179,7 +169,7 @@ const logout = async () => {
             color="error"
             @click="logout"
           >
-            Cerrar sesion
+            Cerrar sesi&oacute;n
           </VBtn>
         </VCardText>
       </VCard>
@@ -190,6 +180,7 @@ const logout = async () => {
   <!-- 👉 Edit user info dialog -->
   <UserInfoEditDialog
     v-model:is-dialog-visible="isUserInfoEditDialogVisible"
+    @profile-updated="handleUpdate"
     :user-data="props.userData"
   />
 
