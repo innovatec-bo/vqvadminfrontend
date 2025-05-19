@@ -67,7 +67,7 @@ const logout = async () => {
           >
             <VImg
               v-if="props.userData.avatar"
-              :src="props.userData.avatar"
+              :src="props.userData.avatar.sm"
             />
             <span
               v-else

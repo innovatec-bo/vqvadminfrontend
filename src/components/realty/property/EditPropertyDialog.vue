@@ -4,7 +4,7 @@ import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
 
 const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
-  billboardFace: { type: Object, required: true },
+  billboardFace: { type: Object, required: true, default: null },
 })
 
 const emit = defineEmits(['update:isDialogVisible', 'propertyUpdated'])

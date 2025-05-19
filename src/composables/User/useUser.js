@@ -32,17 +32,45 @@ export function useUser(){
   }
 
   const updateProfile = async profileDataForm => {
+    loading.value = true
+    error.value = null
+  
+    try {
+      const response = await updateUserProfile(profileDataForm)
+  
+      showSuccessToast(
+        '¡El perfil ha sido actualizado exitosamente!',
+        'Los detalles del perfil han sido editados y guardados correctamente.'
+      )
+  
+      return { success: true, message: 'Actualización Exitosa' }
+    } catch (err) {
+      if (err.response && err.response.status === 422) {
+        showWarningToast('Validación fallida', 'Faltan datos por rellenar')
+        return { success: false, message: 'Validación fallida' }
+      }
+  
+      showErrorToast('Advertencia', 'Hubo un problema al actualizar los datos del perfil.')
+      return { success: false, message: 'Error de actualización' }
+    } finally {
+      loading.value = false
+    }
+  }
+  
+  const updateProfile__ = async profileDataForm => {
       loading.value = true
       error.value = null
+      
       try {
-        const profileData = {
-          _method:'PUT',
-          name: profileDataForm.name,
-          last_name: profileDataForm.last_name,
-          cod_phone: profileDataForm.cod_phone,
-          phone: profileDataForm.status,
-        }
-        const response = await updateUserProfile(profileData)
+        // const profileData = {
+        //   _method:'PUT',
+        //   name: profileDataForm.name,
+        //   last_name: profileDataForm.last_name,
+        //   cod_phone: profileDataForm.cod_phone,
+        //   phone: profileDataForm.status,
+        //   image: profileDataForm.image?profileDataForm.image:null
+        // }
+        const response = await updateUserProfile(profileDataForm)
   
         showSuccessToast('¡El perfil ha sido actualizado exitosamente!', 'Los detalles del perfil han sido editados y guardados correctamente.')
         

@@ -147,7 +147,7 @@ const handleBillboardFaceUpdated = updatedProperty => {
         v-model:page="page"
         :items="billboardFaces"
         :headers="headers"
-        :items-length="itemsPerPage.value === -1 ? billboardFaces.value.length : totalBillboardFaces.valueOf"
+        :items-length="itemsPerPage.value === -1 ? billboardFaces.value.length : totalBillboardFaces"
         class="text-no-wrap"
         @update:options="updateOptions"
       >
@@ -243,6 +243,7 @@ const handleBillboardFaceUpdated = updatedProperty => {
       <!-- SECTION -->
     </VCard>
     <EditPropertyDialog
+      v-if="billboardFace"
       v-model:is-dialog-visible="isDialogEditPropertyVisible"
       :billboardFace="billboardFace"
       @property-updated="handleBillboardFaceUpdated"

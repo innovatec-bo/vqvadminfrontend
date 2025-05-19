@@ -8,19 +8,8 @@ const props = defineProps({
     default: () => ({
       id: 0,
       fullName: '',
-      company: '',
-      role: '',
-      username: '',
-      country: '',
-      contact: '',
       email: '',
-      currentPlan: '',
-      status: '',
       avatar: '',
-      taskDone: null,
-      projectDone: null,
-      taxId: '',
-      language: '',
     }),
   },
   isDialogVisible: {
@@ -28,6 +17,21 @@ const props = defineProps({
     required: true,
   },
 })
+
+const avatarFile = ref([])
+const previewAvatar = ref(props.userData.avatar.sm)
+
+const onAvatarChange = files => {
+  if (!files || files.length === 0) return
+
+  const selectedFile = files[0]
+
+  const reader = new FileReader()
+  reader.onload = () => {
+    previewAvatar.value = reader.result
+  }
+  reader.readAsDataURL(selectedFile)
+}
 
 const emit = defineEmits([
   'submit',
@@ -41,13 +45,52 @@ watch(props, () => {
   userData.value = structuredClone(toRaw(props.userData))
 })
 
-const onFormSubmit = async() => {
-  // emit('update:isDialogVisible', false)
-  // emit('submit', userData.value)
-  const result = await updateProfile(userData.value)
-  result.success && emit('profileUpdated', userData.value)
-  // dialogVisibleUpdate()
-  emit('update:isDialogVisible', false)
+const onFormSubmit = async () => {
+  const formData = new FormData()
+  formData.append('_method', 'PUT')
+
+  Object.entries(userData.value).forEach(([key, value]) => {
+    if (value !== null && typeof value === 'object' && !(value instanceof File)) {
+      formData.append(key, JSON.stringify(value))
+    } else {
+      formData.append(key, value)
+    }
+  })
+
+  if (avatarFile.value && avatarFile.value.length > 0) {
+    formData.append('image', avatarFile.value[0])
+  }
+
+  const result = await updateProfile(formData)
+
+  if (result.success) {
+    emit('profileUpdated', userData.value)
+    emit('update:isDialogVisible', false)
+  }
+}
+const onFormSubmit_old = async () => {
+  const formData = new FormData()
+  formData.append('_method', 'PUT')
+  Object.entries(userData.value).forEach(([key, value]) => {
+    formData.append(key, value)
+  })
+
+  if (avatarFile.value && avatarFile.value.length > 0) {
+    formData.append('image', avatarFile.value[0])
+  }
+
+  console.log('AvatarFile:', avatarFile.value[0])
+  console.log('FormData entries:')
+  formData.append('name', userData.name)
+  for (let pair of formData.entries()) {
+    console.log(pair[0]+ ': ' + pair[1])
+  }
+
+  const result = await updateProfile(formData)
+  if (result.success) {
+    emit('profileUpdated', userData.value)
+    emit('update:isDialogVisible', false)
+  }
 }
 
 const onFormReset = () => {
@@ -83,6 +126,35 @@ const dialogModelValueUpdate = val => {
           class="mt-6"
           @submit.prevent="onFormSubmit"
         >
+          <VRow class="justify-center">
+            <!-- 👉 Avatar preview -->
+            <VCol
+              cols="12"
+              class="text-center"
+            >
+            <VImg
+              v-if="previewAvatar"
+              :src="previewAvatar"
+              class="mt-4 mx-auto"
+              max-width="150"
+            />
+            </VCol>
+
+            <!-- 👉 Avatar input -->
+            <VCol
+              cols="12"
+              md="6"
+            >
+            <VFileInput
+              label="Seleccionar foto de perfil"
+              accept="image/*"
+              prepend-icon="ti ti-camera"
+              :multiple="false"
+              v-model="avatarFile"
+              @update:model-value="onAvatarChange"
+            />
+            </VCol>
+          </VRow>
           <VRow>
             <!-- 👉 First Name -->
             <VCol

@@ -81,7 +81,6 @@ export function useBillboardFace(){
         rented_from: billboardFaceDataForm.rented_from?dayjs(billboardFaceDataForm.rented_from).format('YYYY-MM-DD'):null,
         available_from: billboardFaceDataForm.available_from?dayjs(billboardFaceDataForm.available_from).format('YYYY-MM-DD'):null
       }
-      console.log(billboardFaceDataForm,billboardFaceData)
       const response = await updateBillboardFace(billboardFaceDataForm.id, billboardFaceData)
 
       showSuccessToast('¡La cara de la valla ha sido actualizada exitosamente!', 'Los detalles de la cara de la valla han sido editados y guardados correctamente.')
