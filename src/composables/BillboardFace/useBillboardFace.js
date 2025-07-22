@@ -30,34 +30,6 @@ export function useBillboardFace(){
 
       const billboardStatus = status[propertyListingData.status.value] || 'UNKNOWN'
 
-      // const propertyData = {
-      //   code: propertyListingData.propertyDetails.code,
-      //   surface: propertyListingData.propertyFeatures.surface,
-      //   description: propertyListingData.propertyDetails.description,
-      //   delivery_date: propertyListingData.propertyDetails.deliveryDate,
-      //   base_price: propertyListingData.propertyDetails.price,
-      //   percentage_initial_fee: propertyListingData.propertyDetails.percentageinitialfee,
-      //   property_type: propertyType,
-      //   property_type_id: propertyListingData.propertyDetails.propertyType.value,
-      //   project_id: propertyListingData.propertyDetails.projectType.value,
-      //   benefits: propertyListingData.propertyFeatures.benefitsDetails.map(benefit => benefit.value),
-      //   features: propertyListingData.propertyFeatures.featureDetails.map(feature => feature.value),
-      //   type_department_id: propertyType === DEPARTAMENT ? propertyListingData.propertyFeatures.typeDepartmentsDetails.value : null,
-      //   number_bathrooms: propertyType !== LAND ? propertyListingData.propertyFeatures.bathroomCount : "",
-      //   number_bedrooms: propertyType !== LAND ? propertyListingData.propertyFeatures.bedroomCount : "",
-      //   number_floors: propertyType !== LAND && propertyType !== DEPARTAMENT ? propertyListingData.propertyFeatures.floorNo : "",
-      //   floors: propertyType === DEPARTAMENT ? propertyListingData.propertyFeatures.floor : "",
-      //   number_rooms: '',
-      // }
-
-      // console.log(propertyData)
-
-      // const response = await registerBillboard(propertyData)
-
-      // console.log('Respuesta del servidor:', response)
-      // showSuccessNotification('Se Agrego una nueva valla', 'La valla fue registrada exitosamente.')
-
-      // router.push('/billboards/list')
     } catch (err) {
       console.log(err)
       if(err.response && err.response.status == 422){

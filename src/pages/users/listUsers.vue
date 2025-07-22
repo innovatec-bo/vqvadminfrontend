@@ -1,18 +1,16 @@
 <script setup>
 import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
-import EditBillboardDialog from '@/components/billboard/EditBillboardDialog.vue'
-import { useBillboard } from '@/composables/Billboard/useBillboard'
-import { formatCurrency } from '@/utils/currencyFormatter'
+import { useUser } from '@/composables/User/useUser'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import { debounce } from 'lodash'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
-const { allBillboards, billboards, billboard, totalBillboards } = useBillboard()
+const { allUsers,  users, user, totalUsers } = useUser()
 
 const searchQuery = ref()
 const itemsPerPage = ref(20)
 const page = ref(1)
-const isDialogEditBillboardVisible = ref(false)
+const isDialogEditPropertyVisible = ref(false)
 
 const updateOptions = options => {
   page.value = options.page
@@ -26,36 +24,24 @@ const headers = [
     key: 'name',
   },
   {
-    title: 'Estructura',
-    key: 'billboard_structure.name',
+    title: 'Apellido',
+    key: 'last_name',
   },
   {
-    title: 'Tamanio',
-    key: 'size',
+    title: 'Correo',
+    key: 'email',
   },
   {
-    title: 'Precio',
-    key: 'price_per_month',
+    title: 'Telefono',
+    key: 'phone',
   },
   {
-    title: 'Ubicacion',
-    key: 'location',
+    title: 'Tipo de usuario',
+    key: 'user_type',
   },
   {
-    title: 'Departamento',
-    key: 'city.department',
-  },
-  {
-    title: 'Ciudad',
-    key: 'city.name',
-  },
-  {
-    title: 'Zona',
-    key: 'zone.name',
-  },
-  {
-    title: 'Anunciante',
-    key: 'advertiser.full_name',
+    title: 'Estado del usuario',
+    key: 'entity_status',
   },
   {
     title: 'Accion',
@@ -65,7 +51,7 @@ const headers = [
 ]
 
 const fetchList = () => {
-  allBillboards({
+  allUsers({
     itemsPerPage: itemsPerPage.value,
     page: page.value,
     search: searchQuery.value,
@@ -77,33 +63,39 @@ const debouncedFetch = debounce(fetchList, 300)
 // Observar múltiples reactivos con opción immediate
 watch([searchQuery, itemsPerPage, page], debouncedFetch, { immediate: true })
 
-const resolvePropertyStatusVariant = stat => {
-  switch (stat) {
-  case 'available':
-    return { color: 'success', text: 'DISPONIBLE' }
-  case 'reserved':
-    return { color: 'warning', text: 'RESERVADO' }
-  case 'rented':
-    return { color: 'error', text: 'RENTADO' }
-  case 'inactive':
-    return { color: 'error', text: 'INACTIVO' }
-  default:
-    return { color: 'primary', text: 'NOTHING' }
+const resolveUserStatus = stat => {
+  switch (stat) 
+  {
+    case 'inactive':
+      return { color: 'danger', text: 'INACTIVO' }
+    case 'active':
+      return { color: 'success', text: 'ACTIVO' }
+    default:
+      return { color: 'warning', text: 'INDEFINIDO' }
   }
 }
 
-const handleUpdateBillboard = async item => {
-  isDialogEditBillboardVisible.value = true
-  billboard.value = { ...item }
+const deleteProperty = async id => {
+  await removeProperty(id)
+  fetchList()
 }
 
-const handleBillboardUpdated = updatedBillboard => {
-  const index = billboards.value.findIndex(p => p.id === updatedBillboard.id)
+const handleUpdateUser = async item => {
+  isDialogEditPropertyVisible.value = true
+  user.value = { ...item }
+}
+
+const handleUserUpdated = updatedUser => {
+  const index = users.value.findIndex(p => p.id === updatedUser.id)
   if (index !== -1) {
-    billboards.value[index] = { ...updatedBillboard }
+    users.value[index] = { ...updatedUser }
   }
 }
 
+
+// const ExportExcell = async ()=>{
+//   await exportPropertyExcel()
+// }
 </script>
 
 <template>
@@ -112,10 +104,10 @@ const handleBillboardUpdated = updatedBillboard => {
       <VCardText class="d-flex flex-wrap gap-4">
         <div>
           <h5 class="text-h5">
-            Billboards
+            Usuarios
           </h5>
           <div class="text-body-1">
-            En total son {{ totalBillboards }} Billboards.
+            En total son {{ totalUsers }} usuarios.
           </div>
         </div>
         <VSpacer />
@@ -132,9 +124,9 @@ const handleBillboardUpdated = updatedBillboard => {
             density="compact"
             style="inline-size: 12.5rem;"
           />
-          <RouterLink :to="{ name: 'billboards-register' }">
+          <RouterLink :to="{ name: 'users-add-user' }">
             <VBtn>
-              Agregar Billboard
+              Agregar Usuario
             </VBtn>
           </RouterLink>
         </div>
@@ -145,55 +137,36 @@ const handleBillboardUpdated = updatedBillboard => {
       <VDataTableServer
         v-model:items-per-page="itemsPerPage"
         v-model:page="page"
-        :items="billboards"
+        :items="users"
         :headers="headers"
-        :items-length="itemsPerPage.value === -1 ? billboards.value.length : totalBillboards.valueOf"
+        :items-length="itemsPerPage.value === -1 ? users.value.length : totalUsers"
         class="text-no-wrap"
         @update:options="updateOptions"
       >
-        <!-- Price -->
-        <template #item.base_price="{ item }">
-          <div class="d-flex align-center gap-4">
-            <span class="text-capitalize">{{ formatCurrency( item.base_price ) }}  </span>
-          </div>
+        <template #item.phone="{ item }">
+          <span>{{item.cod_phone}} {{item.phone}}</span>
         </template>
-
-        <!-- Plan -->
-        <template #item.typeProperty="{ item }">
-          <span
-            v-if="item.parking"
-            class="text-capitalize font-weight-medium"
-          >Parqueo</span>
-          <span
-            v-if="item.departament"
-            class="text-capitalize font-weight-medium"
-          >Departamento</span>
-        </template>
-
-        <!-- Status -->
-        <template #item.status="{ item }">
+        <template #item.entity_status="{ item }">
           <VChip
             label
             size="small"
             class="text-capitalize"
-            :color="resolvePropertyStatusVariant(item.status).color"
+            :color="resolveUserStatus(item.entity_status).color"
           >
-            {{ resolvePropertyStatusVariant(item.status).text }}
+            {{ resolveUserStatus(item.entity_status).text }}
           </VChip>
         </template>
-
-
         <template #bottom>
           <VDivider />
 
           <div class="d-flex align-center justify-sm-space-between justify-center flex-wrap gap-3 pa-5 pt-3">
             <p class="text-sm text-disabled mb-0">
-              {{ paginationMeta({ page, itemsPerPage }, totalBillboards) }}
+              {{ paginationMeta({ page, itemsPerPage }, totalUsers) }}
             </p>
 
             <VPagination
               v-model="page"
-              :length="Math.ceil(totalBillboards / itemsPerPage)"
+              :length="Math.ceil(totalUsers / itemsPerPage)"
               :total-visible="$vuetify.display.xs ? 1 : 7"
             >
               <template #prev="slotProps">
@@ -223,26 +196,22 @@ const handleBillboardUpdated = updatedBillboard => {
 
         <!-- Actions -->
         <template #item.actions="{ item }">
-          <!-- <IconBtn>
-            <RouterLink :to="{ name: 'realty-property-id', params: { id: item.id } }">
-              <VIcon icon="ti ti-eye" />
-            </RouterLink>
-          </IconBtn> -->
           <IconBtn>
             <VIcon
               icon="ti ti-edit"
-              @click="handleUpdateBillboard(item)"
+              @click="handleUpdateUser(item)"
             />
           </IconBtn>
         </template>
       </VDataTableServer>
       <!-- SECTION -->
     </VCard>
-    <EditBillboardDialog
-      v-model:is-dialog-visible="isDialogEditBillboardVisible"
-      :billboard="billboard"
-      @billboard-updated="handleBillboardUpdated"
-    />
+    <!-- <EditPropertyDialog
+      v-if="billboardFace"
+      v-model:is-dialog-visible="isDialogEditPropertyVisible"
+      :billboardFace="billboardFace"
+      @property-updated="handleUserUpdated"
+    /> -->
   </section>
 </template>
 

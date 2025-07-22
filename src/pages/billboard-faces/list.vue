@@ -2,7 +2,6 @@
 import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
 import EditPropertyDialog from '@/components/realty/property/EditPropertyDialog.vue'
 import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
-import { formatCurrency } from '@/utils/currencyFormatter'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import dayjs from 'dayjs'
 import { debounce } from 'lodash'
@@ -41,6 +40,10 @@ const headers = [
   {
     title: 'Disponible desde',
     key: 'available_from',
+  },
+  {
+    title: 'Detalle de ubicacion',
+    key: 'location_detail',
   },
   {
     title: 'Departamento',
@@ -112,10 +115,10 @@ const handleBillboardFaceUpdated = updatedProperty => {
       <VCardText class="d-flex flex-wrap gap-4">
         <div>
           <h5 class="text-h5">
-            Caras
+            Billboard faces
           </h5>
           <div class="text-body-1">
-            En total son {{ totalBillboardFaces }} caras.
+            En total son {{ totalBillboardFaces }} billboard faces.
           </div>
         </div>
         <VSpacer />
@@ -151,26 +154,6 @@ const handleBillboardFaceUpdated = updatedProperty => {
         class="text-no-wrap"
         @update:options="updateOptions"
       >
-        <!-- Price -->
-        <template #item.base_price="{ item }">
-          <div class="d-flex align-center gap-4">
-            <span class="text-capitalize">{{ formatCurrency( item.base_price ) }}  </span>
-          </div>
-        </template>
-
-        <!-- Plan -->
-        <template #item.typeProperty="{ item }">
-          <span
-            v-if="item.parking"
-            class="text-capitalize font-weight-medium"
-          >Parqueo</span>
-          <span
-            v-if="item.departament"
-            class="text-capitalize font-weight-medium"
-          >Departamento</span>
-        </template>
-
-        <!-- Status -->
         <template #item.status="{ item }">
           <VChip
             label

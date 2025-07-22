@@ -34,7 +34,6 @@ export function useProject() {
       showSuccessNotification('El proyecto se agrego correctamente', 'Se acaba de registrar un nuevo proyecto al sistema de inventario.')
       router.push('/realty/project/list-projects')
     } catch (err) {
-      console.log(err)
       if(err.response && err.response.status== 422){
         showWarningNotification('Advertencia', 'Faltan Datos por Rellenar')
       }

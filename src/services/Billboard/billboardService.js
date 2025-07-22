@@ -6,11 +6,13 @@ export const registerBillboard = async data => {
     body: data,
   })
 }
-export const getPropertyById = async propertyId => {
-  return await $api(`/property/${propertyId}`, {
+
+export const getBillboardById = async id => {
+  return await $api(`/billboards/${id}`, {
     method: 'GET',
   })
 }
+
 export const allBillboards = async pagination =>{
   return await $api(`/billboards`, {
     method: 'GET',
@@ -18,41 +20,9 @@ export const allBillboards = async pagination =>{
   })
 }
 
-export const allPropertiesProject = async (pagination, projectId) =>{
-  return await $api(`/project/${projectId}/properties`, {
-    method: 'GET',
-    params: pagination,
+export const updateBillboard = async (id, data)=> {
+  return await $api(`/billboards/${id}`, {
+    method: 'POST',
+    body: data,
   })
 }
-
-export const updateProperty = async (propertyId, PropertyData)=> {
-  return await $api(`/property/${propertyId}`, {
-    method: 'PATCH',
-    body: PropertyData,
-  })
-}
-
-export const deletePropertyById = async propertyId => {
-  return await $api(`/property${propertyId}`, {
-    method: 'DELETE',
-  })
-}
-
-export const getPropertiesForType = async type => {
-  return await $api(`/properties/${type}`, {
-    method: 'GET',
-  })
-}
-
-export const getPropertiesAvailable = async () => {
-  return await $api(`/available/properties`, {
-    method: 'GET',
-  })
-}
-
-export const exportProperty = async () => {
-  return await $api(`/export/property`, {
-    method: 'GET',
-  })
-}
-

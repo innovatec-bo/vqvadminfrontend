@@ -1,6 +1,7 @@
 <!-- eslint-disable camelcase -->
 <script setup>
 import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
+import { watch } from 'vue'
 
 const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
@@ -8,7 +9,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:isDialogVisible', 'propertyUpdated'])
-
 const listStatus = ref([
   { value: 'ROJO', title: 'ROJO' },
   { value: 'AMARILLO', title: 'AMARILLO' },
@@ -28,7 +28,6 @@ const saveBillboardFace = async () => {
   result.success && emit('propertyUpdated', formBillboardFace.value)
   dialogVisibleUpdate()
 }
-
 watch(() => props.billboardFace, newBillboardFace => {
   formBillboardFace.value = { ...newBillboardFace }
 })
@@ -108,17 +107,13 @@ watch(() => props.billboardFace, newBillboardFace => {
               clearable
             />
             </VCol>
-            <VCol
-              cols="12"
-              md="6"
-            >
+            <VCol cols="12" md="6">
               <AppDateTimePicker
               v-model="formBillboardFace.available_from"
               label="Disponible desde"
               placeholder=""
             />
             </VCol>
-            
             <!-- Botones de Acción -->
             <VCol
               cols="12"
