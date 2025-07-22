@@ -66,7 +66,7 @@ const registerUser = async () => {
 
     <VRow class="justify-center">
       <VCol md="8">
-        <VCard title="Informaci&oacute;n del billboard">
+        <VCard title="Informaci&oacute;n del anunciante">
           <VCardText>
             <VRow>
               <VCol cols="6">
