@@ -17,15 +17,10 @@ export const updateUserProfile = async profileData =>{
   })
 }
 
-export const registerUser = async userData =>{
-  for (let pair of userData.entries()) 
-  {
-    console.log(pair[0]+ ': ' + pair[1])
-  }
-  
+export const registerUser = async data =>{
   return await $api('/users', {
     method: 'POST',
-    body: userData,
+    body: data,
   })
 }
 

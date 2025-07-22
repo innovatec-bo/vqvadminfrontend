@@ -1,5 +1,5 @@
 import * as userService from "@/services/User/userService"
-
+import { useRouter } from 'vue-router'
 export function useUser()
 {
   const user = ref(null)
@@ -7,6 +7,7 @@ export function useUser()
   const totalUsers=ref(null)
   const loading = ref(false)
   const error = ref(null)
+  const router = useRouter()
 
   const allSellerUsers = async () => {
     loading.value = true
@@ -59,22 +60,17 @@ export function useUser()
 
       const userData = {
         name: data.name,
-        phone: data.phone,
+        last_name: data.last_name,
         email: data.email,
-        ci: data.ci,
-        type_customer: data.type_customer,
-        cod_phone: data.countryCode.replace(/\+/g, ''),
-        description: data.description,
+        cod_phone: data.cod_phone,
+        phone: data.phone,
+        password: data.phone,
+        rol: 'ANUNCIANTE',
+        user_type: 'PERSON'
       }
 
-      console.log(userData)
-
       const response = await userService.registerUser(userData)
-
-      console.log('Respuesta del servidor:', response)
-
       showSuccessNotification('Usuario agregado exitosamente', 'El usuario ha sido registrado en el sistema correctamente.')
-
       user.value = response.data
       router.push('/users/listUsers')
     } 
@@ -131,6 +127,7 @@ export function useUser()
     allUsers,
     updateProfile,
     getById,
+    addUser,
     user,
     users,
     totalUsers,
