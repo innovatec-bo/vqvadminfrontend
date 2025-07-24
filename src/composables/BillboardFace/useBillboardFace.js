@@ -40,15 +40,6 @@ export function useBillboardFace(){
     loadingBillboardFace.value = true
     error.value = null
     try {
-      // const billboardFaceData = {
-      //   _method:'PUT',
-      //   code: billboardFaceDataForm.code,
-      //   face: billboardFaceDataForm.face,
-      //   location_detail: billboardFaceDataForm.location_detail,
-      //   status: billboardFaceDataForm.status,
-      //   rented_from: billboardFaceDataForm.rented_from?dayjs(billboardFaceDataForm.rented_from).format('YYYY-MM-DD'):null,
-      //   available_from: billboardFaceDataForm.available_from?dayjs(billboardFaceDataForm.available_from).format('YYYY-MM-DD'):null
-      // }
       const response = await updateBillboardFace(billboardFaceDataForm.get('id'), billboardFaceDataForm)
 
       showSuccessToast('¡La cara de la valla ha sido actualizada exitosamente!', 'Los detalles de la cara de la valla han sido editados y guardados correctamente.')

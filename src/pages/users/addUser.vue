@@ -1,9 +1,13 @@
 <script setup>
-import { useUser } from '@/composables/User/useUser'
-import { ref } from 'vue'
+import { useUser } from '@/composables/User/useUser';
+import avatar1 from '@images/logos/vqvlogo.png';
+import { ref } from 'vue';
 
 const { addUser } = useUser()
 
+const refInputEl = ref(null);
+const avatarImg = ref(avatar1);
+const avatarFile = ref(null);
 const name = ref('')
 const last_name = ref('')
 const email = ref(null);
@@ -14,6 +18,24 @@ const errors = ref({
   title: '',
   description: '',
 })
+
+const changeAvatar = (event) => {
+  const { files } = event.target
+  if (files && files.length) 
+  {
+    const file = files[0]
+    avatarFile.value = file
+
+    const fileReader = new FileReader()
+    fileReader.readAsDataURL(file)
+    fileReader.onload = () => {
+      if (typeof fileReader.result === 'string') 
+      {
+        avatarImg.value = fileReader.result
+      }
+    }
+  }
+}
 
 const validateForm = () => {
   errors.value.name = name.value ? '' : 'El nombre es obligatorio.'
@@ -32,13 +54,27 @@ const validateForm = () => {
 const registerUser = async () => {
   if (validateForm()) 
   {
-    addUser({
-      name: name.value,
-      last_name: last_name.value,
-      email: email.value,
-      cod_phone: cod_phone.value,
-      phone: phone.value
-    })
+    // addUser({
+    //   name: name.value,
+    //   last_name: last_name.value,
+    //   email: email.value,
+    //   cod_phone: cod_phone.value,
+    //   phone: phone.value
+    // })
+    const formData = new FormData()
+    formData.append('name', name.value)
+    formData.append('last_name', last_name.value)
+    formData.append('email', email.value)
+    formData.append('cod_phone', cod_phone.value)
+    formData.append('phone', phone.value)
+    formData.append('password', phone.value)
+    formData.append('rol', 'ANUNCIANTE')
+    formData.append('user_type', 'PERSON')
+    if (avatarFile.value) 
+    {
+      formData.append('image', avatarFile.value)
+    }
+    addUser(formData)
   }
 }
 </script>
@@ -69,6 +105,33 @@ const registerUser = async () => {
         <VCard title="Informaci&oacute;n del anunciante">
           <VCardText>
             <VRow>
+              <VCol cols="12" class="d-flex">
+                <VAvatar
+                  rounded
+                  style="width: 300px; height: 200px;"
+                  class="me-6"
+                  :image="avatarImg"
+                />
+                <div class="d-flex flex-column justify-center gap-4">
+                  <div class="d-flex flex-wrap gap-2">
+                    <VBtn color="primary" @click="refInputEl?.click()">
+                      <VIcon icon="tabler-cloud-upload" class="d-sm-none" />
+                      <span class="d-none d-sm-block">Seleccionar imagen</span>
+                    </VBtn>
+                    <input
+                      ref="refInputEl"
+                      type="file"
+                      name="file"
+                      accept=".jpeg,.png,.jpg"
+                      hidden
+                      @change="changeAvatar"
+                    />
+                  </div>
+                  <p class="text-body-1 mb-0">
+                    Formatos permitidos: JPG, JPEG o PNG
+                  </p>
+                </div>
+              </VCol>
               <VCol cols="6">
                 <AppTextField
                   v-model="name"

@@ -49,27 +49,10 @@ export function useUser()
   }
 
   const addUser = async data => {
-    if (!data.name || !data.phone) 
-    {
-      showWarningNotification('Falta Informacion', 'El nombre y el celular son obligatorios')
-      return
-    }
     loading.value = true
     error.value = null
     try {
-
-      const userData = {
-        name: data.name,
-        last_name: data.last_name,
-        email: data.email,
-        cod_phone: data.cod_phone,
-        phone: data.phone,
-        password: data.phone,
-        rol: 'ANUNCIANTE',
-        user_type: 'PERSON'
-      }
-
-      const response = await userService.registerUser(userData)
+      const response = await userService.registerUser(data)
       showSuccessNotification('Usuario agregado exitosamente', 'El usuario ha sido registrado en el sistema correctamente.')
       user.value = response.data
       router.push('/users/listUsers')
@@ -92,6 +75,34 @@ export function useUser()
     } 
     finally
     {
+      loading.value = false
+    }
+  }
+
+  const editUser = async userDataForm => {
+    loading.value = true
+    error.value = null
+    try {
+      console.log(userDataForm.get('id'));
+      for (let [key, value] of userDataForm.entries()) {
+        console.log(`${key}:`, value);
+      }
+      const response = await userService.updateUser(userDataForm.get('id'), userDataForm)
+
+      showSuccessToast('¡El usuario ha sido actualizado exitosamente!', 'Los detalles del usuario han sido editados y guardados correctamente.')
+      
+      return { success: true, message: 'Actualización Exitosa' }
+    } catch (err) {
+
+      if(err.response && err.response.status == 422){
+        showWarningToast('Validación fallida', 'Faltan datos por rellenar')
+        
+        return { success: false, message: 'Validación fallida' }
+      }
+      showErrorToast('Advertencia', 'Hubo un problema al actualizar el usuario.')
+      
+      return { success: false, message: 'Error de actualización' }
+    } finally {
       loading.value = false
     }
   }
@@ -128,6 +139,7 @@ export function useUser()
     updateProfile,
     getById,
     addUser,
+    editUser,
     user,
     users,
     totalUsers,

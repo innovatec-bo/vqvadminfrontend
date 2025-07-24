@@ -62,7 +62,6 @@ export function useAuth() {
     } catch (err) {
       console.log(err)
       if (err.response && err.response._data) {    
-        console.log(err.response._data.message)
         showWarningNotification('Advertencia', err.response._data.message)
       } else {
         showWarningNotification('Advertencia', 'An error occurred while logging in')

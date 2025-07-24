@@ -381,6 +381,7 @@ declare module 'vue' {
     EditProspectOpportunity: typeof import('./src/components/activity/EditProspectOpportunity.vue')['default']
     EditSaleOpportunity: typeof import('./src/components/activity/EditSaleOpportunity.vue')['default']
     EditStageOpportunity: typeof import('./src/components/activity/EditStageOpportunity.vue')['default']
+    EditUserDialog: typeof import('./src/components/user/EditUserDialog.vue')['default']
     EnableOneTimePasswordDialog: typeof import('./src/components/dialogs/EnableOneTimePasswordDialog.vue')['default']
     ErrorHeader: typeof import('./src/components/ErrorHeader.vue')['default']
     I18n: typeof import('./src/@core/components/I18n.vue')['default']

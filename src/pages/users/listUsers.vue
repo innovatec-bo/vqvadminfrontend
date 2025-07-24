@@ -1,5 +1,6 @@
 <script setup>
 import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
+import EditUserDialog from '@/components/user/EditUserDialog.vue'
 import { useUser } from '@/composables/User/useUser'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import { debounce } from 'lodash'
@@ -10,7 +11,7 @@ const { allUsers,  users, user, totalUsers } = useUser()
 const searchQuery = ref()
 const itemsPerPage = ref(20)
 const page = ref(1)
-const isDialogEditPropertyVisible = ref(false)
+const isDialogEditUserVisible = ref(false)
 
 const updateOptions = options => {
   page.value = options.page
@@ -19,6 +20,10 @@ const updateOptions = options => {
 
 // Headers
 const headers = [
+  {
+    title: 'Imagen',
+    key: 'image'
+  },
   {
     title: 'Nombre',
     key: 'name',
@@ -42,6 +47,10 @@ const headers = [
   {
     title: 'Estado del usuario',
     key: 'entity_status',
+  },
+  {
+    title: 'Correo confirmado',
+    key: 'email_verified_at',
   },
   {
     title: 'Accion',
@@ -75,13 +84,8 @@ const resolveUserStatus = stat => {
   }
 }
 
-const deleteProperty = async id => {
-  await removeProperty(id)
-  fetchList()
-}
-
 const handleUpdateUser = async item => {
-  isDialogEditPropertyVisible.value = true
+  isDialogEditUserVisible.value = true
   user.value = { ...item }
 }
 
@@ -143,6 +147,9 @@ const handleUserUpdated = updatedUser => {
         class="text-no-wrap"
         @update:options="updateOptions"
       >
+        <template #item.image="{item}">
+          <VAvatar :image="item.avatar.md" rounded="0" />
+        </template>
         <template #item.phone="{ item }">
           <span>{{item.cod_phone}} {{item.phone}}</span>
         </template>
@@ -155,6 +162,10 @@ const handleUserUpdated = updatedUser => {
           >
             {{ resolveUserStatus(item.entity_status).text }}
           </VChip>
+        </template>
+        <template #item.email_verified_at="{ item }">
+          <span v-if="item.email_verified_at" class="text-danger">Verificado</span>
+          <span v-else class="text-success">No verificado</span>
         </template>
         <template #bottom>
           <VDivider />
@@ -206,12 +217,12 @@ const handleUserUpdated = updatedUser => {
       </VDataTableServer>
       <!-- SECTION -->
     </VCard>
-    <!-- <EditPropertyDialog
-      v-if="billboardFace"
-      v-model:is-dialog-visible="isDialogEditPropertyVisible"
-      :billboardFace="billboardFace"
-      @property-updated="handleUserUpdated"
-    /> -->
+    <EditUserDialog
+      v-if="user"
+      v-model:is-dialog-visible="isDialogEditUserVisible"
+      :user="user"
+      @user-updated="handleUserUpdated"
+    />
   </section>
 </template>
 

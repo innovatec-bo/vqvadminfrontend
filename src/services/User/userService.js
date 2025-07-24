@@ -26,3 +26,10 @@ export const getUserById = async userId => {
     method: 'GET',
   })
 }
+
+export const updateUser = async (id, data)=> {
+  return await $api(`/users/${id}`, {
+    method: 'POST',
+    body: data,
+  })
+}
