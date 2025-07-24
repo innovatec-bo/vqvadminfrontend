@@ -378,7 +378,6 @@ declare module 'vue' {
     EditCustomerDialog: typeof import('./src/components/customer/EditCustomerDialog.vue')['default']
     EditDeliveryOpportunity: typeof import('./src/components/activity/EditDeliveryOpportunity.vue')['default']
     EditPreSaleOpportunity: typeof import('./src/components/activity/EditPreSaleOpportunity.vue')['default']
-    EditPropertyDialog: typeof import('./src/components/billboardFace/EditPropertyDialog.vue')['default']
     EditProspectOpportunity: typeof import('./src/components/activity/EditProspectOpportunity.vue')['default']
     EditSaleOpportunity: typeof import('./src/components/activity/EditSaleOpportunity.vue')['default']
     EditStageOpportunity: typeof import('./src/components/activity/EditStageOpportunity.vue')['default']
