@@ -158,18 +158,6 @@ const handleBillboardUpdated = updatedBillboard => {
           </div>
         </template>
 
-        <!-- Plan -->
-        <template #item.typeProperty="{ item }">
-          <span
-            v-if="item.parking"
-            class="text-capitalize font-weight-medium"
-          >Parqueo</span>
-          <span
-            v-if="item.departament"
-            class="text-capitalize font-weight-medium"
-          >Departamento</span>
-        </template>
-
         <!-- Status -->
         <template #item.status="{ item }">
           <VChip

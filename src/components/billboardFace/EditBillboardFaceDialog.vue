@@ -1,8 +1,14 @@
 <!-- eslint-disable camelcase -->
 <script setup>
+import { useBillboard } from '@/composables/Billboard/useBillboard'
 import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
 import { watch } from 'vue'
 
+const { allBillboards, billboards } = useBillboard()
+allBillboards({
+  itemsPerPage: 1000,
+  page: 1,
+})
 const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
   billboardFace: { type: Object, required: true },
@@ -134,10 +140,7 @@ watch(() => props.billboardFace, newBillboardFace => {
             </div>
           </VCol>
           <VRow dense>
-            <VCol
-              cols="12"
-              md="6"
-            >
+            <VCol cols="12" md="6">
               <AppTextField
                 v-model="formBillboardFace.code"
                 label="Código"
@@ -145,10 +148,24 @@ watch(() => props.billboardFace, newBillboardFace => {
                 outlined
               />
             </VCol>
-            <VCol
-              cols="12"
-              md="6"
-            >
+            <VCol cols="6">
+                <AppAutocomplete
+                  v-model="formBillboardFace.billboard"
+                  placeholder="Elija una opcion"
+                  :items="billboards"
+                  label="Billboard"
+                  item-title="name"
+                  :item-value="item => item"
+                  persistent-hint
+                  :menu-props="{ maxHeight: '200px' }"
+                >
+                <template #append>
+                  <VSlideXReverseTransition mode="out-in">
+                  </VSlideXReverseTransition>
+                </template>
+              </AppAutocomplete>
+              </VCol>
+            <VCol cols="12" md="6">
               <AppTextField
                 v-model="formBillboardFace.face"
                 label="Cara"

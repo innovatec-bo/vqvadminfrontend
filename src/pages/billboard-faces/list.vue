@@ -22,6 +22,10 @@ const updateOptions = options => {
 // Headers
 const headers = [
   {
+    title: 'Imagen',
+    key: 'images',
+  },
+  {
     title: 'Codigo',
     key: 'code',
   },
@@ -149,6 +153,9 @@ const handleBillboardFaceUpdated = updatedProperty => {
         class="text-no-wrap"
         @update:options="updateOptions"
       >
+        <template #item.images="{item}">
+          <VAvatar :image="item.images.md" rounded="0" style="width: 100%;" />
+        </template>
         <template #item.status="{ item }">
           <VChip
             label
@@ -183,17 +190,6 @@ const handleBillboardFaceUpdated = updatedProperty => {
               :length="Math.ceil(totalBillboardFaces / itemsPerPage)"
               :total-visible="$vuetify.display.xs ? 1 : 7"
             >
-              <template #prev="slotProps">
-                <VBtn
-                  variant="tonal"
-                  color="default"
-                  v-bind="slotProps"
-                  :icon="false"
-                >
-                  Anterior
-                </VBtn>
-              </template>
-
               <template #next="slotProps">
                 <VBtn
                   variant="tonal"

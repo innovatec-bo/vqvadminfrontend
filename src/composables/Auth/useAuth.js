@@ -50,13 +50,15 @@ export function useAuth() {
       useCookie('userData').value = userOutData
       useCookie('accessToken').value = response.meta.accessToken
 
-      const userRoles = userOutData.roles || []
-      if (userRoles.includes('ADMINISTRADOR')) {
-        router.push('/billboard-faces/list')
-        
-        return
-      }
-      router.push('/activity/list')
+      // const userRoles = userOutData.roles || []
+      // if (userRoles.includes('ADMINISTRADOR')) {
+        // router.push('/billboard-faces/list')
+        // 
+        // return
+      // }
+      router.push('/billboard-faces/list')
+      return
+      // router.push('/activity/list')
     } catch (err) {
       console.log(err)
       if (err.response && err.response._data) {    
