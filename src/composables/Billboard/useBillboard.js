@@ -19,8 +19,6 @@ export function useBillboard()
     error.value = null
     try 
     {
-      console.log('try')
-      console.log(formData)
       const data = {
         name: formData.name,
         location: formData.location,
@@ -35,8 +33,8 @@ export function useBillboard()
       }
       
       const response = await billboardService.registerBillboard(data)
-      showSuccessNotification('Billboard agregado exitosamente', 'El billboard ha sido registrado en el sistema correctamente.')
-      router.push('/billboards/list')
+      showSuccessNotification('Billboard agregado exitosamente', 'El billboard ha sido registrado en el sistema correctamente.');
+      router.push('/billboards/list');
     } 
     catch (err) 
     {

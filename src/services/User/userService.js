@@ -1,4 +1,4 @@
-import { $api } from "@/utils/api"
+import { $api } from "@/utils/api";
 
 export const getUsersPaginate = async paginationData =>{
   return await $api('/users', {
@@ -8,9 +8,6 @@ export const getUsersPaginate = async paginationData =>{
 }
 
 export const updateUserProfile = async profileData =>{
-  for (let pair of profileData.entries()) {
-    console.log(pair[0]+ ': ' + pair[1])
-  }
   return await $api('/users/update_profile', {
     method: 'POST',
     body: profileData,

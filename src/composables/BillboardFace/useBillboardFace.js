@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
-import { allBillboardFaces, getBillboardFaceById, updateBillboardFace } from '@/services/BillboardFace/billboardFaceService'
+import { allBillboardFaces, getBillboardFaceById, registerBillboardFace, updateBillboardFace } from '@/services/BillboardFace/billboardFaceService'
 import { showErrorToast, showSuccessToast, showWarningToast } from '@/utils/notifications'
-import dayjs from 'dayjs'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -19,18 +18,15 @@ export function useBillboardFace(){
   const addBillboardFace = async propertyListingData => {
     loadingBillboardFace.value = true
     error.value = null
-    try {
+    try 
+    {
       console.log('este es el formulario:', propertyListingData)
-
-      const status = {
-        1: 'ROJO',
-        2: 'AMARILLO',
-        3: 'VERDE',
-      }
-
-      const billboardStatus = status[propertyListingData.status.value] || 'UNKNOWN'
-
-    } catch (err) {
+      const response = await registerBillboardFace(propertyListingData)
+      showSuccessToast('¡La cara de la valla ha sido creada exitosamente!', 'Los detalles de la cara de la valla han sido guardados correctamente.');
+      router.push('/billboard-faces/list');
+    } 
+    catch (err) 
+    {
       console.log(err)
       if(err.response && err.response.status == 422){
         showWarningNotification('Advertencia', 'Faltan Datos por Rellenar')
@@ -44,16 +40,16 @@ export function useBillboardFace(){
     loadingBillboardFace.value = true
     error.value = null
     try {
-      const billboardFaceData = {
-        _method:'PUT',
-        code: billboardFaceDataForm.code,
-        face: billboardFaceDataForm.face,
-        location_detail: billboardFaceDataForm.location_detail,
-        status: billboardFaceDataForm.status,
-        rented_from: billboardFaceDataForm.rented_from?dayjs(billboardFaceDataForm.rented_from).format('YYYY-MM-DD'):null,
-        available_from: billboardFaceDataForm.available_from?dayjs(billboardFaceDataForm.available_from).format('YYYY-MM-DD'):null
-      }
-      const response = await updateBillboardFace(billboardFaceDataForm.id, billboardFaceData)
+      // const billboardFaceData = {
+      //   _method:'PUT',
+      //   code: billboardFaceDataForm.code,
+      //   face: billboardFaceDataForm.face,
+      //   location_detail: billboardFaceDataForm.location_detail,
+      //   status: billboardFaceDataForm.status,
+      //   rented_from: billboardFaceDataForm.rented_from?dayjs(billboardFaceDataForm.rented_from).format('YYYY-MM-DD'):null,
+      //   available_from: billboardFaceDataForm.available_from?dayjs(billboardFaceDataForm.available_from).format('YYYY-MM-DD'):null
+      // }
+      const response = await updateBillboardFace(billboardFaceDataForm.get('id'), billboardFaceDataForm)
 
       showSuccessToast('¡La cara de la valla ha sido actualizada exitosamente!', 'Los detalles de la cara de la valla han sido editados y guardados correctamente.')
       

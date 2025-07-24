@@ -1,6 +1,6 @@
 <script setup>
 import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
-import EditPropertyDialog from '@/components/realty/property/EditPropertyDialog.vue'
+import EditPropertyDialog from '@/components/billboardFace/EditBillboardFaceDialog.vue'
 import { useProperty } from '@/composables/Realty/useProperty'
 import { formatCurrency } from '@/utils/currencyFormatter'
 import { paginationMeta } from '@api-utils/paginationMeta'

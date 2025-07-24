@@ -39,7 +39,6 @@ const emit = defineEmits([
 ])
 const { updateProfile } = useUser()
 const userData = ref(structuredClone(toRaw(props.userData)))
-const isUseAsBillingAddress = ref(false)
 
 watch(props, () => {
   userData.value = structuredClone(toRaw(props.userData))

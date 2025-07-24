@@ -5,10 +5,11 @@ import { watch } from 'vue'
 
 const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
-  billboardFace: { type: Object, required: true, default: null },
+  billboardFace: { type: Object, required: true },
 })
 
-const emit = defineEmits(['update:isDialogVisible', 'propertyUpdated'])
+const emit = defineEmits(['update:isDialogVisible', 'billboardFaceUpdated'])
+
 const listStatus = ref([
   { value: 'ROJO', title: 'ROJO' },
   { value: 'AMARILLO', title: 'AMARILLO' },
@@ -17,15 +18,71 @@ const listStatus = ref([
 
 const { loadingBillboardFace, editBillboardFace } = useBillboardFace()
 const formBillboardFace = ref({ ...props.billboardFace }) 
+const refInputEl = ref(null);
+const avatarImg = computed({
+  get() {
+    return formBillboardFace.value.images?.md ?? null
+  },
+  set(newVal) {
+    if (!formBillboardFace.value.images) {
+      formBillboardFace.value.images = {}
+    }
+    formBillboardFace.value.images.md = newVal
+  }
+})
+const avatarFile = ref(null);
+
+const changeAvatar = (event) => {
+  const { files } = event.target
+  if (files && files.length) 
+  {
+    const file = files[0]
+    avatarFile.value = file
+
+    const fileReader = new FileReader()
+    fileReader.readAsDataURL(file)
+    fileReader.onload = () => {
+      if (typeof fileReader.result === 'string') 
+      {
+        avatarImg.value = fileReader.result
+      }
+    }
+  }
+}
 
 const dialogVisibleUpdate = () => {
   emit('update:isDialogVisible', false)
 }
 
-const saveBillboardFace = async () => {
-  const result = await editBillboardFace(formBillboardFace.value)
+function formatDateToYMD(date) 
+{
+  if (!date) return ''
+  const d = new Date(date)
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
-  result.success && emit('propertyUpdated', formBillboardFace.value)
+const saveBillboardFace = async () => {
+  const formData = new FormData()
+  formData.append('_method', 'PUT')
+  formData.append('id', formBillboardFace.value.id)  
+  formData.append('code', formBillboardFace.value.code)
+  formData.append('billboard_id', formBillboardFace.value.billboard.id)
+  formData.append('face', formBillboardFace.value.face)
+  formData.append('location_detail', formBillboardFace.value.location_detail)
+  formData.append('status', formBillboardFace.value.status)
+  formData.append('available_from', formatDateToYMD(formBillboardFace.value.available_from))
+  formData.append('rented_from', formatDateToYMD(formBillboardFace.value.rented_from))
+
+  if (avatarFile.value) 
+  {
+    formData.append('image', avatarFile.value)
+  }
+
+  const result = await editBillboardFace(formData);
+  result.success && emit('billboardFaceUpdated', formBillboardFace.value)
   dialogVisibleUpdate()
 }
 watch(() => props.billboardFace, newBillboardFace => {
@@ -49,6 +106,33 @@ watch(() => props.billboardFace, newBillboardFace => {
     >
       <VCardText>
         <VForm @submit.prevent="saveBillboardFace">
+          <VCol cols="12" class="d-flex">
+            <VAvatar
+              rounded
+              style="width: 300px; height: 200px;"
+              class="me-6"
+              :image="avatarImg"
+            />
+            <div class="d-flex flex-column justify-center gap-4">
+              <div class="d-flex flex-wrap gap-2">
+                <VBtn color="primary" @click="refInputEl?.click()">
+                  <VIcon icon="tabler-cloud-upload" class="d-sm-none" />
+                  <span class="d-none d-sm-block">Seleccionar imagen</span>
+                </VBtn>
+                <input
+                  ref="refInputEl"
+                  type="file"
+                  name="file"
+                  accept=".jpeg,.png,.jpg"
+                  hidden
+                  @change="changeAvatar"
+                />
+              </div>
+              <p class="text-body-1 mb-0">
+                Formatos permitidos: JPG, JPEG o PNG
+              </p>
+            </div>
+          </VCol>
           <VRow dense>
             <VCol
               cols="12"
@@ -96,10 +180,7 @@ watch(() => props.billboardFace, newBillboardFace => {
                 outlined
               />
             </VCol>
-            <VCol
-              cols="12"
-              md="6"
-            >
+            <VCol cols="12" md="6">
               <AppDateTimePicker
               v-model="formBillboardFace.rented_from"
               label="Rentado desde"

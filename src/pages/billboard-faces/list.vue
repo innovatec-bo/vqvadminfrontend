@@ -1,6 +1,6 @@
 <script setup>
 import AppSelect from '@/@core/components/app-form-elements/AppSelect.vue'
-import EditPropertyDialog from '@/components/realty/property/EditPropertyDialog.vue'
+import EditBillboardFaceDialog from '@/components/billboardFace/EditBillboardFaceDialog.vue'
 import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
 import { paginationMeta } from '@api-utils/paginationMeta'
 import dayjs from 'dayjs'
@@ -12,7 +12,7 @@ const { getAllBillboardFaces,  billboardFaces, billboardFace, totalBillboardFace
 const searchQuery = ref()
 const itemsPerPage = ref(20)
 const page = ref(1)
-const isDialogEditPropertyVisible = ref(false)
+const isDialogEditBillboardFaceVisible = ref(false)
 
 const updateOptions = options => {
   page.value = options.page
@@ -92,8 +92,8 @@ const deleteProperty = async id => {
 }
 
 const handleUpdateBillboardFace = async item => {
-  isDialogEditPropertyVisible.value = true
-  billboardFace.value = { ...item }
+  billboardFace.value = JSON.parse(JSON.stringify(item))
+  isDialogEditBillboardFaceVisible.value = true
 }
 
 const handleBillboardFaceUpdated = updatedProperty => {
@@ -102,11 +102,6 @@ const handleBillboardFaceUpdated = updatedProperty => {
     billboardFaces.value[index] = { ...updatedProperty }
   }
 }
-
-
-// const ExportExcell = async ()=>{
-//   await exportPropertyExcel()
-// }
 </script>
 
 <template>
@@ -135,11 +130,11 @@ const handleBillboardFaceUpdated = updatedProperty => {
             density="compact"
             style="inline-size: 12.5rem;"
           />
-          <!-- <RouterLink :to="{ name: 'billboards-register' }">
+          <RouterLink :to="{ name: 'billboard-faces-register' }">
             <VBtn>
-              Agregar Valla
+              Agregar billboard face
             </VBtn>
-          </RouterLink> -->
+          </RouterLink>
         </div>
       </VCardText>
       <VDivider />
@@ -225,11 +220,11 @@ const handleBillboardFaceUpdated = updatedProperty => {
       </VDataTableServer>
       <!-- SECTION -->
     </VCard>
-    <EditPropertyDialog
+    <EditBillboardFaceDialog
       v-if="billboardFace"
-      v-model:is-dialog-visible="isDialogEditPropertyVisible"
+      v-model:is-dialog-visible="isDialogEditBillboardFaceVisible"
       :billboardFace="billboardFace"
-      @property-updated="handleBillboardFaceUpdated"
+      @billboard-face-updated="handleBillboardFaceUpdated"
     />
   </section>
 </template>

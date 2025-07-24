@@ -1,70 +1,91 @@
 <script setup>
 import { useBillboard } from '@/composables/Billboard/useBillboard'
+import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
+import avatar1 from '@images/logos/vqvlogo.png'
 import { ref } from 'vue'
 
-const { addBillboard } = useBillboard()
-const name = ref('')
-const location = ref('')
-const status = ref('')
-const billboard_type_id = ref('')
-const city_id = ref('');
-const size = ref('');
-const price_per_month = ref('');
+const { allBillboards, billboards } = useBillboard()
+const { addBillboardFace } = useBillboardFace()
+
+
+const refInputEl = ref(null);
+const avatarImg = ref(avatar1);
+const avatarFile = ref(null);
+const code = ref('');
+const billboard = ref(null);
+const face = ref('');
+const location_detail = ref('');
+const status = ref(null);
+const available_from = ref(null);
+const rented_from = ref(null);
+
+allBillboards({
+  itemsPerPage: 1000,
+  page: 1,
+})
 
 const errors = ref({
   title: '',
   description: '',
 })
 
-const listStatus = ref([
-  { value: '1', title: 'Disponible' },
-  { value: '2', title: 'No disponible' },
-])
+const statusList = [
+  'ROJO',
+  'AMARILLO',
+  'VERDE'
+];
 
-const listStructureType = ref([
-  { value: '1', title: 'Digital A' },
-  { value: '2', title: 'Digital B' },
-  { value: '3', title: 'Digital C' },
-  { value: '4', title: 'Estatica A' },
-  { value: '5', title: 'Estatica B' },
-  { value: '6', title: 'Estatica C' },
-])
+const changeAvatar = (event) => {
+  const { files } = event.target
+  if (files && files.length) 
+  {
+    const file = files[0]
+    avatarFile.value = file
 
-const listCities = ref([
-  { value: '1', title: 'Santa Cruz' },
-])
-
-const validateForm = () => {
-  errors.value.name = name.value ? '' : 'El título es obligatorio.'
-  errors.value.location = location.value ? '' : 'La ubicacion es obligatoria.'
-  errors.value.status = status.value ? '' : 'El estado es obligatorio.'
-  errors.value.billboard_type_id = billboard_type_id.value ? '' : 'El tipo de valla.'
-  errors.value.city_id = city_id.value ? '' : 'La ciudad es obligatoria.'
-  errors.value.size = size.value ? '' : 'El tamanio es obligatorio.'
-  errors.value.price_per_month = price_per_month.value ? '' : 'El precio mensual el obligatorio.'
-  
-  return !errors.value.name && 
-          !errors.value.location &&
-          !errors.value.status &&
-          !errors.value.billboard_type_id &&
-          !errors.value.city_id &&
-          !errors.value.size &&
-          !errors.value.price_per_month
+    const fileReader = new FileReader()
+    fileReader.readAsDataURL(file)
+    fileReader.onload = () => {
+      if (typeof fileReader.result === 'string') 
+      {
+        avatarImg.value = fileReader.result
+      }
+    }
+  }
 }
 
-const registerBillboard = async () => {
+const validateForm = () => {
+  errors.value.code = code.value ? '' : 'El codigo es obligatorio.'
+  errors.value.billboard = billboard.value ? '' : 'El billboard es obligatoria.'
+  errors.value.face = face.value ? '' : 'Este dato es obligatorio.'
+  errors.value.location_detail = location_detail.value ? '' : 'El detalle de la ubicacion es obligatorio.'
+  errors.value.status = status.value?'' : 'El estado es obligatorio'
+  
+  return !errors.value.code && 
+          !errors.value.billboard &&
+          !errors.value.face &&
+          !errors.value.location_detail &&
+          !errors.value.status
+}
+
+const registerBillboardFace = async () => {
   if (validateForm()) 
   {
-    // console.log(name.value, location.value, status.value);
-    addBillboard({
-      name: name.value,
-      location: location.value,
-      status: status.value,
-      billboard_type_id: billboard_type_id.value,
-      city_id: city_id.value,
-      size: size.value,
-      price_per_month: price_per_month.value
-    })
+    const formData = new FormData()
+    
+    formData.append('code', code.value)
+    formData.append('billboard_id', billboard.value.id)
+    formData.append('face', face.value)
+    formData.append('location_detail', location_detail.value)
+    formData.append('status', status.value)
+    formData.append('available_from', available_from.value)
+    formData.append('rented_from', rented_from.value)
+
+    if (avatarFile.value) 
+    {
+      formData.append('image', avatarFile.value)
+    }
+
+    addBillboardFace(formData);
   }
 }
 </script>
@@ -74,7 +95,7 @@ const registerBillboard = async () => {
     <div class="d-flex flex-wrap justify-start justify-sm-space-between gap-y-4 gap-x-6 mb-6">
       <div class="d-flex flex-column justify-center">
         <h4 class="text-h4 font-weight-medium">
-          Registrar Valla
+          Registrar billboard face
         </h4>
       </div>
       <div class="d-flex gap-4 align-center flex-wrap">
@@ -84,91 +105,120 @@ const registerBillboard = async () => {
         >
           Cancelar
         </VBtn>
-        <VBtn @click="registerBillboard">
-          Registrar Valla
+        <VBtn @click="registerBillboardFace">
+          Registrar billboard face
         </VBtn>
       </div>
     </div>
 
-    <VRow>
+    <VRow class="justify-center">
       <VCol md="8">
-        <VCard title="Informacion de la valla">
+        <VCard title="Informaci&oacute;n del billboard face">
           <VCardText>
             <VRow>
-              <VCol cols="12">
+              <VCol cols="12" class="d-flex">
+                <VAvatar
+                  rounded
+                  style="width: 300px; height: 200px;"
+                  class="me-6"
+                  :image="avatarImg"
+                />
+                <div class="d-flex flex-column justify-center gap-4">
+                  <div class="d-flex flex-wrap gap-2">
+                    <VBtn color="primary" @click="refInputEl?.click()">
+                      <VIcon icon="tabler-cloud-upload" class="d-sm-none" />
+                      <span class="d-none d-sm-block">Seleccionar imagen</span>
+                    </VBtn>
+                    <input
+                      ref="refInputEl"
+                      type="file"
+                      name="file"
+                      accept=".jpeg,.png,.jpg"
+                      hidden
+                      @change="changeAvatar"
+                    />
+                  </div>
+                  <p class="text-body-1 mb-0">
+                    Formatos permitidos: JPG, JPEG o PNG
+                  </p>
+                </div>
+              </VCol>
+              <VCol cols="6">
                 <AppTextField
-                  v-model="name"
-                  label="Nombre"
+                  v-model="code"
+                  label="C&oacute;digo"
                   placeholder=""
-                  :error="!!errors.name"
-                  :error-messages="errors.name"
+                  :error="!!errors.code"
+                  :error-messages="errors.code"
                 />
               </VCol>
-              <VCol>
-                <AppTextarea
-                  v-model="location"
-                  label="Ubicacion"
-                  rows="2"
-                  :error="!!errors.location"
-                  :error-messages="errors.location"
+              <VCol cols="6">
+                <AppAutocomplete
+                  v-model="billboard"
+                  placeholder="Elija una opcion"
+                  :items="billboards"
+                  label="Billboard"
+                  item-title="name"
+                  :item-value="item => item"
+                  persistent-hint
+                  :menu-props="{ maxHeight: '200px' }"
+                  :error="!!errors.billboard"
+                  :error-messages="errors.billboard"
+                >
+                <template #append>
+                  <VSlideXReverseTransition mode="out-in">
+                  </VSlideXReverseTransition>
+                </template>
+              </AppAutocomplete>
+              </VCol>
+              <VCol cols="6">
+                <AppTextField
+                  v-model="face"
+                  label="Cara"
+                  placeholder=""
+                  :error="!!errors.face"
+                  :error-messages="errors.face"
                 />
               </VCol>
-              <VCol
-                cols="6"
-              >
-                <!-- 👉 Billboard  status -->
-                <AppSelect
+              <VCol cols="6">
+                <AppTextField
+                  v-model="location_detail"
+                  label="Detalle de ubicaci&oacute;n"
+                  placeholder=""
+                  :error="!!errors.location_detail"
+                  :error-messages="errors.location_detail"
+                />
+              </VCol>
+              <VCol cols="6">
+                <AppAutocomplete
                   v-model="status"
+                  placeholder="Elija una opcion"
+                  :items="statusList"
                   label="Estado"
-                  placeholder="Seleccione un estado"
-                  :items="listStatus"
-                  return-object
-                  :rules="[requiredValidator]"
-                />
+                  :menu-props="{ maxHeight: '200px' }"
+                  :error="!!errors.status"
+                  :error-messages="errors.status"
+                >
+                <template #append>
+                  <VSlideXReverseTransition mode="out-in">
+                  </VSlideXReverseTransition>
+                </template>
+              </AppAutocomplete>
               </VCol>
-              <VCol
-                cols="6"
-              >
-                <!-- 👉 Billboard type -->
-                <AppSelect
-                  v-model="billboard_type_id"
-                  label="Tipo"
-                  placeholder="Seleccione un tipo de valla"
-                  :items="listStructureType"
-                  return-object
-                  :rules="[requiredValidator]"
-                />
+              <VCol cols="12" md="6">
+                <AppDateTimePicker
+                v-model="rented_from"
+                label="Rentado desde"
+                placeholder=""
+                clearable
+              />
               </VCol>
-              <VCol
-                cols="6"
-              >
-                <!-- 👉 Billboard city -->
-                <AppSelect
-                  v-model="city_id"
-                  label="Ciudad"
-                  placeholder="Seleccione una ciudad"
-                  :items="listCities"
-                  return-object
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol cols="6">
-                <AppTextField
-                  v-model="size"
-                  label="Tamanio"
-                  placeholder=""
-                  :error="!!errors.size"
-                  :error-messages="errors.size"
-                />
-              </VCol>
-              <VCol cols="6">
-                <AppTextField
-                  v-model="price_per_month"
-                  label="Precio mensual"
-                  placeholder=""
-                  :error="!!errors.price_per_month"
-                  :error-messages="errors.price_per_month"
-                />
+              <VCol cols="12" md="6">
+                <AppDateTimePicker
+                v-model="available_from"
+                label="Disponible desde"
+                placeholder=""
+              />
               </VCol>
             </VRow>
           </VCardText>
