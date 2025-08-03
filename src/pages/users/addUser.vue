@@ -88,12 +88,14 @@ const registerUser = async () => {
         </h4>
       </div>
       <div class="d-flex gap-4 align-center flex-wrap">
-        <VBtn
-          variant="tonal"
-          color="primary"
-        >
-          Cancelar
-        </VBtn>
+        <RouterLink :to="{ name: 'users-list-users' }">
+          <VBtn
+            variant="tonal"
+            color="primary"
+          >
+            Cancelar
+          </VBtn>
+        </RouterLink>
         <VBtn @click="registerUser">
           Registrar anunciante
         </VBtn>

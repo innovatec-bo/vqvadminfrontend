@@ -26,6 +26,10 @@ const headers = [
     key: 'images',
   },
   {
+    title: 'Nombre',
+    key: 'name',
+  },
+  {
     title: 'Codigo',
     key: 'code',
   },
@@ -50,12 +54,36 @@ const headers = [
     key: 'location_detail',
   },
   {
+    title: 'Estructura',
+    key: 'billboard_structure.name',
+  },
+  {
+    title: 'Tamanio',
+    key: 'size',
+  },
+  {
+    title: 'Precio',
+    key: 'price_per_month',
+  },
+  {
+    title: 'Ubicacion',
+    key: 'location',
+  },
+  {
     title: 'Departamento',
-    key: 'billboard.city.department',
+    key: 'city.department',
   },
   {
     title: 'Ciudad',
-    key: 'billboard.city.name',
+    key: 'city.name',
+  },
+  {
+    title: 'Zona',
+    key: 'zone.name',
+  },
+  {
+    title: 'Anunciante',
+    key: 'advertiser.full_name',
   },
   {
     title: 'Accion',
@@ -114,10 +142,10 @@ const handleBillboardFaceUpdated = updatedProperty => {
       <VCardText class="d-flex flex-wrap gap-4">
         <div>
           <h5 class="text-h5">
-            Billboard faces
+            Vallas
           </h5>
           <div class="text-body-1">
-            En total son {{ totalBillboardFaces }} billboard faces.
+            En total son {{ totalBillboardFaces }} vallas.
           </div>
         </div>
         <VSpacer />
@@ -136,7 +164,7 @@ const handleBillboardFaceUpdated = updatedProperty => {
           />
           <RouterLink :to="{ name: 'billboard-faces-register' }">
             <VBtn>
-              Agregar billboard face
+              Agregar valla
             </VBtn>
           </RouterLink>
         </div>

@@ -1,12 +1,32 @@
 <!-- eslint-disable camelcase -->
 <script setup>
-import { useBillboard } from '@/composables/Billboard/useBillboard'
 import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
+import { useBillboardStructure } from '@/composables/BillboardStructure/useBillboardStructure'
+import { useCity } from '@/composables/City/useCity'
+import { useUser } from '@/composables/User/useUser'
+import { useZone } from '@/composables/Zone/useZone'
 import { watch } from 'vue'
 
-const { allBillboards, billboards } = useBillboard()
-allBillboards({
-  itemsPerPage: 1000,
+const { allUsers,  users} = useUser()
+const { allCities, cities } = useCity()
+const { allZones, zones } = useZone()
+const { allBillboardStructures, billboardStructures } = useBillboardStructure()
+
+allUsers({
+  itemsPerPage: 100,
+  page: 1,
+  role: 'ANUNCIANTE'
+})
+allCities({
+  itemsPerPage: 200,
+  page: 1,
+})
+allZones({
+  itemsPerPage: 200,
+  page: 1,
+})
+allBillboardStructures({
+  itemsPerPage: 200,
   page: 1,
 })
 const props = defineProps({
@@ -75,12 +95,22 @@ const saveBillboardFace = async () => {
   formData.append('_method', 'PUT')
   formData.append('id', formBillboardFace.value.id)  
   formData.append('code', formBillboardFace.value.code)
-  formData.append('billboard_id', formBillboardFace.value.billboard.id)
+  formData.append('name', formBillboardFace.value.name)
   formData.append('face', formBillboardFace.value.face)
   formData.append('location_detail', formBillboardFace.value.location_detail)
   formData.append('status', formBillboardFace.value.status)
   formData.append('available_from', formatDateToYMD(formBillboardFace.value.available_from))
   formData.append('rented_from', formatDateToYMD(formBillboardFace.value.rented_from))
+
+  formData.append('location', formBillboardFace.value.location)
+  formData.append('advertiser', formBillboardFace.value.advertiser.id)
+  formData.append('city_id', formBillboardFace.value.city.id)
+  formData.append('zone_id', formBillboardFace.value.zone.id)
+  formData.append('billboard_structure_id', formBillboardFace.value.billboard_structure.id)
+  formData.append('size', formBillboardFace.value.size)
+  formData.append('price_per_month', formBillboardFace.value.price_per_month)
+  formData.append('longitude', formBillboardFace.value.longitude)
+  formData.append('latitude', formBillboardFace.value.latitude)
 
   if (avatarFile.value) 
   {
@@ -107,7 +137,7 @@ watch(() => props.billboardFace, newBillboardFace => {
   >
     <DialogCloseBtn @click="dialogVisibleUpdate" />
     <VCard
-      title="Editar cara"
+      title="Editar valla"
       class="pa-sm-8 pa-5"
     >
       <VCardText>
@@ -148,23 +178,14 @@ watch(() => props.billboardFace, newBillboardFace => {
                 outlined
               />
             </VCol>
-            <VCol cols="6">
-                <AppAutocomplete
-                  v-model="formBillboardFace.billboard"
-                  placeholder="Elija una opcion"
-                  :items="billboards"
-                  label="Billboard"
-                  item-title="name"
-                  :item-value="item => item"
-                  persistent-hint
-                  :menu-props="{ maxHeight: '200px' }"
-                >
-                <template #append>
-                  <VSlideXReverseTransition mode="out-in">
-                  </VSlideXReverseTransition>
-                </template>
-              </AppAutocomplete>
-              </VCol>
+            <VCol cols="12"md="6">
+              <AppTextField
+                v-model="formBillboardFace.name"
+                label="Nombre"
+                placeholder="..."
+                outlined
+              />
+            </VCol>
             <VCol cols="12" md="6">
               <AppTextField
                 v-model="formBillboardFace.face"
@@ -207,10 +228,86 @@ watch(() => props.billboardFace, newBillboardFace => {
             </VCol>
             <VCol cols="12" md="6">
               <AppDateTimePicker
-              v-model="formBillboardFace.available_from"
-              label="Disponible desde"
-              placeholder=""
-            />
+                v-model="formBillboardFace.available_from"
+                label="Disponible desde"
+                placeholder=""
+              />
+            </VCol>
+            <VCol cols="12" md="6">
+              <AppTextField
+                v-model="formBillboardFace.location"
+                label="Ubicacion"
+                placeholder="..."
+                outlined
+              />
+            </VCol>
+            <VCol cols="12" md="6">
+              <AppAutocomplete
+                v-model="formBillboardFace.city"
+                placeholder="Elija una ciudad"
+                :items="cities"
+                label="Ciudad"
+                :item-title="item => `${item.name}, ${item.department}`"
+                :item-value="item => item"
+                persistent-hint
+                :menu-props="{ maxHeight: '200px' }"
+              >
+                <template #append>
+                  <VSlideXReverseTransition mode="out-in">
+                  </VSlideXReverseTransition>
+                </template>
+              </AppAutocomplete>
+            </VCol>
+            <VCol cols="12" md="6">
+              <AppAutocomplete
+                v-model="formBillboardFace.zone"
+                placeholder="Elija una zona"
+                :items="zones"
+                label="Zona"
+                item-title="name"
+                :item-value="item => item"
+                persistent-hint
+                :menu-props="{ maxHeight: '200px' }"
+              >
+                <template #append>
+                  <VSlideXReverseTransition mode="out-in">
+                  </VSlideXReverseTransition>
+                </template>
+              </AppAutocomplete>
+            </VCol>
+            <VCol cols="12" md="6">
+              <AppAutocomplete
+                v-model="formBillboardFace.billboard_structure"
+                placeholder="Elija una opcion"
+                :items="billboardStructures"
+                label="Estructura"
+                item-title="name"
+                :item-value="item => item"
+                persistent-hint
+                :menu-props="{ maxHeight: '200px' }"
+              >
+                <template #append>
+                  <VSlideXReverseTransition mode="out-in">
+                  </VSlideXReverseTransition>
+                </template>
+              </AppAutocomplete>
+            </VCol>
+            <VCol cols="12" md="6">
+              <AppAutocomplete
+                v-model="formBillboardFace.advertiser"
+                placeholder="Elija una opcion"
+                :items="users"
+                label="Proveedor"
+                :item-title="item => `${item.full_name} (${item.email})`"
+                :item-value="item => item"
+                persistent-hint
+                :menu-props="{ maxHeight: '200px' }"
+              >
+                <template #append>
+                  <VSlideXReverseTransition mode="out-in">
+                  </VSlideXReverseTransition>
+                </template>
+              </AppAutocomplete>
             </VCol>
             <!-- Botones de Acción -->
             <VCol
