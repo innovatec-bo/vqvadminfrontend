@@ -1,5 +1,6 @@
 <!-- eslint-disable camelcase -->
 <script setup>
+import { useCategory } from '@/composables/Category/useCategory'
 import { useUser } from '@/composables/User/useUser'
 import { watch } from 'vue'
 
@@ -15,8 +16,24 @@ const listStatus = ref([
   { value: 'inactive', title: 'INACTIVO' },
 ])
 
+const userTypes = [
+  {value: 'PERSON', text: 'Persona'},
+  {value: 'ORGANIZATION', text: 'Organizacion'}
+];
+
 const {loading, editUser } = useUser()
-const formUser = ref({ ...props.user }) 
+const { allCategories, categories } = useCategory()
+
+allCategories({
+  itemsPerPage: 200,
+  page: 1,
+})
+// const formUser = ref({ ...props.user }) 
+const formUser = ref({
+  ...props.user,
+  organization: props.user.organization ?? {},
+  person: props.user.person ?? {},
+})
 const refInputEl = ref(null);
 const avatarImg = computed({
   get() {
@@ -69,13 +86,41 @@ const saveUser = async () => {
   {
     formData.append('image', avatarFile.value)
   }
+  if (formUser.value.user_type === 'PERSON' && formUser.value.person) {
+    formData.append('ci', formUser.value.person.ci)
+  } else if (formUser.value.user_type === 'ORGANIZATION' && formUser.value.organization) {
+    formData.append('social_reason', formUser.value.organization.social_reason)
+    formData.append('category_id', formUser.value.organization.category_id?.id ?? '')
+    formData.append('name_contact', formUser.value.organization.name_contact)
+    formData.append('phone_contact', formUser.value.organization.phone_contact)
+    formData.append('commision_percentage', formUser.value.organization.commision_percentage)
+    formData.append('nit', formUser.value.organization.nit)
+  }
 
   const result = await editUser(formData);
   result.success && emit('userUpdated', formUser.value)
   dialogVisibleUpdate()
 }
 watch(() => props.user, newUser => {
-  formUser.value = { ...newUser }
+  formUser.value = {
+    ...newUser,
+    person: newUser.person ?? null,
+    organization: newUser.organization ?? null,
+  }
+})
+watch(() => formUser.value.user_type, newVal => {
+  if (newVal === 'PERSON' && !formUser.value.person) {
+    formUser.value.person = { ci: '' }
+  } else if (newVal === 'ORGANIZATION' && !formUser.value.organization) {
+    formUser.value.organization = {
+      social_reason: '',
+      category_id: null,
+      name_contact: '',
+      phone_contact: '',
+      commision_percentage: '',
+      nit: ''
+    }
+  }
 })
 
 </script>
@@ -89,7 +134,7 @@ watch(() => props.user, newUser => {
     @update:model-value="dialogVisibleUpdate"
   >
     <DialogCloseBtn @click="dialogVisibleUpdate" />
-    <VCard title="Editar usuario" class="pa-sm-8 pa-5">
+    <VCard title="Editar proveedor" class="pa-sm-8 pa-5">
       <VCardText>
         <VForm @submit.prevent="saveUser">
           <VCol cols="12" class="d-flex">
@@ -167,6 +212,85 @@ watch(() => props.user, newUser => {
                 outlined
               />
             </VCol>
+            <VCol cols="6">
+                <AppAutocomplete
+                  v-model="formUser.user_type"
+                  placeholder="Elija una opcion"
+                  :items="userTypes"
+                  label="Tipo de usuario"
+                  item-value="value"
+                  item-title="text"
+                  :menu-props="{ maxHeight: '200px' }"
+                >
+                  <template #append>
+                    <VSlideXReverseTransition mode="out-in">
+                    </VSlideXReverseTransition>
+                  </template>
+                </AppAutocomplete>
+              </VCol>
+              <VCol cols="6" v-if="formUser.user_type === 'PERSON'">
+                <AppTextField
+                  v-model="formUser.person.ci"
+                  label="C.I."
+                  placeholder=""
+                />
+              </VCol>
+              <VCol cols="6" v-if="formUser.user_type === 'ORGANIZATION'">
+                <AppTextField
+                  v-model="formUser.organization.social_reason"
+                  label="Raz&oacute;n social"
+                  placeholder=""
+                />
+              </VCol>
+              <VCol cols="12" v-if="formUser.user_type === 'ORGANIZATION'">
+                <VRow>
+                  <VCol cols="6">
+                    <AppAutocomplete
+                      v-model="formUser.organization.category"
+                      placeholder="Elija una opcion"
+                      :items="categories"
+                      label="Categor&iacute;a"
+                      item-title="name"
+                      :item-value="item => item"
+                      persistent-hint
+                      :menu-props="{ maxHeight: '200px' }"
+                    >
+                      <template #append>
+                        <VSlideXReverseTransition mode="out-in">
+                        </VSlideXReverseTransition>
+                      </template>
+                    </AppAutocomplete>
+                  </VCol>
+                  <VCol cols="6">
+                    <AppTextField
+                      v-model="formUser.organization.name_contact"
+                      label="Nombre de contacto"
+                      placeholder=""
+                    />
+                  </VCol>
+                  <VCol cols="6">
+                    <AppTextField
+                      v-model="formUser.organization.phone_contact"
+                      label="Tel&eacute;fono de contacto"
+                      placeholder=""
+                    />
+                  </VCol>
+                  <VCol cols="6">
+                    <AppTextField
+                      v-model="formUser.organization.commision_percentage"
+                      label="Porcentaje de comisi&oacute;n"
+                      placeholder=""
+                    />
+                  </VCol>
+                  <VCol cols="6">
+                    <AppTextField
+                      v-model="formUser.organization.nit"
+                      label="NIT"
+                      placeholder=""
+                    />
+                  </VCol>
+                </VRow>
+              </VCol>
             <!-- Botones de Acción -->
             <VCol
               cols="12"

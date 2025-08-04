@@ -112,10 +112,10 @@ const handleUserUpdated = updatedUser => {
       <VCardText class="d-flex flex-wrap gap-4">
         <div>
           <h5 class="text-h5">
-            Usuarios
+            Proveedores
           </h5>
           <div class="text-body-1">
-            En total son {{ totalUsers }} usuarios.
+            En total son {{ totalUsers }} proveedores.
           </div>
         </div>
         <VSpacer />
