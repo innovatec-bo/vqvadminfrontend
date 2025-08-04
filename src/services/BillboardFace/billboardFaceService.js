@@ -26,3 +26,10 @@ export const updateBillboardFace = async (billboardFaceId, billboardFaceData)=> 
     body: billboardFaceData,
   })
 }
+
+export const uploadBillboardFaces = async (file)=> {
+  return await $api(`/billboard_faces/upload_file`, {
+    method: 'POST',
+    body: file,
+  })
+}

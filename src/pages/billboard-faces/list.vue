@@ -167,6 +167,11 @@ const handleBillboardFaceUpdated = updatedProperty => {
               Agregar valla
             </VBtn>
           </RouterLink>
+          <RouterLink :to="{ name: 'billboard-faces-upload-file' }">
+            <VBtn>
+              Cargar valla
+            </VBtn>
+          </RouterLink>
         </div>
       </VCardText>
       <VDivider />

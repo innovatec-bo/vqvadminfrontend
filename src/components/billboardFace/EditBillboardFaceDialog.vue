@@ -103,7 +103,7 @@ const saveBillboardFace = async () => {
   formData.append('rented_from', formatDateToYMD(formBillboardFace.value.rented_from))
 
   formData.append('location', formBillboardFace.value.location)
-  formData.append('advertiser', formBillboardFace.value.advertiser.id)
+  formData.append('advertiser_id', formBillboardFace.value.advertiser.id)
   formData.append('city_id', formBillboardFace.value.city.id)
   formData.append('zone_id', formBillboardFace.value.zone.id)
   formData.append('billboard_structure_id', formBillboardFace.value.billboard_structure.id)

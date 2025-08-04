@@ -73,6 +73,7 @@ declare module 'vue-router/auto/routes' {
     'apps-email-label': RouteRecordInfo<'apps-email-label', '/apps/email/:label', { label: ParamValue<true> }, { label: ParamValue<false> }>,
     'billboard-faces-list': RouteRecordInfo<'billboard-faces-list', '/billboard-faces/list', Record<never, never>, Record<never, never>>,
     'billboard-faces-register': RouteRecordInfo<'billboard-faces-register', '/billboard-faces/register', Record<never, never>, Record<never, never>>,
+    'billboard-faces-upload-file': RouteRecordInfo<'billboard-faces-upload-file', '/billboard-faces/upload-file', Record<never, never>, Record<never, never>>,
     'billboards-list': RouteRecordInfo<'billboards-list', '/billboards/list', Record<never, never>, Record<never, never>>,
     'billboards-register': RouteRecordInfo<'billboards-register', '/billboards/register', Record<never, never>, Record<never, never>>,
     'charts-apex-chart': RouteRecordInfo<'charts-apex-chart', '/charts/apex-chart', Record<never, never>, Record<never, never>>,

@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import { allBillboardFaces, getBillboardFaceById, registerBillboardFace, updateBillboardFace } from '@/services/BillboardFace/billboardFaceService'
+// import { allBillboardFaces, getBillboardFaceById, registerBillboardFace, updateBillboardFace, uploadBillboardFaces } from '@/services/BillboardFace/billboardFaceService'
+import * as billboardFaceService from '@/services/BillboardFace/billboardFaceService'
 import { showErrorToast, showSuccessToast, showWarningToast } from '@/utils/notifications'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -21,14 +22,15 @@ export function useBillboardFace(){
     try 
     {
       console.log('este es el formulario:', propertyListingData)
-      const response = await registerBillboardFace(propertyListingData)
+      const response = await billboardFaceService.registerBillboardFace(propertyListingData)
       showSuccessToast('¡La cara de la valla ha sido creada exitosamente!', 'Los detalles de la cara de la valla han sido guardados correctamente.');
       router.push('/billboard-faces/list');
     } 
     catch (err) 
     {
       console.log(err)
-      if(err.response && err.response.status == 422){
+      if(err.response && err.response.status == 422)
+      {
         showWarningNotification('Advertencia', 'Faltan Datos por Rellenar')
       }
     } finally {
@@ -40,7 +42,7 @@ export function useBillboardFace(){
     loadingBillboardFace.value = true
     error.value = null
     try {
-      const response = await updateBillboardFace(billboardFaceDataForm.get('id'), billboardFaceDataForm)
+      const response = await billboardFaceService.updateBillboardFace(billboardFaceDataForm.get('id'), billboardFaceDataForm)
 
       showSuccessToast('¡La cara de la valla ha sido actualizada exitosamente!', 'Los detalles de la cara de la valla han sido editados y guardados correctamente.')
       
@@ -60,9 +62,31 @@ export function useBillboardFace(){
     }
   }
 
+  const uploadBillboardFaces = async file => {
+    loadingBillboardFace.value = true
+    error.value = null
+    try 
+    {
+      const response = await billboardFaceService.uploadBillboardFaces(file)
+      showSuccessToast('¡El archivo ha sido cargado exitosamente!', 'El archivo fue procesado correctamente.');
+      console.log(response);
+      router.push('/billboard-faces/list');
+    } 
+    catch (err) 
+    {
+      console.log(err)
+      if(err.response && err.response.status == 422)
+      {
+        showWarningNotification('Advertencia', 'Ocurrio un problema, revise el contenido del archivo')
+      }
+    } finally {
+      loadingBillboardFace.value = false
+    }
+  }
+
   const getAllBillboardFaces = async pagination => {
     try {
-      const response = await allBillboardFaces(pagination)
+      const response = await billboardFaceService.allBillboardFaces(pagination)
 
       billboardFaces.value = response.data.data
       totalBillboardFaces.value = response.data.total
@@ -74,7 +98,7 @@ export function useBillboardFace(){
 
   const billboardFaceById = async id => {
     try {
-      const response = await getBillboardFaceById(id)
+      const response = await billboardFaceService.getBillboardFaceById(id)
 
       billboardFace.value = response.data
     } catch (err) {
@@ -89,6 +113,7 @@ export function useBillboardFace(){
     editBillboardFace,
     billboardFaceById,
     getAllBillboardFaces,
+    uploadBillboardFaces,
     billboardFaces: computed(() => billboardFaces.value),
     billboardFace,
     totalBillboardFaces: computed(() => totalBillboardFaces.value)
