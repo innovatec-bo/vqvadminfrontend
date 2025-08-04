@@ -21,6 +21,10 @@ const updateOptions = options => {
 // Headers
 const headers = [
   {
+    title: 'ID',
+    key: 'id'
+  },  
+  {
     title: 'Imagen',
     key: 'image'
   },
