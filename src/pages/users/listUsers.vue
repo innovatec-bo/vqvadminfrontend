@@ -134,7 +134,7 @@ const handleUserUpdated = updatedUser => {
           />
           <RouterLink :to="{ name: 'users-add-user' }">
             <VBtn>
-              Agregar Usuario
+              Agregar Proveedor
             </VBtn>
           </RouterLink>
         </div>

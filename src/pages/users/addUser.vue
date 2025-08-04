@@ -1,18 +1,40 @@
 <script setup>
+import { useCategory } from '@/composables/Category/useCategory';
 import { useUser } from '@/composables/User/useUser';
-import avatar1 from '@images/logos/vqvlogo.png';
+import avatar1 from '@images/avatars/default-avatar.png';
 import { ref } from 'vue';
 
-const { addUser } = useUser()
+const { loading, addUser } = useUser()
+const { allCategories, categories } = useCategory()
 
 const refInputEl = ref(null);
 const avatarImg = ref(avatar1);
 const avatarFile = ref(null);
-const name = ref('')
-const last_name = ref('')
+const name = ref('');
+const last_name = ref('');
 const email = ref(null);
 const cod_phone = ref(null);
-const phone = ref(null)
+const phone = ref(null);
+const userType = ref('PERSON');
+//Required for organizations
+const socialReason = ref(null);
+const category = ref(null);
+const nameContact = ref(null);
+const phoneContact = ref(null);
+const commisionPercentage = ref(null);
+const nit = ref(null);
+//Required for person
+const ci = ref(null);
+
+allCategories({
+  itemsPerPage: 200,
+  page: 1,
+})
+
+const userTypes = [
+  {value: 'PERSON', text: 'Persona'},
+  {value: 'ORGANIZATION', text: 'Organizacion'}
+];
 
 const errors = ref({
   title: '',
@@ -43,24 +65,39 @@ const validateForm = () => {
   errors.value.email = email.value ? '' : 'El correo es obligatorio.'
   errors.value.cod_phone = cod_phone.value ? '' : 'El codigo de telefono es obligatorio.'
   errors.value.phone = phone.value?'' : 'El telefono es obligatorio'
+  errors.value.userType = userType.value?'' : 'El tipo de usuario es obligatorio'
   
-  return !errors.value.name && 
-          !errors.value.last_name &&
-          !errors.value.email &&
-          !errors.value.cod_phone &&
-          !errors.value.phone 
+  if (userType.value === 'PERSON') 
+  {
+    errors.value.ci = ci.value ? '' : 'El CI es obligatorio.'
+  } 
+  else if (userType.value === 'ORGANIZATION') 
+  {
+    errors.value.socialReason = socialReason.value ? '' : 'La razón social es obligatoria.'
+    errors.value.category = category.value ? '' : 'La categoría es obligatoria.'
+    errors.value.nameContact = nameContact.value ? '' : 'El nombre del contacto es obligatorio.'
+    const phoneContactValue = Number(phoneContact.value)
+    if (!phoneContact.value) {
+      errors.value.phoneContact = 'Este campo es obligatorio.'
+    } else if (!Number.isInteger(phoneContactValue)) {
+      errors.value.phoneContact = 'Solo se permiten caracteres numericos.'
+    }
+
+    const value = Number(commisionPercentage.value)
+    if (!commisionPercentage.value) {
+      errors.value.commisionPercentage = 'Este campo es obligatorio.'
+    } else if (!Number.isInteger(value) || value < 0 || value > 100) {
+      errors.value.commisionPercentage = 'Debe ser un número entero entre 0 y 100.'
+    }
+    errors.value.nit = nit.value ? '' : 'El NIT es obligatorio.'
+  }
+
+  return Object.values(errors.value).every(error => !error)
 }
 
 const registerUser = async () => {
   if (validateForm()) 
   {
-    // addUser({
-    //   name: name.value,
-    //   last_name: last_name.value,
-    //   email: email.value,
-    //   cod_phone: cod_phone.value,
-    //   phone: phone.value
-    // })
     const formData = new FormData()
     formData.append('name', name.value)
     formData.append('last_name', last_name.value)
@@ -69,11 +106,30 @@ const registerUser = async () => {
     formData.append('phone', phone.value)
     formData.append('password', phone.value)
     formData.append('rol', 'ANUNCIANTE')
-    formData.append('user_type', 'PERSON')
+    formData.append('user_type', userType.value)
     if (avatarFile.value) 
     {
       formData.append('image', avatarFile.value)
     }
+
+    if (userType.value === 'PERSON') 
+    {
+      formData.append('ci', ci.value)
+    } 
+    else if (userType.value === 'ORGANIZATION') 
+    {
+      formData.append('social_reason', socialReason.value)
+      formData.append('category_id', category.value.id)
+      formData.append('name_contact', nameContact.value)
+      formData.append('phone_contact', phoneContact.value)
+      formData.append('commision_percentage', commisionPercentage.value)
+      formData.append('nit', nit.value)
+    }
+
+    // for (let [key, value] of formData.entries()) 
+    // {
+    //   console.log(`${key}:`, value)
+    // }
     addUser(formData)
   }
 }
@@ -96,7 +152,11 @@ const registerUser = async () => {
             Cancelar
           </VBtn>
         </RouterLink>
-        <VBtn @click="registerUser">
+        <VBtn 
+          @click="registerUser"
+          :disabled="loading"
+          :loading="loading"
+          >
           Registrar anunciante
         </VBtn>
       </div>
@@ -176,6 +236,105 @@ const registerUser = async () => {
                   :error="!!errors.phone"
                   :error-messages="errors.phone"
                 />
+              </VCol>
+              <VCol cols="6">
+                <AppAutocomplete
+                  v-model="userType"
+                  placeholder="Elija una opcion"
+                  :items="userTypes"
+                  label="Tipo de usuario"
+                  item-value="value"
+                  item-title="text"
+                  :menu-props="{ maxHeight: '200px' }"
+                  :error="!!errors.userType"
+                  :error-messages="errors.userType"
+                >
+                  <template #append>
+                    <VSlideXReverseTransition mode="out-in">
+                    </VSlideXReverseTransition>
+                  </template>
+                </AppAutocomplete>
+              </VCol>
+              <VCol cols="12" v-if="userType === 'PERSON'">
+                <VRow>
+                  <VCol cols="6">
+                    <AppTextField
+                      v-model="ci"
+                      label="C.I."
+                      placeholder=""
+                      :error="!!errors.name"
+                      :error-messages="errors.name"
+                    />
+                  </VCol>
+                </VRow>
+              </VCol>
+              <VCol cols="12" v-if="userType === 'ORGANIZATION'">
+                <VRow>
+                  <VCol cols="6">
+                    <AppTextField
+                      v-model="socialReason"
+                      label="Raz&oacute;n social"
+                      placeholder=""
+                      :error="!!errors.socialReason"
+                      :error-messages="errors.socialReason"
+                    />
+                  </VCol>
+                  <VCol cols="6">
+                    <AppAutocomplete
+                      v-model="category"
+                      placeholder="Elija una opcion"
+                      :items="categories"
+                      label="Categor&iacute;a"
+                      item-title="name"
+                      :item-value="item => item"
+                      persistent-hint
+                      :menu-props="{ maxHeight: '200px' }"
+                      :error="!!errors.category"
+                      :error-messages="errors.category"
+                    >
+                      <template #append>
+                        <VSlideXReverseTransition mode="out-in">
+                        </VSlideXReverseTransition>
+                      </template>
+                    </AppAutocomplete>
+                  </VCol>
+                  <VCol cols="6">
+                    <AppTextField
+                      v-model="nameContact"
+                      label="Nombre de contacto"
+                      placeholder=""
+                      :error="!!errors.nameContact"
+                      :error-messages="errors.nameContact"
+                    />
+                  </VCol>
+                  <VCol cols="6">
+                    <AppTextField
+                      v-model="phoneContact"
+                      label="Tel&eacute;fono de contacto"
+                      placeholder=""
+                      :error="!!errors.phoneContact"
+                      :error-messages="errors.phoneContact"
+                    />
+                  </VCol>
+                  <VCol cols="6">
+                    <AppTextField
+                      v-model="commisionPercentage"
+                      label="Porcentaje de comisi&oacute;n"
+                      placeholder=""
+                      :error="!!errors.commisionPercentage"
+                      :error-messages="errors.commisionPercentage"
+                    />
+                  </VCol>
+                  <VCol cols="6">
+                    <AppTextField
+                      v-model="nit"
+                      label="NIT"
+                      placeholder=""
+                      :error="!!errors.nit"
+                      :error-messages="errors.nit"
+                    />
+                  </VCol>
+                </VRow>
               </VCol>
             </VRow>
           </VCardText>
