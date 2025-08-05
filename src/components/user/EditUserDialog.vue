@@ -90,13 +90,16 @@ const saveUser = async () => {
     formData.append('ci', formUser.value.person.ci)
   } else if (formUser.value.user_type === 'ORGANIZATION' && formUser.value.organization) {
     formData.append('social_reason', formUser.value.organization.social_reason)
-    formData.append('category_id', formUser.value.organization.category_id?.id ?? '')
+    formData.append('category_id', formUser.value.organization.category?.id ?? '')
     formData.append('name_contact', formUser.value.organization.name_contact)
     formData.append('phone_contact', formUser.value.organization.phone_contact)
     formData.append('commision_percentage', formUser.value.organization.commision_percentage)
     formData.append('nit', formUser.value.organization.nit)
   }
-
+  // for (let [key, value] of formData.entries()) 
+  // {
+  //   console.log(`${key}:`, value)
+  // }
   const result = await editUser(formData);
   result.success && emit('userUpdated', formUser.value)
   dialogVisibleUpdate()
