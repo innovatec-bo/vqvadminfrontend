@@ -1,8 +1,8 @@
 <script setup>
-import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace'
-import { ref } from 'vue'
+import { useBillboardFace } from '@/composables/BillboardFace/useBillboardFace';
+import { ref } from 'vue';
 
-const { uploadBillboardFaces } = useBillboardFace()
+const { uploadBillboardFaces, loadingBillboardFace } = useBillboardFace()
 
 const refInputEl = ref(null)
 const excelFile = ref(null)
@@ -61,9 +61,9 @@ const uploadFile = async () => {
       </div>
       <div class="d-flex gap-4 align-center flex-wrap">
         <RouterLink :to="{ name: 'billboard-faces-list' }">
-          <VBtn variant="tonal" color="primary"> Cancelar </VBtn>
+          <VBtn variant="tonal" color="primary" :disabled="loadingBillboardFace" :loading="loadingBillboardFace"> Cancelar </VBtn>
         </RouterLink>
-        <VBtn @click="uploadFile" color="primary"> Subir archivo </VBtn>
+        <VBtn @click="uploadFile" color="primary":disabled="loadingBillboardFace" :loading="loadingBillboardFace"> Subir archivo </VBtn>
       </div>
     </div>
 
@@ -74,7 +74,7 @@ const uploadFile = async () => {
             <div class="d-flex flex-column align-center justify-center gap-4">
               <VIcon icon="tabler-file-upload" size="48" color="primary" />
               <p>Seleccione un archivo Excel (.xlsx, .xls) o CSV (.csv) para subir datos de vallas.</p>
-              <VBtn color="primary" @click="refInputEl?.click()">
+              <VBtn color="primary" @click="refInputEl?.click()" :disabled="loadingBillboardFace" :loading="loadingBillboardFace">
                 Seleccionar archivo
               </VBtn>
               <input

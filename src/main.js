@@ -6,9 +6,11 @@ import { createApp } from 'vue'
 // Styles
 import '@core/scss/template/index.scss'
 import '@styles/styles.scss'
+import '@tabler/icons-webfont/dist/tabler-icons.min.css'
 
 // Create vue app
 const app = createApp(App)
+
 
 
 
