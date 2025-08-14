@@ -8,6 +8,7 @@ const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
   user: { type: Object, required: true },
 })
+const validationErrors = ref([])
 
 const emit = defineEmits(['update:isDialogVisible', 'userUpdated'])
 
@@ -28,7 +29,7 @@ allCategories({
   itemsPerPage: 200,
   page: 1,
 })
-// const formUser = ref({ ...props.user }) 
+
 const formUser = ref({
   ...props.user,
   organization: props.user.organization ?? {},
@@ -67,10 +68,12 @@ const changeAvatar = (event) => {
 }
 
 const dialogVisibleUpdate = () => {
+  validationErrors.value = []
   emit('update:isDialogVisible', false)
 }
 
 const saveUser = async () => {
+  validationErrors.value = []
   const formData = new FormData()
   formData.append('_method', 'PUT')
   formData.append('id', formUser.value.id)  
@@ -96,13 +99,14 @@ const saveUser = async () => {
     formData.append('commision_percentage', formUser.value.organization.commision_percentage)
     formData.append('nit', formUser.value.organization.nit)
   }
-  // for (let [key, value] of formData.entries()) 
-  // {
-  //   console.log(`${key}:`, value)
-  // }
+
   const result = await editUser(formData);
-  result.success && emit('userUpdated', formUser.value)
-  dialogVisibleUpdate()
+  if (!result.success && result.error) {
+    validationErrors.value = Object.values(result.error).flat()
+  } else if (result.success) {
+    emit('userUpdated', formUser.value)
+    dialogVisibleUpdate()
+  }
 }
 watch(() => props.user, newUser => {
   formUser.value = {
@@ -140,6 +144,17 @@ watch(() => formUser.value.user_type, newVal => {
     <VCard title="Editar proveedor" class="pa-sm-8 pa-5">
       <VCardText>
         <VForm @submit.prevent="saveUser">
+          <VCol cols="12" v-if="validationErrors.length">
+            <VAlert
+              title="Error"
+              type="error"
+              closable
+            >
+              <ol>
+                <li v-for="(msg, idx) in validationErrors" :key="idx">{{ msg }}</li>
+              </ol>
+            </VAlert>
+          </VCol>
           <VCol cols="12" class="d-flex">
             <VAvatar
               rounded

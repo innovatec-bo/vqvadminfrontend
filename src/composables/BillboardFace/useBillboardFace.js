@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 // import { allBillboardFaces, getBillboardFaceById, registerBillboardFace, updateBillboardFace, uploadBillboardFaces } from '@/services/BillboardFace/billboardFaceService'
 import * as billboardFaceService from '@/services/BillboardFace/billboardFaceService'
-import { showErrorToast, showSuccessToast, showWarningToast } from '@/utils/notifications'
+import { showErrorToast, showSuccessToast } from '@/utils/notifications'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -21,14 +21,12 @@ export function useBillboardFace(){
     error.value = null
     try 
     {
-      console.log('este es el formulario:', propertyListingData)
       const response = await billboardFaceService.registerBillboardFace(propertyListingData)
       showSuccessToast('¡La cara de la valla ha sido creada exitosamente!', 'Los detalles de la cara de la valla han sido guardados correctamente.');
       router.push('/billboard-faces/list');
     } 
     catch (err) 
     {
-      console.log(err)
       if(err.response && err.response.status == 422)
       {
         showWarningNotification('Advertencia', 'Faltan Datos por Rellenar')
@@ -50,9 +48,7 @@ export function useBillboardFace(){
     } catch (err) {
 
       if(err.response && err.response.status == 422){
-        showWarningToast('Validación fallida', 'Faltan datos por rellenar')
-        
-        return { success: false, message: 'Validación fallida' }
+        return err.response._data;
       }
       showErrorToast('Advertencia', 'Hubo un problema al actualizar la cara de la valla.')
       

@@ -7,24 +7,12 @@ import { useUser } from '@/composables/User/useUser'
 import { useZone } from '@/composables/Zone/useZone'
 import { watch } from 'vue'
 
-const { allUsers,  users} = useUser()
-const { allCities, cities } = useCity()
-const { allZones, zones } = useZone()
+const { users, loading, onFocusUsers, onSearchUsers } = useUser()
+const { cities, loadingCity, onFocusCities, onSearchCities } = useCity()
+const { loadingZone, zones, onFocusZones, onSearchZones } = useZone()
 const { allBillboardStructures, billboardStructures } = useBillboardStructure()
+const validationErrors = ref([])
 
-allUsers({
-  itemsPerPage: 100,
-  page: 1,
-  role: 'ANUNCIANTE'
-})
-allCities({
-  itemsPerPage: 200,
-  page: 1,
-})
-allZones({
-  itemsPerPage: 200,
-  page: 1,
-})
 allBillboardStructures({
   itemsPerPage: 200,
   page: 1,
@@ -40,6 +28,14 @@ const listStatus = ref([
   { value: 'ROJO', title: 'ROJO' },
   { value: 'AMARILLO', title: 'AMARILLO' },
   { value: 'VERDE', title: 'VERDE' },
+])
+
+const faces = ref([
+  { value: 'A', title: 'A' },
+  { value: 'B', title: 'B' },
+  { value: 'C', title: 'C' },
+  { value: 'D', title: 'D' },
+  { value: 'E', title: 'E' },
 ])
 
 const { loadingBillboardFace, editBillboardFace } = useBillboardFace()
@@ -77,6 +73,7 @@ const changeAvatar = (event) => {
 }
 
 const dialogVisibleUpdate = () => {
+  validationErrors.value = []
   emit('update:isDialogVisible', false)
 }
 
@@ -91,6 +88,7 @@ function formatDateToYMD(date)
 }
 
 const saveBillboardFace = async () => {
+  validationErrors.value = []
   const formData = new FormData()
   formData.append('_method', 'PUT')
   formData.append('id', formBillboardFace.value.id)  
@@ -118,8 +116,13 @@ const saveBillboardFace = async () => {
   }
 
   const result = await editBillboardFace(formData);
-  result.success && emit('billboardFaceUpdated', formBillboardFace.value)
-  dialogVisibleUpdate()
+  
+  if (!result.success && result.error) {
+    validationErrors.value = Object.values(result.error).flat()
+  } else if (result.success) {
+    emit('billboardFaceUpdated', formBillboardFace.value)
+    dialogVisibleUpdate()
+  }
 }
 watch(() => props.billboardFace, newBillboardFace => {
   formBillboardFace.value = { ...newBillboardFace }
@@ -142,6 +145,17 @@ watch(() => props.billboardFace, newBillboardFace => {
     >
       <VCardText>
         <VForm @submit.prevent="saveBillboardFace">
+          <VCol cols="12" v-if="validationErrors.length">
+            <VAlert
+              title="Error"
+              type="error"
+              closable
+            >
+              <ol>
+                <li v-for="(msg, idx) in validationErrors" :key="idx">{{ msg }}</li>
+              </ol>
+            </VAlert>
+          </VCol>
           <VCol cols="12" class="d-flex">
             <VAvatar
               rounded
@@ -187,10 +201,11 @@ watch(() => props.billboardFace, newBillboardFace => {
               />
             </VCol>
             <VCol cols="12" md="6">
-              <AppTextField
+              <AppSelect
                 v-model="formBillboardFace.face"
                 label="Cara"
-                placeholder="..."
+                placeholder="Seleccione una opcion"
+                :items="faces"
                 outlined
               />
             </VCol>
@@ -251,6 +266,9 @@ watch(() => props.billboardFace, newBillboardFace => {
                 :item-value="item => item"
                 persistent-hint
                 :menu-props="{ maxHeight: '200px' }"
+                :loading="loadingCity"
+                @update:search="onSearchCities"
+                @focus="onFocusCities"
               >
                 <template #append>
                   <VSlideXReverseTransition mode="out-in">
@@ -268,6 +286,9 @@ watch(() => props.billboardFace, newBillboardFace => {
                 :item-value="item => item"
                 persistent-hint
                 :menu-props="{ maxHeight: '200px' }"
+                :loading="loadingZone"
+                @update:search="onSearchZones"
+                @focus="onFocusZones"
               >
                 <template #append>
                   <VSlideXReverseTransition mode="out-in">
@@ -302,6 +323,9 @@ watch(() => props.billboardFace, newBillboardFace => {
                 :item-value="item => item"
                 persistent-hint
                 :menu-props="{ maxHeight: '200px' }"
+                :loading="loading"
+                @update:search="onSearchUsers"
+                @focus="onFocusUsers"
               >
                 <template #append>
                   <VSlideXReverseTransition mode="out-in">
@@ -309,6 +333,20 @@ watch(() => props.billboardFace, newBillboardFace => {
                 </template>
               </AppAutocomplete>
             </VCol>
+            <VCol cols="6">
+                <AppTextField
+                  v-model="formBillboardFace.size"
+                  label="Tama&ntilde;o"
+                  placeholder=""
+                />
+              </VCol>
+              <VCol cols="6">
+                <AppTextField
+                  v-model="formBillboardFace.price_per_month"
+                  label="Precio mensual"
+                  placeholder="1500"
+                />
+              </VCol>
             <!-- Botones de Acción -->
             <VCol
               cols="12"

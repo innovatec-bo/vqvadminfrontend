@@ -24,10 +24,41 @@ export function useZone()
     }
   }
 
+const fetchZones = async (search = '') => {
+    loadingZone.value = true
+    await allZones({
+      itemsPerPage: 30,
+      page: 1,
+      search
+    })
+    loadingZone.value = false
+  }
+  
+  let ignoreNextSearch = false  
+  const onFocusZones = () => {
+    ignoreNextSearch = true
+    fetchZones('', true)
+  }
+
+  let searchTimeout
+  const onSearchZones = (search) => {
+    if (ignoreNextSearch) {
+      ignoreNextSearch = false
+      return
+    }
+    clearTimeout(searchTimeout)
+    searchTimeout = setTimeout(() => {
+      fetchZones(search, true)
+    }, 1200)
+  }
+
   return {
     loadingZone,
     error,
     allZones,
+    fetchZones,
+    onFocusZones,
+    onSearchZones,
     zones: computed(() => zones.value),
     totalZones: computed(() => totalZones.value),
   }

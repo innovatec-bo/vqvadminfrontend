@@ -24,10 +24,40 @@ export function useCity()
     }
   }
 
+  const fetchCities = async (search = '') => {
+    loadingCity.value = true
+    await allCities({
+      itemsPerPage: 30,
+      page: 1,
+      search
+    })
+    loadingCity.value = false
+  }
+  let ignoreNextSearch = false  
+  const onFocusCities = () => {
+    ignoreNextSearch = true
+    fetchCities('', true)
+  }
+
+  let searchTimeout
+  const onSearchCities = (search) => {
+    if (ignoreNextSearch) {
+      ignoreNextSearch = false
+      return
+    }
+    clearTimeout(searchTimeout)
+    searchTimeout = setTimeout(() => {
+      fetchCities(search, true)
+    }, 1200)
+  }
+
   return {
     loadingCity,
     error,
     allCities,
+    fetchCities,
+    onFocusCities,
+    onSearchCities,
     cities: computed(() => cities.value),
     totalCities: computed(() => totalCities.value),
   }

@@ -8,17 +8,15 @@ import avatar1 from '@images/logos/vqvlogo.png'
 import { ref } from 'vue'
 
 const { addBillboardFace } = useBillboardFace()
-const { allUsers,  users} = useUser()
-const { allCities, cities } = useCity()
-const { allZones, zones } = useZone()
+const { users, loading, onFocusUsers, onSearchUsers} = useUser()
+const { cities, loadingCity, onFocusCities, onSearchCities } = useCity()
+const { loadingZone, zones, onFocusZones, onSearchZones } = useZone()
 const { allBillboardStructures, billboardStructures } = useBillboardStructure()
-
 
 const refInputEl = ref(null);
 const avatarImg = ref(avatar1);
 const avatarFile = ref(null);
 const code = ref('');
-const billboard = ref(null);
 const face = ref('');
 const location_detail = ref('');
 const status = ref(null);
@@ -35,19 +33,6 @@ const price_per_month = ref('');
 const latitude = ref('');
 const longitude = ref('');
 
-allUsers({
-  itemsPerPage: 100,
-  page: 1,
-  role: 'ANUNCIANTE'
-})
-allCities({
-  itemsPerPage: 200,
-  page: 1,
-})
-allZones({
-  itemsPerPage: 200,
-  page: 1,
-})
 allBillboardStructures({
   itemsPerPage: 200,
   page: 1,
@@ -57,6 +42,14 @@ const errors = ref({
   title: '',
   description: '',
 })
+
+const faces = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E'
+];
 
 const statusList = [
   'ROJO',
@@ -229,13 +222,27 @@ const registerBillboardFace = async () => {
                 />
               </VCol>
               <VCol cols="6">
-                <AppTextField
+                <!-- <AppTextField
                   v-model="face"
                   label="Cara"
                   placeholder=""
                   :error="!!errors.face"
                   :error-messages="errors.face"
-                />
+                /> -->
+                <AppAutocomplete
+                  v-model="face"
+                  placeholder="Elija una opcion"
+                  :items="faces"
+                  label="Cara"
+                  :menu-props="{ maxHeight: '200px' }"
+                  :error="!!errors.face"
+                  :error-messages="errors.face"
+                >
+                  <template #append>
+                    <VSlideXReverseTransition mode="out-in">
+                    </VSlideXReverseTransition>
+                  </template>
+                </AppAutocomplete>
               </VCol>
               <VCol cols="6">
                 <AppTextField
@@ -256,11 +263,11 @@ const registerBillboardFace = async () => {
                   :error="!!errors.status"
                   :error-messages="errors.status"
                 >
-                <template #append>
-                  <VSlideXReverseTransition mode="out-in">
-                  </VSlideXReverseTransition>
-                </template>
-              </AppAutocomplete>
+                  <template #append>
+                    <VSlideXReverseTransition mode="out-in">
+                    </VSlideXReverseTransition>
+                  </template>
+                </AppAutocomplete>
               </VCol>
               <VCol cols="6">
                 <AppDateTimePicker
@@ -296,6 +303,9 @@ const registerBillboardFace = async () => {
                   :item-value="item => item"
                   persistent-hint
                   :menu-props="{ maxHeight: '200px' }"
+                  :loading="loadingCity"
+                  @update:search="onSearchCities"
+                  @focus="onFocusCities"
                   :error="!!errors.city"
                   :error-messages="errors.city"
                 >
@@ -315,6 +325,9 @@ const registerBillboardFace = async () => {
                   :item-value="item => item"
                   persistent-hint
                   :menu-props="{ maxHeight: '200px' }"
+                  :loading="loadingZone"
+                  @update:search="onSearchZones"
+                  @focus="onFocusZones"
                   :error="!!errors.zone"
                   :error-messages="errors.zone"
                 >
@@ -346,21 +359,19 @@ const registerBillboardFace = async () => {
               <VCol cols="6">
                 <AppAutocomplete
                   v-model="advertiser"
-                  placeholder="Elija una opcion"
+                  placeholder="Buscar usuario"
                   :items="users"
                   label="Proveedor"
                   :item-title="item => `${item.full_name} (${item.email})`"
                   :item-value="item => item"
                   persistent-hint
                   :menu-props="{ maxHeight: '200px' }"
+                  :loading="loading"
+                  @update:search="onSearchUsers"
+                  @focus="onFocusUsers"
                   :error="!!errors.advertiser"
                   :error-messages="errors.advertiser"
-                >
-                <template #append>
-                  <VSlideXReverseTransition mode="out-in">
-                  </VSlideXReverseTransition>
-                </template>
-              </AppAutocomplete>
+                />
               </VCol>
               <VCol cols="6">
                 <AppTextField
@@ -375,7 +386,7 @@ const registerBillboardFace = async () => {
                 <AppTextField
                   v-model="price_per_month"
                   label="Precio mensual"
-                  placeholder=""
+                  placeholder="1500"
                   :error="!!errors.price_per_month"
                   :error-messages="errors.price_per_month"
                 />

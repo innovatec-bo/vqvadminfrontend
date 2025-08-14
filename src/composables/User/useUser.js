@@ -83,21 +83,13 @@ export function useUser()
     loading.value = true
     error.value = null
     try {
-      console.log(userDataForm.get('id'));
-      for (let [key, value] of userDataForm.entries()) {
-        console.log(`${key}:`, value);
-      }
       const response = await userService.updateUser(userDataForm.get('id'), userDataForm)
-
       showSuccessToast('¡El usuario ha sido actualizado exitosamente!', 'Los detalles del usuario han sido editados y guardados correctamente.')
-      
       return { success: true, message: 'Actualización Exitosa' }
     } catch (err) {
 
       if(err.response && err.response.status == 422){
-        showWarningToast('Validación fallida', 'Faltan datos por rellenar')
-        
-        return { success: false, message: 'Validación fallida' }
+        return err.response._data;
       }
       showErrorToast('Advertencia', 'Hubo un problema al actualizar el usuario.')
       
@@ -132,11 +124,41 @@ export function useUser()
       loading.value = false
     }
   }
-  
+
+  const fetchUsers = async (search = '') => {
+    loading.value = true
+    await allUsers({
+      itemsPerPage: 30,
+      page: 1,
+      search
+    })
+    loading.value = false
+  }
+  let ignoreNextSearch = false
+  const onFocusUsers = () => {
+    ignoreNextSearch = true
+    fetchUsers('', true)
+  }
+
+  let searchTimeout
+  const onSearchUsers = (search) => {
+    if (ignoreNextSearch) {
+      ignoreNextSearch = false
+      return
+    }
+    clearTimeout(searchTimeout)
+    searchTimeout = setTimeout(() => {
+      fetchUsers(search, true)
+    }, 1200)
+  }
+
   return {
     allSellerUsers,
     allUsers,
     updateProfile,
+    fetchUsers,
+    onFocusUsers,
+    onSearchUsers,
     getById,
     addUser,
     editUser,
