@@ -13,19 +13,20 @@ export const redirects = [
       const userData = useCookie('userData')
 
       // Imprimir los datos de roles para verificar
-      console.log('roles: ', userData.value)
+      // console.log('roles: ', userData.value)
 
       // Obtener el array de roles del usuario
       const userRoles = userData.value?.roles || []
 
       // Comprobar si el usuario tiene el rol de 'admin' o 'ASESOR'
       if (userRoles.includes('ADMINISTRADOR')) {
-        return { name: 'dashboards-analytics' }
+        // return { name: 'dashboards-analytics' }
+        return { name: 'billboard-faces-list' }
       }
 
-      if (userRoles.includes('ASESOR')) {
-        return { name: 'activity-list' }
-      }
+      // if (userRoles.includes('ASESOR')) {
+      //   return { name: 'activity-list' }
+      // }
       
 
       // Si no tiene ninguno de los roles, redirigir al login
@@ -66,19 +67,19 @@ export const routes = [
       layoutWrapperClasses: 'layout-content-height-fixed',
     },
   },
-  {
-    path: '/dashboards/logistics',
-    name: 'dashboards-logistics',
-    component: () => import('@/pages/apps/logistics/dashboard.vue'),
-  },
-  {
-    path: '/dashboards/academy',
-    name: 'dashboards-academy',
-    component: () => import('@/pages/apps/academy/dashboard.vue'),
-  },
-  {
-    path: '/apps/ecommerce/dashboard',
-    name: 'apps-ecommerce-dashboard',
-    component: () => import('@/pages/dashboards/ecommerce.vue'),
-  },
+  // {
+  //   path: '/dashboards/logistics',
+  //   name: 'dashboards-logistics',
+  //   component: () => import('@/pages/apps/logistics/dashboard.vue'),
+  // },
+  // {
+  //   path: '/dashboards/academy',
+  //   name: 'dashboards-academy',
+  //   component: () => import('@/pages/apps/academy/dashboard.vue'),
+  // },
+  // {
+  //   path: '/apps/ecommerce/dashboard',
+  //   name: 'apps-ecommerce-dashboard',
+  //   component: () => import('@/pages/dashboards/ecommerce.vue'),
+  // },
 ]
